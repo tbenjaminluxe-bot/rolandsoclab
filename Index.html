@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ROXY v7 IP TRACKER</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+body{background:#0a0f1e;color:white;font-family:Arial;padding:15px;text-align:center}
+h2{color:#00ff88}
+.box{background:#1a2340;padding:15px;border-radius:15px;margin:10px 0;text-align:left}
+input{width:95%;padding:12px;border-radius:10px;border:1px solid #00ff88;background:#000;color:#fff;font-size:16px}
+button{width:100%;padding:13px;border:none;border-radius:10px;background:#00c3ff;font-weight:bold;font-size:16px;margin-top:10px}
+#map{height:280px;border-radius:15px;margin-top:10px}
+pre{white-space:pre-wrap;font-size:13px}
+</style>
+</head>
+<body>
+<h2>ROXY v7 IP TRACKER</h2>
+<p>Built by Roland from Lagos 🇳🇬</p>
+
+<div class="box">
+<b>YOUR IP</b>
+<p id="myip">Loading...</p>
+<input id="ip" placeholder="Enter IP e.g 8.8.8.8" value="8.8.8.8">
+<button onclick="track()">TRACK IP + MAP</button>
+<div id="map"></div>
+<pre id="result"></pre>
+</div>
+
+<script>
+let map = L.map('map').setView([6.5244, 3.3792], 10);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+let marker;
+
+async function getIP(ip){
+  let url = ip ? `https://ip-api.com/json/${ip}` : `https://ip-api.com/json/`;
+  let res = await fetch(url);
+  return await res.json();
+}
+
+async function track(){
+  let ip = document.getElementById('ip').value;
+  let d = await getIP(ip);
+  document.getElementById('result').textContent = JSON.stringify(d, null, 2);
+  if(d.lat){
+    map.setView([d.lat, d.lon], 10);
+    if(marker) map.removeLayer(marker);
+    marker = L.marker([d.lat, d.lon]).addTo(map).bindPopup(`${d.city}, ${d.country} - ${d.isp}`).openPopup();
+  }
+}
+
+window.onload = async ()=>{
+  let me = await getIP();
+  document.getElementById('myip').innerText = `${me.query} - ${me.city}, ${me.country} - ${me.isp}`;
+  track();
+}
+</script>
+</body>
+</html>
