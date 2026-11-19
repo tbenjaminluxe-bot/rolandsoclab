@@ -18,7 +18,6 @@ pre{white-space:pre-wrap;font-size:13px}
 <body>
 <h2>ROXY v7 IP TRACKER</h2>
 <p>Built by Roland from Lagos 🇳🇬</p>
-
 <div class="box">
 <b>YOUR IP</b>
 <p id="myip">Loading...</p>
@@ -27,32 +26,28 @@ pre{white-space:pre-wrap;font-size:13px}
 <div id="map"></div>
 <pre id="result"></pre>
 </div>
-
 <script>
 let map = L.map('map').setView([6.5244, 3.3792], 10);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 let marker;
-
 async function getIP(ip){
-  let url = ip ? `https://ip-api.com/json/${ip}` : `https://ip-api.com/json/`;
+  let url = ip ? `https://ipwho.is/${ip}` : `https://ipwho.is/`;
   let res = await fetch(url);
   return await res.json();
 }
-
 async function track(){
   let ip = document.getElementById('ip').value;
   let d = await getIP(ip);
   document.getElementById('result').textContent = JSON.stringify(d, null, 2);
-  if(d.lat){
-    map.setView([d.lat, d.lon], 10);
+  if(d.latitude){
+    map.setView([d.latitude, d.longitude], 10);
     if(marker) map.removeLayer(marker);
-    marker = L.marker([d.lat, d.lon]).addTo(map).bindPopup(`${d.city}, ${d.country} - ${d.isp}`).openPopup();
+    marker = L.marker([d.latitude, d.longitude]).addTo(map).bindPopup(`${d.city}, ${d.country} - ${d.connection?.isp || ''}`).openPopup();
   }
 }
-
 window.onload = async ()=>{
   let me = await getIP();
-  document.getElementById('myip').innerText = `${me.query} - ${me.city}, ${me.country} - ${me.isp}`;
+  document.getElementById('myip').innerText = `${me.ip} - ${me.city}, ${me.country} - ${me.connection?.isp || ''}`;
   track();
 }
 </script>
