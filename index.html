@@ -54,4 +54,48 @@ pre{white-space:pre-wrap;font-size:13px}
 
 <div id="pass" class="box">
 <b>PASSWORD CHECKER</b>
-<input id="pw" type="text" placeholder="
+<input id="pw" type="text" placeholder="Type password e.g Roxy123!">
+<button onclick="checkPass()">CHECK PASSWORD</button>
+<div id="passout"></div>
+<p style="font-size:12px;color:#aaa">Note: This checks inside your phone only, e no send your password anywhere.</p>
+</div>
+
+<div id="link" class="box">
+<b>LINK / PHISHING CHECKER</b>
+<input id="linkinput" placeholder="Paste link e.g http://bit.ly/free-money">
+<button onclick="checkLink()">CHECK LINK</button>
+<div id="linkout"></div>
+</div>
+
+<div id="port" class="box">
+<b>PORT SCANNER (EDUCATIONAL)</b>
+<p>Common ports and what they mean. This no dey hack — na to learn.</p>
+<input id="host" placeholder="Enter IP or domain e.g 8.8.8.8" value="8.8.8.8">
+<button onclick="checkPorts()">SHOW COMMON PORTS</button>
+<div id="portout"></div>
+</div>
+
+<script>
+function show(id,el){document.querySelectorAll('.box').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active');if(id==='ip'){setTimeout(()=>map.invalidateSize(),200)}}
+let map=L.map('map').setView([6.5244,3.3792],10);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);let marker;
+async function getIP(ip){
+  try{
+    let r=await fetch(ip?`https://ipwho.is/${ip}`:`https://ipwho.is/`);
+    let d=await r.json();
+    if(d.success!==false) return d;
+  }catch(e){}
+  try{
+    let r2=await fetch(ip?`https://ip-api.com/json/${ip}`:`https://ip-api.com/json/`);
+    let d2=await r2.json();
+    return {ip:d2.query,city:d2.city,country:d2.country,latitude:d2.lat,longitude:d2.lon,connection:{isp:d2.isp}};
+  }catch(e){ return {ip:'Check network - try TRACK again',city:'',country:''}; }
+}
+async function track(){let ip=document.getElementById('ipinput').value;document.getElementById('result').textContent='Tracking...';let d=await getIP(ip);document.getElementById('result').textContent=JSON.stringify(d,null,2);if(d.latitude){map.setView([d.latitude,d.longitude],10);if(marker)map.removeLayer(marker);marker=L.marker([d.latitude,d.longitude]).addTo(map).bindPopup(`${d.city}, ${d.country} - ${d.connection?.isp||''}`).openPopup();}}
+window.onload=async()=>{let me=await getIP();document.getElementById('myip').innerText=`${me.ip} - ${me.city}, ${me.country} - ${me.connection?.isp||''}`;track();}
+function checkScam(){let m=document.getElementById('scammsg').value.toLowerCase();let s=0;if(m.includes('win')||m.includes('won'))s+=30;if(m.includes('urgent')||m.includes('now'))s+=20;if(m.includes('pay')||m.includes('account'))s+=30;if(m.includes('otp')||m.includes('code')||m.includes('pin'))s+=40;if(m.includes('free')||m.includes('lottery'))s+=25;let c=s>=50?'bad':s>=30?'mid':'good';let t=s>=50?'🚨 SCAM - BLOCK REPORT DELETE':s>=30?'⚠️ SUSPICIOUS - Be Careful':'✅ Looks OK - Still be careful';document.getElementById('scamout').innerHTML=`<div class="verdict ${c}">Score: ${s}<br>${t}</div>`;}
+function checkPass(){let pw=document.getElementById('pw').value;let s=0;if(pw.length>=8)s+=20;if(/[A-Z]/.test(pw))s+=20;if(/[a-z]/.test(pw))s+=20;if(/[0-9]/.test(pw))s+=20;if(/[!@#$%^&*]/.test(pw))s+=20;let c=s==100?'good':s>=60?'mid':'bad';let t=s==100?'✅ STRONG PASSWORD':s>=60?'⚠️ MEDIUM - Add symbol/number':'🚨 WEAK - CHANGE NOW';document.getElementById('passout').innerHTML=`<div class="verdict ${c}">Score: ${s}/100<br>${t}<br>Length: ${pw.length}</div>`;}
+function checkLink(){let l=document.getElementById('linkinput').value.toLowerCase();let s=0;if(l.includes('http://'))s+=30;if(l.includes('bit.ly')||l.includes('tinyurl'))s+=30;if(l.includes('free')||l.includes('money'))s+=25;if(l.includes('verify')||l.includes('login'))s+=25;let c=s>=50?'bad':s>=30?'mid':'good';let t=s>=50?'🚨 PHISHING - DO NOT CLICK':s>=30?'⚠️ SUSPICIOUS - Verify first':'✅ Looks OK - Still verify';document.getElementById('linkout').innerHTML=`<div class="verdict ${c}">Score: ${s}<br>${t}</div>`;}
+function checkPorts(){let h=document.getElementById('host').value||'8.8.8.8';let ports=[[21,'FTP - File Transfer'],[22,'SSH - Secure Login'],[23,'Telnet - Old & Unsafe'],[25,'SMTP - Email Sending'],[53,'DNS - Website Names'],[80,'HTTP - Website'],[443,'HTTPS - Secure Website'],[3306,'MySQL - Database'],[8080,'Alt Web Server']];let html=`<p>Checking common ports for <b>${h}</b> (learning list):</p>`;ports.forEach(p=>{html+=`<div style="padding:8px;border-bottom:1px solid #333"><b>Port ${p[0]}</b> - ${p[1]}</div>`});html+=`<p style="font-size:12px;color:#aaa">Real port scanning needs a server. This version na to learn wetin each port dey do.</p>`;document.getElementById('portout').innerHTML=html;}
+</script>
+</body>
+</html>
