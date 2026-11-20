@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY v4.7 - All In One</title>
+<title>ROXY v4.8 - Motherboard + Level 2</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
@@ -25,7 +25,9 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 .voiceBar button.sharkBtn{background:#00ffff;color:#000}
 .voiceBar button.pyBtn{background:#ffdd00;color:#000}
 .voiceBar button.quizBtn{background:#00ff00;color:#000}
+.voiceBar button.quiz2Btn{background:#00cc00;color:#fff}
 .voiceBar button.phishBtn{background:#ff6600;color:#fff}
+.voiceBar button.mbBtn{background:#ff99cc;color:#000}
 .chat{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px}
 .msg{max-width:88%;padding:12px 14px;border-radius:15px;font-size:15px;line-height:1.45}
 .me{background:#00ff88;color:#000;align-self:flex-end;border-bottom-right-radius:5px}
@@ -59,14 +61,15 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 .sharkCard b{color:#aaffff}.sharkCard code{background:#111;color:#00ff88;padding:4px 6px;border-radius:5px;display:block;margin:4px 0;word-break:break-all}
 .pyCard{background:#000;border:1px solid #ffdd00;border-radius:12px;padding:12px;margin-top:10px;font-size:13px;line-height:1.5}
 .pyCard b{color:#ffee88}.pyCard code{background:#111;color:#00ff88;padding:4px 6px;border-radius:5px;display:block;margin:4px 0;word-break:break-all}
+.mbCard{background:#000;border:1px solid #ff99cc;border-radius:12px;padding:12px;margin-top:10px;font-size:13px;line-height:1.5}
+.mbCard b{color:#ffccee}.mbCard code{background:#111;color:#00ff88;padding:4px 6px;border-radius:5px;display:block;margin:4px 0;word-break:break-all}
 .quizOpt{background:#000;color:#fff;border:1px solid #333;padding:10px;border-radius:10px;width:100%;text-align:left;margin-top:6px;cursor:pointer;font-size:14px}
-.quizOpt:hover{border-color:#00ff00}
 </style>
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v4.7</span> 🦈🛡️🐍</h1>
-<p>Linux + Nmap + Wireshark + Python + Quiz + Phishing | By Roland 🇳🇬</p>
+<h1>ROXY <span>CHAT v4.8</span> 🖥️🛡️</h1>
+<p>Linux + Wireshark + Python + Motherboard + Quiz L1+L2 + Phishing | By Roland 🇳🇬</p>
 <p class="status" id="statusText">● Online</p>
 </div>
 <div class="login" id="loginScreen">
@@ -88,7 +91,9 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <button class="linuxBtn" onclick="toggleLinux()">🐧 Linux Fix</button>
 <button class="sharkBtn" onclick="toggleShark()">🦈 Wireshark</button>
 <button class="pyBtn" onclick="togglePy()">🐍 Python</button>
-<button class="quizBtn" onclick="toggleQuiz()">🎮 Quiz</button>
+<button class="mbBtn" onclick="toggleMb()">🖥️ Motherboard</button>
+<button class="quizBtn" onclick="toggleQuiz()">🎮 Quiz L1</button>
+<button class="quiz2Btn" onclick="toggleQuiz2()">🔥 Quiz L2</button>
 <button class="phishBtn" onclick="togglePhish()">🌐 Phishing Link</button>
 <button class="logout" onclick="doLogout()">Logout</button>
 </div>
@@ -131,37 +136,48 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 
 <div id="pyBox" class="scamBox hidden" style="border-color:#ffdd00;">
 <h3 style="color:#ffee88;">🐍 PYTHON FOR SOC - 10 Lessons</h3>
-<p style="font-size:12px;color:#aaa;">Python na language wey SOC people use to automate work. Tap Copy to copy code!</p>
 <input id="pySearch" placeholder="🔍 Search e.g. print, if, loop, password..." oninput="renderPy()">
 <div id="pyList"></div>
 </div>
 
+<div id="mbBox" class="scamBox hidden" style="border-color:#ff99cc;">
+<h3 style="color:#ffccee;">🖥️ MOTHERBOARD - 10 Lessons - READ FIRST BEFORE QUIZ L2!</h3>
+<p style="font-size:12px;color:#aaa;">Motherboard = Big board wey connect everything. If e spoil, computer no go ON. Learn am here, then go do Quiz L2!</p>
+<input id="mbSearch" placeholder="🔍 Search e.g. cpu, ram, cmos, bios, beep, power..." oninput="renderMb()">
+<div id="mbList"></div>
+</div>
+
 <div id="quizBox" class="scamBox hidden" style="border-color:#00ff00;">
-<h3 style="color:#aaffaa;">🎮 ROXY SOC QUIZ - 10 Questions</h3>
-<p style="font-size:12px;color:#aaa;">Answer all 10. If you score 7+, you be SOC STAR! ⭐</p>
+<h3 style="color:#aaffaa;">🎮 ROXY SOC QUIZ LEVEL 1 - Easy - 10 Questions</h3>
+<p style="font-size:12px;color:#aaa;">You don score 10/10 before! Play again or go Level 2!</p>
 <div id="quizArea"></div>
-<button style="background:#00ff00;color:#000;" onclick="startQuiz()">▶️ START QUIZ</button>
+<button style="background:#00ff00;color:#000;" onclick="startQuiz()">▶️ START QUIZ L1</button>
+</div>
+
+<div id="quiz2Box" class="scamBox hidden" style="border-color:#00cc00;">
+<h3 style="color:#aaffaa;">🔥 ROXY QUIZ LEVEL 2 - HARD - 10 Questions</h3>
+<p style="font-size:12px;color:#aaa;">5 Motherboard + 5 Hard SOC! You MUST read 🖥️ Motherboard first! If you score 7+, you be HARDWARE + SOC MASTER!</p>
+<div id="quiz2Area"></div>
+<button style="background:#00cc00;color:#fff;" onclick="startQuiz2()">🔥 START QUIZ L2</button>
 </div>
 
 <div id="phishBox" class="scamBox hidden" style="border-color:#ff6600;">
 <h3 style="color:#ffaa88;">🌐 PHISHING LINK CHECKER</h3>
-<p style="font-size:12px;color:#aaa;">Paste ANY link here. ROXY go check if e be fake! No click am before you check!</p>
 <input id="phishInput" placeholder="Paste link e.g. https://gtb-login-verify.xyz">
 <button style="background:#ff6600;color:#fff;" onclick="checkPhish()">🔍 CHECK LINK NOW</button>
 <div id="phishResult"></div>
 </div>
 
 <div class="quick">
-<button onclick="quickAsk('disk full')">💾 Disk Full</button>
+<button onclick="quickAsk('motherboard')">🖥️ Motherboard</button>
+<button onclick="quickAsk('quiz level 2')">🔥 Quiz L2</button>
 <button onclick="quickAsk('wireshark')">🦈 Wireshark</button>
 <button onclick="quickAsk('python')">🐍 Python</button>
-<button onclick="quickAsk('quiz')">🎮 Quiz</button>
-<button onclick="quickAsk('phishing link')">🌐 Phishing</button>
 </div>
 <div class="chat" id="chat"></div>
 <div class="inputBox">
 <button class="micBtn" onclick="startMic()">🎤</button>
-<input id="inp" placeholder="Ask ROXY: python, quiz, phishing, wireshark..." onkeypress="if(event.key==='Enter')send()">
+<input id="inp" placeholder="Ask ROXY: motherboard, quiz level 2, cmos, bios..." onkeypress="if(event.key==='Enter')send()">
 <button class="sendBtn" onclick="send()">➤</button>
 </div>
 </div>
@@ -221,70 +237,72 @@ let DEFAULT_CMDS=[
 {t:'Python - If Statement',c:'if age >= 18:\n    print("Adult")\nelse:\n    print("Child")',d:'if = If condition true, do this.',tag:'python'},
 {t:'Python - For Loop',c:'for i in range(5):\n    print(i)',d:'Loop = Repeat 5 times.',tag:'python'},
 {t:'Python - Check Port Open',c:'import socket\ns=socket.socket()\nprint(s.connect_ex(("192.168.1.1", 80)))',d:'0 = Port open, 111 = Closed.',tag:'python'},
+{t:'Motherboard - Check CMOS Battery',c:'Remove CMOS battery for 5 mins, put back',d:'Reset BIOS password / date problem.',tag:'motherboard'},
+{t:'Motherboard - Check RAM',c:'Remove RAM, clean gold pins, put back firmly',d:'Fix No Display / Beep problem.',tag:'motherboard'},
+{t:'Motherboard - Check Power',c:'Check 24-pin + 8-pin CPU power cables',d:'If loose, PC no go ON.',tag:'motherboard'},
 {t:'LINUX 1 - Disk Full: Check Disk',c:'df -h',d:'Check which partition is full.',tag:'linux disk'},
 {t:'LINUX 1 - Disk Full: Big Files Logs',c:'du -sh /var/log/*',d:'Find large files.',tag:'linux disk'},
-{t:'LINUX 1 - Disk Full: Files Over 1GB',c:'sudo find / -type f -size +1G',d:'Find files bigger than 1GB.',tag:'linux disk'},
-{t:'LINUX 1 - Disk Full: Deleted Open Files',c:'sudo lsof +L1',d:'Check deleted files still using space.',tag:'linux disk'},
 {t:'LINUX 2 - High CPU: See Live CPU',c:'top',d:'See live CPU.',tag:'linux cpu'},
 {t:'LINUX 2 - High CPU: Top CPU',c:'ps aux --sort=-%cpu | head',d:'List by CPU.',tag:'linux cpu'},
 {t:'LINUX 3 - High Memory: Check RAM',c:'free -h',d:'Check RAM + Swap.',tag:'linux memory'},
-{t:'LINUX 3 - High Memory: Top Memory',c:'ps aux --sort=-%mem | head',d:'List by Memory.',tag:'linux memory'},
 {t:'LINUX 4 - Not Reachable: Ping',c:'ping -c 4 <IP>',d:'Send 4 pings.',tag:'linux network'},
-{t:'LINUX 4 - Not Reachable: Trace',c:'traceroute <IP>',d:'Show path to server.',tag:'linux network'},
-{t:'LINUX 4 - Not Reachable: DNS',c:'nslookup example.com',d:'Check DNS.',tag:'linux network'},
 {t:'LINUX 5 - Service Down: Check',c:'sudo systemctl status <service>',d:'Check service.',tag:'linux service'},
-{t:'LINUX 5 - Service Down: Logs',c:'sudo journalctl -u <service> -n 100',d:'Last 100 log lines.',tag:'linux service'},
-{t:'LINUX 5 - Service Down: Restart',c:'sudo systemctl restart <service>',d:'Restart service.',tag:'linux service'},
 {t:'LINUX 6 - Port: Check Port',c:'sudo ss -tlnp | grep :8000',d:'Check port 8000.',tag:'linux port'},
-{t:'LINUX 6 - Port: Test Locally',c:'curl http://localhost:8888',d:'Test inside server.',tag:'linux port'},
-{t:'LINUX 6 - Port: Firewall',c:'sudo ufw status',d:'Check firewall.',tag:'linux port'},
 {t:'LINUX 7 - SSH Fail: Check Service',c:'sudo systemctl status ssh',d:'Check SSH.',tag:'linux ssh'},
-{t:'LINUX 7 - SSH Fail: Key Perms',c:'ls -l ~/.ssh/authorized_keys',d:'Check key permissions.',tag:'linux ssh'},
-{t:'LINUX 7 - SSH Fail: Test Config',c:'sudo sshd -t',d:'Test sshd config.',tag:'linux ssh'},
 {t:'LINUX 7 - SSH Fail: Auth Log',c:'sudo tail -n 50 /var/log/auth.log',d:'Last 50 login attempts.',tag:'linux ssh'},
 {t:'LINUX 8 - Mount: List Disks',c:'lsblk',d:'List disks.',tag:'linux mount'},
-{t:'LINUX 8 - Mount: fstab',c:'cat /etc/fstab',d:'Check fstab.',tag:'linux mount'},
-{t:'LINUX 8 - Mount: Try Mount All',c:'sudo mount -a',d:'Try mount all.',tag:'linux mount'},
 {t:'LINUX 9 - High Load: Uptime',c:'uptime',d:'Show load.',tag:'linux load'},
-{t:'LINUX 9 - High Load: Disk I/O',c:'iostat -xz 1 5',d:'Check disk slow.',tag:'linux load'},
 {t:'Ping - Check Alive',c:'ping 192.168.1.1',d:'Check if device dey online.',tag:'general'},
 {t:'Check My Own IP',c:'ipconfig (Windows) / ifconfig (Linux)',d:'See your own IP.',tag:'general'}
 ];
 let TROUBLE=[
-{n:'1. Disk Full - No Space Left',sym:'Application stops, "No space left", Cannot create files, DB stops',steps:'1. Check partition (df -h) 2. Find large files 3. Check deleted files with lsof 4. Clear logs',cmds:'df -h | du -sh /var/log/* | sudo find / -type f -size +1G | sudo lsof +L1'},
-{n:'2. High CPU Usage',sym:'Server slow, Response time high, High load',steps:'1. Check load (top) 2. Find top process 3. Check disk I/O',cmds:'top | ps aux --sort=-%cpu | head | top -p <PID>'},
-{n:'3. High Memory Usage',sym:'Server slow, Processes killed, Out of memory',steps:'1. Check RAM/Swap 2. Find memory-hungry process 3. Check leak',cmds:'free -h | ps aux --sort=-%mem | head | vmstat 1 5'},
-{n:'4. Server Not Reachable',sym:'Cannot ping, Cannot SSH, Timeout',steps:'1. Ping 2. Trace route 3. Check DNS 4. Check firewall',cmds:'ping -c 4 <IP> | traceroute <IP> | nslookup example.com | sudo ufw status'},
-{n:'5. Service Is Down',sym:'Service not running, Not starting, Restart loops',steps:'1. Check status 2. Check logs 3. Validate config 4. Restart',cmds:'sudo systemctl status <service> | sudo journalctl -u <service> -n 100 | sudo systemctl restart <service>'},
-{n:'6. Port Not Working',sym:'Website not opening, Connection refused, Timeout',steps:'1. Check port dey listen (ss) 2. Test locally curl 3. Check firewall',cmds:'sudo ss -tlnp | grep :8000 | curl http://localhost:8888 | sudo ufw status'},
-{n:'7. SSH Login Failure',sym:'Permission denied, Connection refused, Public key not accepted',steps:'1. Check SSH service 2. Verify key permissions 3. Check config 4. Check auth logs',cmds:'sudo systemctl status ssh | ls -l ~/.ssh/authorized_keys | sudo sshd -t | sudo tail -n 50 /var/log/auth.log'},
-{n:'8. Mount / Filesystem Issue',sym:'Disk not mounted after reboot, fstab error',steps:'1. List disks (lsblk) 2. Check fstab 3. Try mount -a 4. fsck',cmds:'lsblk | df -h | cat /etc/fstab | sudo mount -a | sudo fsck /dev/sdx'},
-{n:'9. High Load Average',sym:'Server very slow, Loads high',steps:'1. Check load (uptime) 2. Find top process 3. Check disk I/O',cmds:'uptime | top | ps aux --sort=-%cpu | head | iostat -xz 1 5'},
-{n:'10. General Slow Check',sym:'Everything slow, no clear error',steps:'1. uptime 2. top 3. free -h 4. df -h 5. Check logs',cmds:'uptime | top | free -h | df -h | dmesg | tail -n 50'}
+{n:'1. Disk Full - No Space Left',sym:'Application stops, "No space left", Cannot create files',steps:'1. Check partition (df -h) 2. Find large files 3. Check deleted files',cmds:'df -h | du -sh /var/log/* | sudo find / -type f -size +1G | sudo lsof +L1'},
+{n:'2. High CPU Usage',sym:'Server slow, Response time high',steps:'1. Check load (top) 2. Find top process',cmds:'top | ps aux --sort=-%cpu | head'},
+{n:'3. High Memory Usage',sym:'Server slow, Processes killed, Out of memory',steps:'1. Check RAM/Swap 2. Find memory-hungry process',cmds:'free -h | ps aux --sort=-%mem | head'},
+{n:'4. Server Not Reachable',sym:'Cannot ping, Cannot SSH, Timeout',steps:'1. Ping 2. Trace route 3. Check DNS',cmds:'ping -c 4 <IP> | traceroute <IP> | nslookup example.com'},
+{n:'5. Service Is Down',sym:'Service not running, Restart loops',steps:'1. Check status 2. Check logs 3. Restart',cmds:'sudo systemctl status <service> | sudo journalctl -u <service> -n 100 | sudo systemctl restart <service>'},
+{n:'6. Port Not Working',sym:'Website not opening, Connection refused',steps:'1. Check port (ss) 2. Test locally curl 3. Check firewall',cmds:'sudo ss -tlnp | grep :8000 | curl http://localhost:8888 | sudo ufw status'},
+{n:'7. SSH Login Failure',sym:'Permission denied, Connection refused',steps:'1. Check SSH service 2. Verify key permissions 3. Check auth logs',cmds:'sudo systemctl status ssh | ls -l ~/.ssh/authorized_keys | sudo sshd -t | sudo tail -n 50 /var/log/auth.log'},
+{n:'8. Mount / Filesystem Issue',sym:'Disk not mounted after reboot',steps:'1. List disks (lsblk) 2. Check fstab 3. Try mount -a',cmds:'lsblk | df -h | cat /etc/fstab | sudo mount -a'},
+{n:'9. High Load Average',sym:'Server very slow',steps:'1. Check load (uptime) 2. Find top process',cmds:'uptime | top | ps aux --sort=-%cpu | head'},
+{n:'10. General Slow Check',sym:'Everything slow',steps:'1. uptime 2. top 3. free -h 4. df -h',cmds:'uptime | top | free -h | df -h'}
 ];
 let SHARK=[
-{n:'1. Start Capture',what:'Wireshark dey capture packets = small pieces of data for WiFi.',how:'1. Open Wireshark 2. Select WiFi 3. Click blue shark fin to Start 4. Visit site 5. Click red square to Stop',filter:'wireshark',tip:'⚠️ Only capture YOUR OWN WiFi!'},
-{n:'2. Filter - Show Only HTTP',what:'HTTP = websites wey no get lock.',how:'Type for filter bar, press Enter.',filter:'http',tip:'HTTP go show website names + sometimes passwords!'},
-{n:'3. Filter - Show Only DNS',what:'DNS = Phonebook. You type google.com, phone ask DNS for IP.',how:'Type dns for filter.',filter:'dns',tip:'SOC use DNS to see if person visit bad site!'},
-{n:'4. Filter - Show One Device Only',what:'If 10 phones dey for WiFi, focus on ONE.',how:'Find IP, type filter.',filter:'ip.addr == 192.168.1.1',tip:'Replace IP with the one you want.'},
-{n:'5. Filter - Find Passwords (HTTP)',what:'Old HTTP sites dey send password as plain text!',how:'Type POST filter. Right-click > Follow > HTTP Stream.',filter:'http.request.method == "POST"',tip:'⚠️ FOR LEARNING ONLY. Use your own test site.'},
-{n:'6. Follow Stream - See Full Chat',what:'Follow Stream go join packets to show full message.',how:'Right-click packet > Follow > TCP Stream.',filter:'Right-click > Follow > TCP Stream',tip:'Best way to understand wetin computers dey talk!'},
-{n:'7. Find Slow Network',what:'If network slow, packets dey loss, computer go resend.',how:'Type retransmission filter.',filter:'tcp.analysis.retransmission',tip:'Many = WiFi weak / cable bad.'},
-{n:'8. Filter - Show Only Ping (ICMP)',what:'Ping = "Are you there?"',how:'Type icmp.',filter:'icmp',tip:'If no Reply, device off or firewall block am.'},
+{n:'1. Start Capture',what:'Wireshark dey capture packets.',how:'1. Open Wireshark 2. Select WiFi 3. Click blue shark fin to Start 4. Visit site 5. Click red square to Stop',filter:'wireshark',tip:'⚠️ Only capture YOUR OWN WiFi!'},
+{n:'2. Filter - Show Only HTTP',what:'HTTP = websites wey no get lock.',how:'Type for filter bar.',filter:'http',tip:'HTTP go show website names!'},
+{n:'3. Filter - Show Only DNS',what:'DNS = Phonebook.',how:'Type dns for filter.',filter:'dns',tip:'SOC use DNS to see bad sites!'},
+{n:'4. Filter - Show One Device Only',what:'Focus on ONE phone.',how:'Find IP, type filter.',filter:'ip.addr == 192.168.1.1',tip:'Replace IP.'},
+{n:'5. Filter - Find Passwords (HTTP)',what:'Old HTTP sites dey send password as plain text!',how:'Type POST filter. Right-click > Follow > HTTP Stream.',filter:'http.request.method == "POST"',tip:'⚠️ FOR LEARNING ONLY.'},
+{n:'6. Follow Stream',what:'Follow Stream go join packets to show full message.',how:'Right-click packet > Follow > TCP Stream.',filter:'Right-click > Follow > TCP Stream',tip:'Best way to understand!'},
+{n:'7. Find Slow Network',what:'Packets dey loss, computer go resend.',how:'Type retransmission filter.',filter:'tcp.analysis.retransmission',tip:'Many = WiFi weak.'},
+{n:'8. Filter - Show Only Ping (ICMP)',what:'Ping = "Are you there?"',how:'Type icmp.',filter:'icmp',tip:'If no Reply, device off.'},
 {n:'9. Filter - Show ARP',what:'ARP = "Who get IP 192.168.1.5?"',how:'Type arp.',filter:'arp',tip:'Too much ARP fit mean ARP Spoofing!'},
-{n:'10. Export Files',what:'If person download picture for HTTP, Wireshark fit extract am!',how:'File > Export Objects > HTTP > Save.',filter:'File > Export Objects > HTTP',tip:'Only work for HTTP, not HTTPS.'}
+{n:'10. Export Files',what:'If person download picture for HTTP, Wireshark fit extract am!',how:'File > Export Objects > HTTP > Save.',filter:'File > Export Objects > HTTP',tip:'Only HTTP, not HTTPS.'}
 ];
 let PY=[
-{n:'1. Print - Say Hello',what:'print() = Tell computer to show something for screen. Na first thing every programmer dey learn.',code:'print("Hello Roland")\nprint("I want to be SOC analyst")',tip:'Output: Hello Roland. Try change name to your name!'},
-{n:'2. Variables - Box Wey Hold Value',what:'Variable = Box. You put value inside box, you fit use am later.',code:'name = "Roland"\nage = 15\nprint(name)\nprint(age)',tip:'name na box, "Roland" na value inside am.'},
-{n:'3. If / Else - Make Decision',what:'if = If condition true, do this. Else = If not true, do other thing. SOC use am to check: if user na hacker?',code:'age = 15\nif age >= 18:\n    print("Adult")\nelse:\n    print("Child - No entry")',tip:'Try change age to 20, run again - e go say Adult!'},
-{n:'4. For Loop - Repeat Work',what:'Loop = Repeat same work many times. Instead of type print 100 times, use loop!',code:'for i in range(5):\n    print("Checking port", i)',tip:'range(5) = 0,1,2,3,4. E go print 5 times.'},
-{n:'5. While Loop - Repeat Until Stop',what:'While = Keep doing until condition change. Like: while hacker dey try login, block am.',code:'count = 0\nwhile count < 3:\n    print("Trying...", count)\n    count = count + 1',tip:'⚠️ If you forget count+1, e go run forever!'},
-{n:'6. Functions - Reuse Code',what:'Function = You write code once, you fit call am many times. Like ROXY brain!',code:'def greet(name):\n    print("Hi", name)\n\ngreet("Roland")\ngreet("ROXY")',tip:'def = Define function. greet() = Call am.'},
-{n:'7. Lists - Many Items Together',what:'List = Basket wey hold many things. E.g. list of bad IPs.',code:'bad_ips = ["192.168.1.5", "10.0.0.2"]\nfor ip in bad_ips:\n    print("Blocking", ip)',tip:'SOC dey keep list of bad IPs to block!'},
-{n:'8. Check Port Open (SOC Tool!)',what:'This na real SOC tool! E go check if port 80 open for one device. 0 = Open, 111 = Closed.',code:'import socket\ns = socket.socket()\nresult = s.connect_ex(("192.168.1.1", 80))\nprint(result)',tip:'This na mini-Nmap inside Python!'},
-{n:'9. Password Strength Checker',what:'Check if password strong: must get 8+ letters, number, and capital letter.',code:'password = "Roland123"\nif len(password) >= 8:\n    print("Long enough!")\nelse:\n    print("Too short!")',tip:'len() = Count how many letters.'},
-{n:'10. SOC Log Checker - Find Hacker',what:'Check log file: if e see "Failed login", e go shout ALERT! This na wetin SOC dey do everyday.',code:'logs = ["Login success", "Failed login", "Failed login"]\nfor log in logs:\n    if "Failed" in log:\n        print("ALERT! Hacker dey try!")',tip:'Real SOC tools dey scan thousands of logs like this!'}
+{n:'1. Print - Say Hello',what:'print() = Show something for screen.',code:'print("Hello Roland")\nprint("I want to be SOC analyst")',tip:'Try change name!'},
+{n:'2. Variables - Box Wey Hold Value',what:'Variable = Box. You put value inside.',code:'name = "Roland"\nage = 15\nprint(name)\nprint(age)',tip:'name na box.'},
+{n:'3. If / Else - Make Decision',what:'if = If condition true, do this.',code:'age = 15\nif age >= 18:\n    print("Adult")\nelse:\n    print("Child - No entry")',tip:'Try change age to 20!'},
+{n:'4. For Loop - Repeat Work',what:'Loop = Repeat same work many times.',code:'for i in range(5):\n    print("Checking port", i)',tip:'range(5) = 0,1,2,3,4.'},
+{n:'5. While Loop',what:'While = Keep doing until condition change.',code:'count = 0\nwhile count < 3:\n    print("Trying...", count)\n    count = count + 1',tip:'If you forget count+1, e go run forever!'},
+{n:'6. Functions',what:'Function = Write once, call many times.',code:'def greet(name):\n    print("Hi", name)\n\ngreet("Roland")\ngreet("ROXY")',tip:'def = Define.'},
+{n:'7. Lists',what:'List = Basket wey hold many things.',code:'bad_ips = ["192.168.1.5", "10.0.0.2"]\nfor ip in bad_ips:\n    print("Blocking", ip)',tip:'SOC dey keep list of bad IPs!'},
+{n:'8. Check Port Open (SOC Tool!)',what:'Check if port 80 open. 0 = Open, 111 = Closed.',code:'import socket\ns = socket.socket()\nresult = s.connect_ex(("192.168.1.1", 80))\nprint(result)',tip:'Mini-Nmap inside Python!'},
+{n:'9. Password Strength Checker',what:'Check if password strong.',code:'password = "Roland123"\nif len(password) >= 8:\n    print("Long enough!")\nelse:\n    print("Too short!")',tip:'len() = Count letters.'},
+{n:'10. SOC Log Checker',what:'Check log: if e see "Failed login", shout ALERT!',code:'logs = ["Login success", "Failed login", "Failed login"]\nfor log in logs:\n    if "Failed" in log:\n        print("ALERT! Hacker dey try!")',tip:'Real SOC tools dey scan logs like this!'}
+];
+// --- MOTHERBOARD - ADDED FIRST BEFORE QUIZ L2, AS YOU ASKED ---
+let MB=[
+{n:'1. What Is Motherboard?',what:'Motherboard = Big green board inside computer. E be like road wey connect EVERYTHING: CPU, RAM, Hard Disk, Power, Keyboard, Monitor. If motherboard spoil, NOTHING go work.',how:'Open PC case (when OFF). The big board wey everything dey plug inside na motherboard.',code:'Motherboard = Main Board / Mobo',tip:'💡 Think am like Lagos Island - all roads meet for there!'},
+{n:'2. CPU Socket - Brain Seat',what:'CPU = Brain of computer. E dey sit for CPU Socket for middle of motherboard. E get many small pins - no touch am with hand! E get lever to lock am.',how:'Look for big square for middle with lever for side. Na there CPU dey. E get fan on top to cool am.',code:'CPU Socket: LGA1700 / AM5 (different types)',tip:'⚠️ If CPU no sit well, PC go ON but no display!'},
+{n:'3. RAM Slots - Memory Seat',what:'RAM = Short-term memory. E dey for long slots near CPU. Usually 2 or 4 slots. RAM na long small board with gold teeth for bottom.',how:'Press clips for two ends to open, push RAM down until e CLICK! If e no click, e no enter well.',code:'RAM Slots: DDR4 / DDR5 - No mix them!',tip:'RAM problem = No Display + Beep Beep sound!'},
+{n:'4. CMOS Battery - Small Clock Battery',what:'CMOS Battery = Small round silver battery like watch battery (CR2032). E dey keep time + BIOS settings even when PC OFF. If e die, date go reset to 2001!',how:'Find small silver coin for motherboard. Push clip to remove. Wait 5 mins, put new one. E go reset BIOS password too!',code:'CMOS Battery: CR2032 - 3V',tip:'💡 If PC dey forget date/time, change CMOS battery!'},
+{n:'5. BIOS / UEFI - First Software',what:'BIOS = First software wey run when you ON PC. E dey check: CPU dey? RAM dey? Hard disk dey? Then e load Windows. To enter BIOS, press DEL or F2 when PC dey start.',how:'ON PC, quickly press DEL / F2 / F12 (depend on board). You go see blue/grey screen - na BIOS!',code:'Enter BIOS: DEL / F2 / F12 / ESC',tip:'For BIOS you fit change boot order, check RAM, check CPU temperature!'},
+{n:'6. Power Connectors - 24-pin + 8-pin',what:'Motherboard need power from Power Supply (PSU). Two main cables: 24-pin (big, for motherboard) + 8-pin / 4-pin (small, for CPU). If one loose, PC no go ON!',how:'Check big white plug for side (24-pin) and small plug near CPU (8-pin). Push them well until dem click.',code:'24-pin ATX + 8-pin CPU power',tip:'No 1 cause of "PC no dey ON" = Power cable loose!'},
+{n:'7. PCIe Slot - For Graphics Card',what:'PCIe = Long slot wey you put Graphics Card (for games) or WiFi Card. The long one na PCIe x16 (for GPU). Small one na PCIe x1 (for WiFi / Sound).',how:'Graphics card dey for biggest long slot. E get clip for end like RAM. Press clip to remove.',code:'PCIe x16 = Graphics Card',tip:'If screen no show but PC dey ON, check GPU for PCIe slot!'},
+{n:'8. SATA Ports - For Hard Disk / SSD',what:'SATA = Small L-shaped port wey connect Hard Disk / SSD to motherboard. SATA cable na thin red/black cable. Without am, PC go say "No Boot Device" - e no see hard disk!',how:'Find small L-shaped ports for edge of board. Follow cable to Hard Disk. Push well.',code:'SATA + SATA Power = Hard Disk must get BOTH!',tip:'Hard disk need 2 cables: SATA (data) + Power (from PSU)!'},
+{n:'9. Beep Codes - Motherboard Dey Talk!',what:'When PC start, e dey beep. 1 short beep = Everything OK! No beep + No display = RAM or CPU problem. Long beeps = RAM problem. Continuous beep = Power problem.',how:'Listen when you ON PC. Count beeps. That na motherboard dey tell you wetin spoil!',code:'1 Beep = OK | Long Beeps = RAM | No Beep = CPU/Power',tip:'💡 This na why technician dey listen first before opening PC!'},
+{n:'10. No Display Fix - Step By Step',what:'PC ON, fan dey spin, but screen black = No Display. Na most common motherboard problem!',how:'1. Check monitor cable + power 2. Remove RAM, clean gold pins, put back 3. Remove CMOS battery 5 mins, put back 4. Check 24-pin + 8-pin power 5. Try one RAM only',code:'RAM -> CMOS -> Power -> GPU',tip:'90% of No Display na RAM wey no sit well! Clean am, e go work!'}
 ];
 let QUIZ=[
 {q:'1. Wetin Nmap dey do?',opts:['Scan network for open ports','Watch movies','Send email'],ans:0},
@@ -298,28 +316,42 @@ let QUIZ=[
 {q:'9. Wetin be Phishing?',opts:['Fake link to steal password','Real fishing for fish','New phone'],ans:0},
 {q:'10. Wetin be SOC?',opts:['Security Operations Center - people wey watch network','Shop for clothes','School of Cooking'],ans:0}
 ];
+let QUIZ2=[
+{q:'1. Wetin be Motherboard?',opts:['Big board wey connect CPU, RAM, Disk, Power','Only for keyboard','Only for mouse'],ans:0},
+{q:'2. Where CPU dey sit?',opts:['CPU Socket for middle of motherboard','Inside Hard Disk','Inside Monitor'],ans:0},
+{q:'3. RAM no sit well - wetin go happen?',opts:['No Display + Beep Beep sound','Phone go charge faster','WiFi go fast'],ans:0},
+{q:'4. Wetin CMOS Battery dey do? (CR2032)',opts:['Keep time + BIOS settings when PC OFF','Make screen bright','Make sound loud'],ans:0},
+{q:'5. How to enter BIOS?',opts:['Press DEL / F2 when PC dey start','Press Volume Up','Shake computer'],ans:0},
+{q:'6. HARD: Which Nmap flag na SYN Stealth Scan?',opts:['-sS','-sT','-O'],ans:0},
+{q:'7. HARD: Wireshark filter to see only DNS?',opts:['dns','http','arp'],ans:0},
+{q:'8. HARD: In Python, wetin "for i in range(5)" go do?',opts:['Repeat 5 times (0 to 4)','Delete 5 files','Hack 5 phones'],ans:0},
+{q:'9. HARD: Linux - Which command show live CPU?',opts:['top','df -h','lsblk'],ans:0},
+{q:'10. HARD: PC ON, fan dey spin, but screen black - wetin you check FIRST?',opts:['RAM - Remove, clean gold pins, put back','Change keyboard','Change mouse'],ans:0}
+];
 let myCmds=JSON.parse(localStorage.getItem('roxy_cmds')||'[]');
-let quizIdx=0,quizScore=0;
+let quizIdx=0,quizScore=0,quiz2Idx=0,quiz2Score=0;
 function allCmds(){return [...DEFAULT_CMDS.map(c=>({...c,mine:false})), ...myCmds.map((c,i)=>({...c,mine:true,idx:i}))];}
 window.onload=function(){updateHistCount();updateCmdCount();if(myName){showChat(true);}};
 function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN! Tap "Forgot PIN? Reset" below.');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
 function resetPin(){if(!confirm('Reset PIN?'))return;localStorage.removeItem('roxy_pin');localStorage.removeItem('roxy_name');savedPin='';myName='';alert('PIN don reset! Type name + NEW PIN and tap Enter Chat.');location.reload();}
 function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
-function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands + 10 Linux + 10 Wireshark + 10 Python + Quiz + Phishing Checker! Tap 🐍 Python or 🎮 Quiz!`:`Hi ${myName}! Na me be ROXY v4.7 - ALL IN ONE! 🦈🐍🎮🌐`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
+function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands + 10 Linux + 10 Wireshark + 10 Python + 10 Motherboard + Quiz L1 + Quiz L2 + Phishing! Tap 🖥️ Motherboard FIRST, then 🔥 Quiz L2!`:`Hi ${myName}! Na me be ROXY v4.8 - Motherboard + Level 2! 🖥️🔥`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
 function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';b.className=voiceOn?'':'off';if(voiceOn)speak("Voice on!");}
 function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
 function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;window.speechSynthesis.speak(u);}
-function testVoice(){speak(`Hi ${myName}! I sabi Python, Quiz and Phishing now.`);}
+function testVoice(){speak(`Hi ${myName}! I sabi Motherboard and Quiz Level 2 now.`);}
 function startMic(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert("Your browser no support mic. Type instead!");return;}let Rec=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=new Rec();rec.lang='en-US';rec.onresult=(e)=>{inp.value=e.results[0][0].transcript;send();};rec.start();}
 function quickAsk(t){inp.value=t;send();}
-function hideAll(){['scamBox','histBox','cmdBox','linuxBox','sharkBox','pyBox','quizBox','phishBox'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
+function hideAll(){['scamBox','histBox','cmdBox','linuxBox','sharkBox','pyBox','mbBox','quizBox','quiz2Box','phishBox'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
 function toggleScam(){let b=document.getElementById('scamBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
 function toggleHistory(){let b=document.getElementById('histBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderHistory();}}
 function toggleCmd(){let b=document.getElementById('cmdBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderCmds();}}
 function toggleLinux(){let b=document.getElementById('linuxBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderLinux();}}
 function toggleShark(){let b=document.getElementById('sharkBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderShark();}}
 function togglePy(){let b=document.getElementById('pyBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderPy();}}
+function toggleMb(){let b=document.getElementById('mbBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderMb();}}
 function toggleQuiz(){let b=document.getElementById('quizBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');}}
+function toggleQuiz2(){let b=document.getElementById('quiz2Box');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');}}
 function togglePhish(){let b=document.getElementById('phishBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
 function updateHistCount(){document.getElementById('histCount').innerText=history.length;}
 function updateCmdCount(){document.getElementById('cmdCount').innerText=allCmds().length;}
@@ -330,6 +362,7 @@ function renderCmds(){let q=(document.getElementById('cmdSearch').value||'').toL
 function renderLinux(){let q=(document.getElementById('linuxSearch').value||'').toLowerCase();let list=document.getElementById('linuxList');let f=TROUBLE.filter(x=>(x.n+x.sym+x.steps+x.cmds).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="linuxCard"><b>🐧 ${x.n}</b><br><b>Symptoms:</b> ${x.sym}<br><b>Steps:</b> ${x.steps}<br><b>Commands:</b><code>${x.cmds}</code><button class="copyBtn" style="background:#ff0055!important;" onclick="copyCmd('${x.cmds}')">📋 Copy All</button></div>`).join('');}
 function renderShark(){let q=(document.getElementById('sharkSearch').value||'').toLowerCase();let list=document.getElementById('sharkList');let f=SHARK.filter(x=>(x.n+x.what+x.how+x.filter+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="sharkCard"><b>🦈 ${x.n}</b><br><b>What:</b> ${x.what}<br><b>How:</b> ${x.how}<br><b>Filter:</b><code>${x.filter}</code><button class="copyBtn" style="background:#00aaaa!important;color:#000!important;" onclick="copyCmd('${x.filter}')">📋 Copy Filter</button><br><span style="color:#aaffff;">${x.tip}</span></div>`).join('');}
 function renderPy(){let q=(document.getElementById('pySearch').value||'').toLowerCase();let list=document.getElementById('pyList');let f=PY.filter(x=>(x.n+x.what+x.code+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="pyCard"><b>🐍 ${x.n}</b><br><b>What:</b> ${x.what}<br><b>Code:</b><code>${x.code.replace(/\n/g,'<br>')}</code><button class="copyBtn" style="background:#ffdd00!important;color:#000!important;" onclick="copyCmd('${x.code.replace(/\n/g,'\\n').replace(/'/g,"")}')">📋 Copy Code</button><br><span style="color:#ffee88;">💡 ${x.tip}</span></div>`).join('');}
+function renderMb(){let q=(document.getElementById('mbSearch').value||'').toLowerCase();let list=document.getElementById('mbList');let f=MB.filter(x=>(x.n+x.what+x.how+x.code+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="mbCard"><b>🖥️ ${x.n}</b><br><b>What:</b> ${x.what}<br><b>How:</b> ${x.how}<br><b>Key:</b><code>${x.code}</code><br><span style="color:#ffccee;">💡 ${x.tip}</span></div>`).join('');}
 function copyCmd(txt){navigator.clipboard.writeText(txt).then(()=>alert('Copied!')).catch(()=>{let ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();alert('Copied!');});}
 function saveMyCmd(){let t=document.getElementById('newCmdTitle').value.trim();let c=document.getElementById('newCmdText').value.trim();let d=document.getElementById('newCmdDesc').value.trim()||'My saved command';if(!t||!c){alert('Type Title + Command first!');return;}myCmds.unshift({t:t,c:c,d:d,tag:'mine'});localStorage.setItem('roxy_cmds',JSON.stringify(myCmds));document.getElementById('newCmdTitle').value='';document.getElementById('newCmdText').value='';document.getElementById('newCmdDesc').value='';updateCmdCount();renderCmds();alert('Saved! ✅');}
 function deleteMyCmd(i){if(!confirm('Delete?'))return;myCmds.splice(i,1);localStorage.setItem('roxy_cmds',JSON.stringify(myCmds));updateCmdCount();renderCmds();}
@@ -340,56 +373,47 @@ function checkPhish(){
   if(!url){alert('Paste link first!');return;}
   let u=url.toLowerCase();let score=0;let reasons=[];
   if(!u.startsWith('https://')){score+=30;reasons.push('❌ No HTTPS (no lock) - Not secure!');} else {reasons.push('✅ Has HTTPS (lock) - Good');}
-  if(u.includes('bit.ly')||u.includes('tinyurl')||u.includes('t.co')||u.includes('short')){score+=30;reasons.push('❌ Shortened link - Hacker dey hide real site!');}
-  if(u.includes('.xyz')||u.includes('.top')||u.includes('.tk')||u.includes('.buzz')||u.includes('.click')){score+=25;reasons.push('❌ Suspicious ending .xyz / .top / .click - Many fake sites use am!');}
-  if((u.match(/-/g)||[]).length>=3){score+=15;reasons.push('❌ Too many dashes (-) - e.g. gtb-login-verify - Fake sites love dashes!');}
+  if(u.includes('bit.ly')||u.includes('tinyurl')||u.includes('t.co')){score+=30;reasons.push('❌ Shortened link - Hacker dey hide real site!');}
+  if(u.includes('.xyz')||u.includes('.top')||u.includes('.tk')||u.includes('.buzz')||u.includes('.click')){score+=25;reasons.push('❌ Suspicious ending .xyz / .top / .click!');}
+  if((u.match(/-/g)||[]).length>=3){score+=15;reasons.push('❌ Too many dashes (-) - Fake sites love dashes!');}
   if(u.includes('login')&&u.includes('verify')){score+=15;reasons.push('❌ Has "login + verify" - Phishing word!');}
-  if(u.includes('gtb')||u.includes('access')||u.includes('firstbank')||u.includes('opay')||u.includes('palmpay')){if(!u.includes('.com')||u.includes('-')){score+=20;reasons.push('⚠️ Pretends to be bank but domain look strange!');}}
-  if(/\d+\.\d+\.\d+\.\d+/.test(u)){score+=30;reasons.push('❌ Link na IP number (e.g. 192.168.1.1) - Very suspicious!');}
-  if(u.length>80){score+=10;reasons.push('⚠️ Link too long - Fit hide something!');}
+  if(/\d+\.\d+\.\d+\.\d+/.test(u)){score+=30;reasons.push('❌ Link na IP number - Very suspicious!');}
+  if(u.length>80){score+=10;reasons.push('⚠️ Link too long!');}
   if(score>100)score=100;
   let color=score>=70?'#ff0055':score>=40?'#ffaa00':'#00ff88';
   let label=score>=70?'🚨 FAKE / PHISHING - DO NOT CLICK!':score>=40?'⚠️ SUSPICIOUS - NO CLICK YET!':'✅ LOOKS SAFE - But still be careful!';
-  document.getElementById('phishResult').innerHTML=`<div style="margin-top:10px;"><b style="color:${color};font-size:18px;">Danger Score: ${score}/100</b><br><b style="color:${color};">${label}</b><div class="scoreBar"><div class="scoreFill" style="width:${score}%;background:${color}"></div></div><div style="font-size:13px;">${reasons.map(r=>r+'<br>').join('')}</div><p style="font-size:12px;color:#aaa;margin-top:6px;">Rule: If you no sure, type the real site yourself for browser, no click link!</p></div>`;
+  document.getElementById('phishResult').innerHTML=`<div style="margin-top:10px;"><b style="color:${color};font-size:18px;">Danger Score: ${score}/100</b><br><b style="color:${color};">${label}</b><div class="scoreBar"><div class="scoreFill" style="width:${score}%;background:${color}"></div></div><div style="font-size:13px;">${reasons.map(r=>r+'<br>').join('')}</div></div>`;
   speak(`Phishing danger score is ${score}. ${label}`);
 }
 function startQuiz(){quizIdx=0;quizScore=0;showQuizQ();}
 function showQuizQ(){
   let area=document.getElementById('quizArea');
-  if(quizIdx>=QUIZ.length){
-    let msg=quizScore>=7?`🏆 SOC STAR! You score ${quizScore}/10! You ready for SOC!`:quizScore>=5?`👍 Good! You score ${quizScore}/10. Study Python + Wireshark again!`:`📚 Keep learning! You score ${quizScore}/10. Tap 🐍 Python + 🦈 Wireshark!`;
-    area.innerHTML=`<div style="margin-top:10px;text-align:center;"><h2 style="color:#00ff00;">${msg}</h2><br><button style="background:#00ff00;color:#000;" onclick="startQuiz()">🔄 PLAY AGAIN</button></div>`;
-    speak(`Quiz finish. You score ${quizScore} out of 10.`);
-    return;
-  }
-  let q=QUIZ[quizIdx];
-  area.innerHTML=`<div style="margin-top:10px;"><b>Question ${quizIdx+1}/10</b><br><b style="font-size:16px;">${q.q}</b><br><b style="color:#00ff00;">Score: ${quizScore}</b></div>`+q.opts.map((o,i)=>`<button class="quizOpt" onclick="answerQuiz(${i})">${['A','B','C'][i]}. ${o}</button>`).join('');
+  if(quizIdx>=QUIZ.length){let msg=quizScore>=7?`🏆 SOC STAR! You score ${quizScore}/10!`:`📚 Keep learning! You score ${quizScore}/10.`;area.innerHTML=`<div style="margin-top:10px;text-align:center;"><h2 style="color:#00ff00;">${msg}</h2><br><button style="background:#00ff00;color:#000;" onclick="startQuiz()">🔄 PLAY AGAIN</button></div>`;speak(`Quiz finish. You score ${quizScore} out of 10.`);return;}
+  let q=QUIZ[quizIdx];area.innerHTML=`<div style="margin-top:10px;"><b>Question ${quizIdx+1}/10</b><br><b style="font-size:16px;">${q.q}</b><br><b style="color:#00ff00;">Score: ${quizScore}</b></div>`+q.opts.map((o,i)=>`<button class="quizOpt" onclick="answerQuiz(${i})">${['A','B','C'][i]}. ${o}</button>`).join('');
 }
-function answerQuiz(i){
-  let q=QUIZ[quizIdx];
-  if(i===q.ans){quizScore++;speak("Correct!");}
-  else {speak("Wrong! The correct answer is "+q.opts[q.ans]); alert("❌ Wrong! Correct na: "+q.opts[q.ans]);}
-  quizIdx++;showQuizQ();
+function answerQuiz(i){let q=QUIZ[quizIdx];if(i===q.ans){quizScore++;speak("Correct!");}else{speak("Wrong!");alert("❌ Wrong! Correct na: "+q.opts[q.ans]);}quizIdx++;showQuizQ();}
+function startQuiz2(){quiz2Idx=0;quiz2Score=0;showQuiz2Q();}
+function showQuiz2Q(){
+  let area=document.getElementById('quiz2Area');
+  if(quiz2Idx>=QUIZ2.length){let msg=quiz2Score>=7?`🏆🏆 HARDWARE + SOC MASTER! You score ${quiz2Score}/10 for LEVEL 2! You be PRO!`:quiz2Score>=5?`👍 Good! You score ${quiz2Score}/10 for LEVEL 2. Read 🖥️ Motherboard again!`:`📚 Level 2 hard o! You score ${quiz2Score}/10. Go read 🖥️ Motherboard lessons 1-10 again, then try again!`;area.innerHTML=`<div style="margin-top:10px;text-align:center;"><h2 style="color:#00cc00;">${msg}</h2><br><button style="background:#00cc00;color:#fff;" onclick="startQuiz2()">🔄 PLAY AGAIN L2</button></div>`;speak(`Level 2 finish. You score ${quiz2Score} out of 10.`);return;}
+  let q=QUIZ2[quiz2Idx];area.innerHTML=`<div style="margin-top:10px;"><b>LEVEL 2 Question ${quiz2Idx+1}/10</b><br><b style="font-size:16px;">${q.q}</b><br><b style="color:#00ff00;">Score: ${quiz2Score}</b></div>`+q.opts.map((o,i)=>`<button class="quizOpt" onclick="answerQuiz2(${i})">${['A','B','C'][i]}. ${o}</button>`).join('');
 }
+function answerQuiz2(i){let q=QUIZ2[quiz2Idx];if(i===q.ans){quiz2Score++;speak("Correct! Level 2 correct!");}else{speak("Wrong!");alert("❌ Wrong! Correct na: "+q.opts[q.ans]);}quiz2Idx++;showQuiz2Q();}
 function addMsg(text,who){let d=document.createElement('div');d.className='msg '+who;let name=who==='me'?myName:'ROXY 🐩';let extra='';if(who==='roxy')extra=`<br><button class="speakBtn" onclick="speak(this.parentElement.innerText)">🔊 Hear Again</button>`;d.innerHTML=`<b>${name}:</b> ${text}${extra}<span class="time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
 function send(){let t=inp.value.trim();if(!t)return;addMsg(t,'me');inp.value='';let ty=document.createElement('div');ty.className='typing';ty.id='typing';ty.innerText='ROXY is thinking...';chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{document.getElementById('typing').remove();let ans=getReply(t);addMsg(ans,'roxy');speak(ans);},600);}
 function getReply(text){
   let t=text.toLowerCase();
-  if(t.includes('check this scam')||t.includes('is this scam')){let r=scoreScam(text);saveToHistory(text,r.score);let label=r.score>=70?'🚨 SCAM!':r.score>=40?'⚠️ SUSPICIOUS':'✅ SAFE';return `🛡️ <b>SCAM CHECK: ${r.score}/100 - ${label}</b><br>${r.reasons.map(x=>'• '+x).join('<br>')}`;}
-  if(t.includes('disk'))return `<b>💾 DISK FULL</b><br>Fix: df -h → du -sh /var/log/* → sudo find / -type f -size +1G → sudo lsof +L1`;
-  if(t.includes('high cpu'))return `<b>🔥 HIGH CPU</b><br>Fix: top → ps aux --sort=-%cpu | head`;
-  if(t.includes('ssh'))return `<b>🔑 SSH FAIL</b><br>Fix: systemctl status ssh → ls -l ~/.ssh/authorized_keys → sshd -t`;
-  if(t.includes('python'))return `<b>🐍 PYTHON FOR SOC</b><br>Tap 🐍 Python for top! Start with:<code>print("Hello Roland")</code><br>Then try if, for loop, and SOC log checker!`;
-  if(t.includes('quiz'))return `<b>🎮 QUIZ!</b><br>Tap 🎮 Quiz for top and tap START QUIZ! If you score 7+, you be SOC STAR! ⭐`;
-  if(t.includes('phish')||t.includes('link')||t.includes('fake site'))return `<b>🌐 PHISHING LINK CHECKER</b><br>Tap 🌐 Phishing Link for top, paste link, ROXY go tell you if e fake! Rule: No click link you no trust!`;
-  if(t.includes('wireshark')&&t.includes('dns'))return `<b>🦈 WIRESHARK DNS</b><br>Filter:<code>dns</code>`;
-  if(t.includes('wireshark'))return `<b>🦈 WIRESHARK</b><br>Filters: http, dns, ip.addr == 192.168.1.1, icmp, arp<br>Tap 🦈 Wireshark!`;
-  if(t.includes('nmap'))return `<b>Nmap 📟</b><br>-sS SYN, -sT Connect, -sU UDP, -p 22, -p- all ports, -T0-T5 speed, -O OS, -sV version`;
-  if(t.includes('linux'))return `<b>Linux 🐧</b><br>Tap 🐧 Linux Fix - 10 scenarios!`;
-  if(t==="hi"||t==="hello"||t.startsWith("hi "))return `Hi ${myName}! Ask me: 'python', 'quiz', 'phishing link', 'wireshark', or tap 🐍🎮🌐!`;
+  if(t.includes('motherboard')||t.includes('cmos')||t.includes('bios')||t.includes('beep')||t.includes('ram slot'))return `<b>🖥️ MOTHERBOARD</b><br>Tap 🖥️ Motherboard for top! Learn: CPU Socket, RAM Slots, CMOS Battery CR2032, BIOS (DEL/F2), 24-pin + 8-pin Power, PCIe, SATA, Beep Codes, No Display Fix! Then go do 🔥 Quiz L2!`;
+  if(t.includes('quiz level 2')||t.includes('quiz l2')||t.includes('level 2'))return `<b>🔥 QUIZ LEVEL 2 - HARD!</b><br>Tap 🔥 Quiz L2 for top! 5 Motherboard + 5 Hard SOC! You MUST read 🖥️ Motherboard first! If you score 7+, you be HARDWARE + SOC MASTER!`;
+  if(t.includes('quiz'))return `<b>🎮 QUIZ!</b><br>Tap 🎮 Quiz L1 for easy, 🔥 Quiz L2 for hard!`;
+  if(t.includes('python'))return `<b>🐍 PYTHON</b><br>Tap 🐍 Python! Start:<code>print("Hello Roland")</code>`;
+  if(t.includes('phish')||t.includes('link'))return `<b>🌐 PHISHING LINK</b><br>Tap 🌐 Phishing Link, paste link, ROXY go check!`;
+  if(t.includes('disk'))return `<b>💾 DISK FULL</b><br>Fix: df -h → du -sh /var/log/* → sudo find / -type f -size +1G`;
+  if(t.includes('wireshark'))return `<b>🦈 WIRESHARK</b><br>Filters: http, dns, ip.addr == 192.168.1.1<br>Tap 🦈 Wireshark!`;
+  if(t.includes('nmap'))return `<b>Nmap 📟</b><br>-sS SYN, -sT Connect, -sU UDP, -p 22, -p- all ports, -T0-T5 speed`;
+  if(t==="hi"||t==="hello"||t.startsWith("hi "))return `Hi ${myName}! Ask me: 'motherboard', 'quiz level 2', 'cmos', 'bios', or tap 🖥️ / 🔥!`;
   if(t.includes('thank'))return `You are welcome, ${myName}!`;
-  if(t.includes('bye'))return `Good night, ${myName}! ROXY dey watch.`;
-  return `Interesting, ${myName}! Ask me: 'python', 'quiz', 'phishing link', 'wireshark', or tap 🐍 Python / 🎮 Quiz / 🌐 Phishing!`;
+  return `Interesting, ${myName}! Ask me: 'motherboard', 'quiz level 2', 'cmos', 'bios', or tap 🖥️ Motherboard!`;
 }
 </script>
 </body>
