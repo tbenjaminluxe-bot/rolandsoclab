@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY v5.1 - Type Fix</title>
+<title>ROXY v5.2 - Verified</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
@@ -34,7 +34,6 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 .me{background:#00ff88;color:#000;align-self:flex-end;border-bottom-right-radius:5px}
 .roxy{background:#1a1a1a;border:1px solid #333;align-self:flex-start;border-bottom-left-radius:5px}
 .roxy b{color:#00ff88}.time{font-size:10px;color:#888;display:block;margin-top:4px}
-/* FIXED TYPE BOX - NOW ON TOP OF BOTTOM NAV */
 .inputBox{position:fixed;bottom:72px;left:0;right:0;display:flex;gap:8px;padding:12px;background:#111;border-top:2px solid #00ff88;z-index:1000}
 .inputBox input{flex:1;padding:13px;background:#000;color:#fff;border:1px solid #333;border-radius:25px;outline:none}
 .sendBtn{background:#00ff88;color:#000;border:none;padding:0 18px;border-radius:25px;font-weight:bold;font-size:18px;cursor:pointer}
@@ -67,7 +66,6 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 .mbCard b{color:#ffccee}.mbCard code{background:#111;color:#00ff88;padding:4px 6px;border-radius:5px;display:block;margin:4px 0;word-break:break-all}
 .quizOpt{background:#000;color:#fff;border:1px solid #333;padding:10px;border-radius:10px;width:100%;text-align:left;margin-top:6px;cursor:pointer;font-size:14px}
 .toolBtn{background:#222!important;color:#fff!important;border:1px solid #444!important;margin-top:6px}
-/* BOTTOM NAV - NOW SMALLER, BELOW TYPE BOX */
 .bottomNav{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:2px solid #00ff88;display:flex;justify-content:space-around;align-items:center;padding:6px 5px 10px;z-index:999;height:72px}
 .bottomNav button{background:none;border:none;color:#aaa;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;cursor:pointer;flex:1;padding:4px}
 .bottomNav button.active{color:#00ff88;font-weight:bold}
@@ -77,11 +75,17 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 .profilePic{width:80px;height:80px;border-radius:50%;background:#ff0055;display:flex;align-items:center;justify-content:center;font-size:40px;border:3px solid #00ff88;margin:0 auto}
 .friendCard{background:#000;border:1px solid #333;border-radius:12px;padding:10px;margin-top:8px;display:flex;gap:10px;align-items:center}
 .friendAvatar{width:45px;height:45px;border-radius:50%;background:#222;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.verified{display:inline-block;background:#1DA1F2;color:#fff;width:22px;height:22px;line-height:22px;border-radius:50%;font-size:13px;font-weight:bold;text-align:center;margin-left:5px;vertical-align:middle;box-shadow:0 0 8px #1DA1F2}
+.editBox{background:#000;border:1px solid #1DA1F2;border-radius:12px;padding:12px;margin-top:12px;text-align:left}
+.editBox input{margin-top:6px}
+.emojiRow{display:flex;gap:8px;justify-content:center;margin:8px 0}
+.emojiRow button{background:#222!important;color:#fff!important;border:1px solid #444!important;width:45px!important;height:45px!important;font-size:22px!important;padding:0!important;border-radius:50%!important}
+.emojiRow button.sel{border:2px solid #00ff88!important;background:#00ff88!important}
 </style>
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v5.1 FIXED</span> 📱🧠</h1>
+<h1>ROXY <span>CHAT v5.2 VERIFIED</span> 📱🧠</h1>
 <p>Social App Style + Smart AI + Quiz L1/L2/L3 | By Roland 🇳🇬</p>
 <p class="status" id="statusText">● Online</p>
 </div>
@@ -205,17 +209,38 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 </div>
 
 <div id="profilePage" class="scamBox hidden" style="border-color:#ff0055;text-align:center;">
-<div class="profilePic">🦈</div>
-<h3 style="color:#fff;font-size:20px;margin-top:8px;" id="profileName"># Cybersecurity</h3>
-<p style="color:#aaa;" id="profileHandle">@rolandsoclab</p>
-<p style="font-size:12px;color:#888;margin:6px 0;">NOC Engineer | Aspiring SOC Analyst<br>Network Monitoring | Threat Detection | Python</p>
+<div class="profilePic" id="profilePic">🦈</div>
+<h3 style="color:#fff;font-size:20px;margin-top:8px;" id="profileName"># Cybersecurity - Roland <span class="verified">✓</span></h3>
+<p style="color:#aaa;" id="profileHandle">@rolandsoclab <span class="verified">✓</span></p>
+<p style="font-size:12px;color:#888;margin:6px 0;" id="profileBio">NOC Engineer | Aspiring SOC Analyst<br>Network Monitoring | Threat Detection | Python</p>
 <div style="display:flex;justify-content:space-around;margin:12px 0;text-align:center;">
 <div><b>3</b><br><span style="color:#888;font-size:12px;">Following</span></div>
-<div><b>1m</b><br><span style="color:#888;font-size:12px;">Followers</span></div>
-<div><b>5m</b><br><span style="color:#888;font-size:12px;">Likes</span></div>
+<div><b>1M</b><br><span style="color:#888;font-size:12px;">Followers</span></div>
+<div><b>5M</b><br><span style="color:#888;font-size:12px;">Likes</span></div>
 </div>
 <div id="profileScores" style="text-align:left;background:#000;border-radius:10px;padding:10px;font-size:13px;"></div>
-<button style="background:#fff;color:#000;margin-top:10px;" onclick="alert('Edit Profile coming soon!')">✏️ Edit Profile</button>
+
+<div id="editProfileBox" class="editBox hidden">
+<h3 style="color:#1DA1F2;">✏️ EDIT PROFILE</h3>
+<p style="font-size:12px;color:#aaa;">Choose your emoji:</p>
+<div class="emojiRow">
+<button type="button" onclick="pickEmoji('🦈',this)" class="sel">🦈</button>
+<button type="button" onclick="pickEmoji('🐩',this)">🐩</button>
+<button type="button" onclick="pickEmoji('😎',this)">😎</button>
+<button type="button" onclick="pickEmoji('🧑‍💻',this)">🧑‍💻</button>
+<button type="button" onclick="pickEmoji('🔥',this)">🔥</button>
+</div>
+<input id="editName" placeholder="Display Name e.g. Roland - SOC Star" maxlength="30">
+<input id="editHandle" placeholder="@handle e.g. @rolandsoclab" maxlength="25">
+<input id="editBio" placeholder="Bio e.g. NOC Engineer | Python | ..." maxlength="80">
+<input id="editFollowing" placeholder="Following e.g. 3" inputmode="numeric">
+<input id="editFollowers" placeholder="Followers e.g. 1M" maxlength="10">
+<input id="editLikes" placeholder="Likes e.g. 5M" maxlength="10">
+<button style="background:#1DA1F2;color:#fff;" onclick="saveProfile()">💾 SAVE PROFILE</button>
+<button style="background:#333;color:#fff;" onclick="document.getElementById('editProfileBox').classList.add('hidden')">Cancel</button>
+</div>
+
+<button style="background:#fff;color:#000;margin-top:10px;" onclick="openEditProfile()">✏️ Edit Profile</button>
 <button class="clearBtn" onclick="doLogout()">🚪 Logout</button>
 </div>
 
@@ -251,6 +276,7 @@ let chat=document.getElementById('chat');let inp=document.getElementById('inp');
 let voiceOn=true;let myName=localStorage.getItem('roxy_name')||'';
 let savedPin=localStorage.getItem('roxy_pin')||'';
 let history=JSON.parse(localStorage.getItem('roxy_history')||'[]');
+let selectedEmoji='🦈';
 let DEFAULT_CMDS=[
 {t:'Nmap - Scan One Device',c:'nmap 192.168.1.1',d:'Check ports.',tag:'nmap'},
 {t:'Nmap - Scan All WiFi',c:'nmap -sn 192.168.1.0/24',d:'Find all devices.',tag:'nmap'},
@@ -301,7 +327,7 @@ let TROUBLE=[
 {n:'6. Port Not Working',sym:'Refused',steps:'ss, curl',cmds:'sudo ss -tlnp | grep :8000'},
 {n:'7. SSH Fail',sym:'Permission denied',steps:'Check SSH',cmds:'sudo tail -n 50 /var/log/auth.log'},
 {n:'8. Mount Issue',sym:'Not mounted',steps:'lsblk',cmds:'lsblk | cat /etc/fstab'},
-{n:'9. High Load',sym:'Very slow',steps:'uptime, top',cmds:'uptime | top'},
+{n:'9. High Load',sym:'Very slow',steps:'uptime, top',cmds:'uptime | top | free -h | df -h'},
 {n:'10. General Slow',sym:'Slow',steps:'uptime, top, free, df',cmds:'uptime | top | free -h | df -h'}
 ];
 let SHARK=[
@@ -388,18 +414,24 @@ let FRIENDS=[
 let myCmds=JSON.parse(localStorage.getItem('roxy_cmds')||'[]');
 let quizIdx=0,quizScore=0,quiz2Idx=0,quiz2Score=0,quiz3Idx=0,quiz3Score=0;
 function allCmds(){return [...DEFAULT_CMDS.map(c=>({...c,mine:false})), ...myCmds.map((c,i)=>({...c,mine:true,idx:i}))];}
-window.onload=function(){updateHistCount();updateCmdCount();if(myName){showChat(true);}};
+window.onload=function(){updateHistCount();updateCmdCount();loadProfile();if(myName){showChat(true);}};
 function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN!');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
 function resetPin(){if(!confirm('Reset PIN?'))return;localStorage.removeItem('roxy_pin');localStorage.removeItem('roxy_name');location.reload();}
 function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
-function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('bottomNav').style.display='flex';document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! ROXY v5.1 Type Box don fix! Type line dey on top of bottom nav now!`:`Hi ${myName}! ROXY v5.1! Type line don fix - you fit type now!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
+// --- NEW: PROFILE EDIT ---
+function loadProfile(){let p=JSON.parse(localStorage.getItem('roxy_profile')||'null');if(!p)return;applyProfile(p);}
+function applyProfile(p){if(p.name)document.getElementById('profileName').innerHTML=p.name+' <span class="verified">✓</span>';if(p.handle)document.getElementById('profileHandle').innerHTML=p.handle+' <span class="verified">✓</span>';if(p.bio)document.getElementById('profileBio').innerHTML=p.bio.replace(/\n/g,'<br>');if(p.emoji){document.getElementById('profilePic').innerText=p.emoji;selectedEmoji=p.emoji;}if(p.following||p.followers||p.likes){let divs=document.querySelectorAll('#profilePage > div:nth-child(4) > div');}}
+function openEditProfile(){let box=document.getElementById('editProfileBox');box.classList.remove('hidden');let p=JSON.parse(localStorage.getItem('roxy_profile')||'{}');document.getElementById('editName').value=p.name||('# Cybersecurity - '+myName);document.getElementById('editHandle').value=p.handle||'@rolandsoclab';document.getElementById('editBio').value=(p.bio||'').replace(/<br>/g,' ');document.getElementById('editFollowing').value=p.following||'3';document.getElementById('editFollowers').value=p.followers||'1M';document.getElementById('editLikes').value=p.likes||'5M';}
+function pickEmoji(e,btn){selectedEmoji=e;document.querySelectorAll('.emojiRow button').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');}
+function saveProfile(){let p={name:document.getElementById('editName').value.trim()||('# Cybersecurity - '+myName),handle:document.getElementById('editHandle').value.trim()||'@rolandsoclab',bio:document.getElementById('editBio').value.trim()||'NOC Engineer | Aspiring SOC Analyst',emoji:selectedEmoji,following:document.getElementById('editFollowing').value.trim()||'3',followers:document.getElementById('editFollowers').value.trim()||'1M',likes:document.getElementById('editLikes').value.trim()||'5M'};localStorage.setItem('roxy_profile',JSON.stringify(p));applyProfile(p);let stats=document.querySelectorAll('#profilePage > div:nth-child(4) > div b');if(stats.length>=3){stats[0].innerText=p.following;stats[1].innerText=p.followers;stats[2].innerText=p.likes;}document.getElementById('editProfileBox').classList.add('hidden');alert('Profile Saved! ✅ Verified!');speak('Profile saved, verified star!');}
+function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('bottomNav').style.display='flex';document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! Verified ✅ Profile don work!`:`Hi ${myName}! ROXY v5.2 Verified! Tap Profile > Edit Profile!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
 function setNav(active){['navHome','navFriends','navInbox','navProfile'].forEach(id=>document.getElementById(id).classList.remove('active'));if(active)document.getElementById(active).classList.add('active');}
 function hideAll(){['smartBox','scamBox','histBox','cmdBox','linuxBox','sharkBox','pyBox','mbBox','quizBox','quiz2Box','quiz3Box','phishBox','friendsPage','profilePage','inboxPage'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
 function goHome(){setNav('navHome');hideAll();}
 function goFriends(){setNav('navFriends');hideAll();let b=document.getElementById('friendsPage');b.classList.remove('hidden');document.getElementById('friendsList').innerHTML=FRIENDS.map(f=>`<div class="friendCard"><div class="friendAvatar">${f.avatar}</div><div style="flex:1;"><b>${f.name}</b> <span style="color:#888;font-size:12px;">${f.handle}</span><br><span style="font-size:12px;color:#aaa;">${f.bio}</span><br><span style="font-size:12px;color:#00ff88;">🏆 ${f.score}</span></div><button style="background:#00ff88;color:#000;padding:6px 12px;border-radius:20px;border:none;font-weight:bold;cursor:pointer;" onclick="alert('Follow ${f.name}!')">Follow</button></div>`).join('');}
 function goPlus(){hideAll();let c=confirm('➕ PLUS!\\nOK = Check Scam\\nCancel = Save Command');if(c){toggleScam();}else{toggleCmd();}}
 function goInbox(){setNav('navInbox');hideAll();let b=document.getElementById('inboxPage');b.classList.remove('hidden');document.getElementById('inboxBadge').style.display='none';let l1=localStorage.getItem('roxy_score_l1')||'No play yet';let l2=localStorage.getItem('roxy_score_l2')||'No play yet';let l3=localStorage.getItem('roxy_score_l3')||'No play yet';document.getElementById('inboxList').innerHTML=`<div class="friendCard"><div class="friendAvatar">🐩</div><div><b>ROXY</b><br><span style="font-size:12px;">Welcome ${myName}! L1: ${l1}, L2: ${l2}, L3: ${l3}</span></div></div>`;}
-function goProfile(){setNav('navProfile');hideAll();let b=document.getElementById('profilePage');b.classList.remove('hidden');document.getElementById('profileName').innerText='# Cybersecurity - '+myName;document.getElementById('profileHandle').innerText='@'+myName.toLowerCase().replace(/\s/g,'')+'soclab';let l1=localStorage.getItem('roxy_score_l1')||'No play yet';let l2=localStorage.getItem('roxy_score_l2')||'No play yet';let l3=localStorage.getItem('roxy_score_l3')||'No play yet';document.getElementById('profileScores').innerHTML=`<b>🏆 MY SCORES:</b><br>🎮 L1: ${l1}<br>🔥 L2: ${l2}<br>💜 L3: ${l3}<br>📟 Commands: ${allCmds().length}<br>🛡️ Scams: ${history.length}`;}
+function goProfile(){setNav('navProfile');hideAll();let b=document.getElementById('profilePage');b.classList.remove('hidden');loadProfile();let l1=localStorage.getItem('roxy_score_l1')||'No play yet';let l2=localStorage.getItem('roxy_score_l2')||'No play yet';let l3=localStorage.getItem('roxy_score_l3')||'No play yet';document.getElementById('profileScores').innerHTML=`<b>🏆 MY SCORES:</b><br>🎮 L1: ${l1}<br>🔥 L2: ${l2}<br>💜 L3: ${l3}<br>📟 Commands: ${allCmds().length}<br>🛡️ Scams: ${history.length}`;}
 function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';if(voiceOn)speak("Voice on!");}
 function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
 function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;window.speechSynthesis.speak(u);}
