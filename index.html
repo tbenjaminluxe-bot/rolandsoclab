@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY v4.6 - Wireshark Lab</title>
+<title>ROXY v4.6.1 - Wireshark Lab</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
@@ -14,6 +14,7 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 .login h2{color:#00ff88;font-size:28px}.login p{color:#aaa;font-size:14px}
 .login input{width:100%;max-width:320px;padding:14px;background:#111;color:#fff;border:1px solid #333;border-radius:12px;outline:none;font-size:16px}
 .login button{width:100%;max-width:320px;padding:14px;background:#00ff88;color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer}
+.resetBtn{background:#222!important;color:#ffaaaa!important;border:1px solid #555!important;font-size:13px!important;padding:10px!important}
 .voiceBar{display:flex;gap:6px;justify-content:center;padding:8px;background:#111;flex-wrap:wrap}
 .voiceBar button{background:#00ff88;color:#000;border:none;padding:8px 12px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:12px}
 .voiceBar button.off{background:#333;color:#fff}
@@ -57,7 +58,7 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v4.6</span> 🦈🛡️</h1>
+<h1>ROXY <span>CHAT v4.6.1</span> 🦈🛡️</h1>
 <p>Linux + Nmap + Wireshark Lab + Scam | By Roland 🇳🇬</p>
 <p class="status" id="statusText">● Online</p>
 </div>
@@ -67,6 +68,7 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <input id="nameInput" placeholder="Your name e.g. Roland" maxlength="20">
 <input id="pinInput" placeholder="Create 4-digit PIN e.g. 1234" maxlength="4" inputmode="numeric">
 <button onclick="doLogin()">Enter Chat →</button>
+<button class="resetBtn" onclick="resetPin()">🔓 Forgot PIN? Tap to Reset</button>
 <p style="font-size:11px;">⚠️ No use your real bank / Instagram password. Use simple PIN only!</p>
 </div>
 <div id="chatScreen" class="hidden" style="display:flex;flex-direction:column;flex:1;">
@@ -109,7 +111,7 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 </div>
 <div id="sharkBox" class="scamBox hidden" style="border-color:#00ffff;">
 <h3 style="color:#aaffff;">🦈 WIRESHARK LAB - 10 Lessons</h3>
-<p style="font-size:12px;color:#aaa;">Learn how to catch packets like SOC analyst. Tap Copy to copy any filter!</p>
+<p style="font-size:12px;color:#aaa;">Learn how to catch packets like SOC analyst.</p>
 <input id="sharkSearch" placeholder="🔍 Search e.g. dns, http, password, slow..." oninput="renderShark()">
 <div id="sharkList"></div>
 </div>
@@ -134,33 +136,31 @@ let voiceOn=true;let myName=localStorage.getItem('roxy_name')||'';
 let savedPin=localStorage.getItem('roxy_pin')||'';
 let history=JSON.parse(localStorage.getItem('roxy_history')||'[]');
 let DEFAULT_CMDS=[
-// NMAP
 {t:'Nmap - Scan One Device',c:'nmap 192.168.1.1',d:'Check which ports open for one device.',tag:'nmap'},
-{t:'Nmap - Scan All Devices For WiFi',c:'nmap -sn 192.168.1.0/24',d:'Find ALL phones/laptops for your WiFi. -sn = Ping Scan.',tag:'nmap'},
-{t:'Nmap - Aggressive Scan',c:'nmap -A 192.168.1.1',d:'Deep scan: OS, version, ports. -A = Aggressive.',tag:'nmap'},
+{t:'Nmap - Scan All Devices For WiFi',c:'nmap -sn 192.168.1.0/24',d:'Find ALL phones/laptops for your WiFi.',tag:'nmap'},
+{t:'Nmap - Aggressive Scan',c:'nmap -A 192.168.1.1',d:'Deep scan: OS, version, ports.',tag:'nmap'},
 {t:'Nmap - Service Version Detection',c:'nmap -sV 192.168.1.1',d:'-sV = Service Version detection.',tag:'nmap'},
 {t:'Nmap - OS Detection',c:'nmap -O 192.168.1.1',d:'-O = Operating System detection.',tag:'nmap'},
 {t:'Nmap - Fast Scan',c:'nmap -F 192.168.1.1',d:'Fast scan, only top 100 ports.',tag:'nmap'},
 {t:'Nmap - Scan ALL Ports',c:'nmap -p- 192.168.1.1',d:'-p- = Scan ALL 65535 ports.',tag:'nmap'},
-{t:'Nmap - Scan Single Port 22',c:'nmap -p 22 192.168.1.1',d:'-p 22 = Scan a single port. 22 = SSH.',tag:'nmap'},
+{t:'Nmap - Scan Single Port 22',c:'nmap -p 22 192.168.1.1',d:'-p 22 = Scan a single port.',tag:'nmap'},
 {t:'Nmap - Scan Ports 80,443',c:'nmap -p 80,443 192.168.1.1',d:'Scan only web ports.',tag:'nmap'},
-{t:'Nmap - SYN Stealth Scan',c:'nmap -sS 192.168.1.1',d:'-sS = SYN scan. Fast + stealthy.',tag:'nmap'},
+{t:'Nmap - SYN Stealth Scan',c:'nmap -sS 192.168.1.1',d:'-sS = SYN scan.',tag:'nmap'},
 {t:'Nmap - TCP Connect Scan',c:'nmap -sT 192.168.1.1',d:'-sT = Full TCP Connect.',tag:'nmap'},
-{t:'Nmap - UDP Scan',c:'nmap -sU 192.168.1.1',d:'-sU = UDP scan. Check UDP services like DNS.',tag:'nmap'},
+{t:'Nmap - UDP Scan',c:'nmap -sU 192.168.1.1',d:'-sU = UDP scan.',tag:'nmap'},
 {t:'Nmap - NULL Scan',c:'nmap -sN 192.168.1.1',d:'-sN = NULL scan.',tag:'nmap'},
-{t:'Nmap - XMAS Scan',c:'nmap -sX 192.168.1.1',d:'-sX = XMAS scan. FIN+PSH+URG.',tag:'nmap'},
+{t:'Nmap - XMAS Scan',c:'nmap -sX 192.168.1.1',d:'-sX = XMAS scan.',tag:'nmap'},
 {t:'Nmap - FIN Scan',c:'nmap -sF 192.168.1.1',d:'-sF = FIN scan.',tag:'nmap'},
-{t:'Nmap - ACK Scan',c:'nmap -sA 192.168.1.1',d:'-sA = ACK scan. Check firewall.',tag:'nmap'},
-{t:'Nmap - Speed T0-T2 Slow',c:'nmap -T0 192.168.1.1',d:'T0,T1,T2 = Slower speed. Avoid detection.',tag:'nmap'},
-{t:'Nmap - Speed T3 Normal',c:'nmap -T3 192.168.1.1',d:'T3 = Normal speed. Default.',tag:'nmap'},
+{t:'Nmap - ACK Scan',c:'nmap -sA 192.168.1.1',d:'-sA = ACK scan.',tag:'nmap'},
+{t:'Nmap - Speed T0-T2 Slow',c:'nmap -T0 192.168.1.1',d:'T0,T1,T2 = Slower speed.',tag:'nmap'},
+{t:'Nmap - Speed T3 Normal',c:'nmap -T3 192.168.1.1',d:'T3 = Normal speed.',tag:'nmap'},
 {t:'Nmap - Speed T4-T5 Faster',c:'nmap -T4 192.168.1.1',d:'T4,T5 = Faster speed.',tag:'nmap'},
 {t:'Nmap - Save Output To File',c:'nmap -oN result.txt 192.168.1.1',d:'-oN = Save output to file.',tag:'nmap'},
 {t:'Nmap - Save Output XML',c:'nmap -oX result.xml 192.168.1.1',d:'Save as XML.',tag:'nmap'},
 {t:'Nmap - Spoof MAC',c:'nmap --spoof-mac 00:11:22:33:44:55 192.168.1.1',d:'--spoof-mac = Fake your MAC.',tag:'nmap'},
-{t:'Nmap - Use Interface',c:'nmap -e eth0 192.168.1.1',d:'-e = Interface. eth0=cable, wlan0=WiFi.',tag:'nmap'},
+{t:'Nmap - Use Interface',c:'nmap -e eth0 192.168.1.1',d:'-e = Interface.',tag:'nmap'},
 {t:'Nmap - NSE Script Scan',c:'nmap --script vuln 192.168.1.1',d:'NSE = Nmap Scripting Engine.',tag:'nmap'},
 {t:'Nmap - Default Scripts',c:'nmap -sC 192.168.1.1',d:'Run default NSE scripts.',tag:'nmap'},
-// WIRESHARK
 {t:'Wireshark - Capture All Traffic',c:'wireshark',d:'Open Wireshark, select WiFi, click Start.',tag:'wireshark'},
 {t:'Wireshark Filter - Show Only HTTP',c:'http',d:'Show only websites (HTTP).',tag:'wireshark'},
 {t:'Wireshark Filter - Show Only HTTPS',c:'tls',d:'Show only encrypted HTTPS traffic.',tag:'wireshark'},
@@ -176,12 +176,11 @@ let DEFAULT_CMDS=[
 {t:'Wireshark Filter - Show Large Packets',c:'frame.len > 1000',d:'Show only big packets.',tag:'wireshark'},
 {t:'Wireshark Filter - Show One Port 80',c:'tcp.port == 80',d:'Show only traffic for port 80 (HTTP).',tag:'wireshark'},
 {t:'Wireshark Filter - Show One Port 443',c:'tcp.port == 443',d:'Show only traffic for port 443 (HTTPS).',tag:'wireshark'},
-{t:'Wireshark Filter - Exclude My IP',c:'!ip.addr == 192.168.1.5',d:'Hide your own traffic, see others only. ! = NOT.',tag:'wireshark'},
+{t:'Wireshark Filter - Exclude My IP',c:'!ip.addr == 192.168.1.5',d:'Hide your own traffic, see others only.',tag:'wireshark'},
 {t:'Wireshark - Follow TCP Stream',c:'Right-click packet > Follow > TCP Stream',d:'See full conversation.',tag:'wireshark'},
 {t:'Wireshark - Follow HTTP Stream',c:'Right-click packet > Follow > HTTP Stream',d:'See full website request.',tag:'wireshark'},
-{t:'Wireshark - Export Objects (Pictures)',c:'File > Export Objects > HTTP',d:'Download pictures / files wey person download for HTTP!',tag:'wireshark'},
-{t:'Wireshark - Check Expert Info',c:'Analyze > Expert Information',d:'Wireshark go tell you wetin e think say be problem!',tag:'wireshark'},
-// LINUX
+{t:'Wireshark - Export Objects (Pictures)',c:'File > Export Objects > HTTP',d:'Download pictures / files for HTTP!',tag:'wireshark'},
+{t:'Wireshark - Check Expert Info',c:'Analyze > Expert Information',d:'Wireshark go tell you wetin be problem!',tag:'wireshark'},
 {t:'LINUX 1 - Disk Full: Check Disk',c:'df -h',d:'Check which partition is full.',tag:'linux disk'},
 {t:'LINUX 1 - Disk Full: Big Files Logs',c:'du -sh /var/log/*',d:'Find large files.',tag:'linux disk'},
 {t:'LINUX 1 - Disk Full: Files Over 1GB',c:'sudo find / -type f -size +1G',d:'Find files bigger than 1GB.',tag:'linux disk'},
@@ -224,23 +223,24 @@ let TROUBLE=[
 {n:'10. General Slow Check',sym:'Everything slow, no clear error',steps:'1. uptime 2. top 3. free -h 4. df -h 5. Check logs',cmds:'uptime | top | free -h | df -h | dmesg | tail -n 50'}
 ];
 let SHARK=[
-{n:'1. Start Capture - How To Start',what:'Wireshark dey capture packets = small pieces of data wey dey fly for WiFi.',how:'1. Open Wireshark 2. Select your WiFi (wlan0 / Wi-Fi) 3. Click blue shark fin to Start 4. Open browser, visit site 5. Click red square to Stop',filter:'wireshark',tip:'⚠️ Only capture YOUR OWN WiFi! No capture school / neighbour WiFi without permission.'},
-{n:'2. Filter - Show Only HTTP Websites',what:'HTTP = websites wey no get lock (not secure). HTTPS = with lock.',how:'Type for filter bar at top, press Enter. E go hide all other packets.',filter:'http',tip:'HTTP go show you website names + sometimes passwords for old sites!'},
-{n:'3. Filter - Show Only DNS',what:'DNS = Phonebook. When you type google.com, your phone go ask DNS: "Wetin be IP for google.com?"',how:'Type dns for filter. You go see all websites person dey try visit, even if e no open!',filter:'dns',tip:'SOC analysts use DNS to see if person visit bad site!'},
-{n:'4. Filter - Show One Device Only',what:'If 10 phones dey for WiFi, you fit focus on ONE phone.',how:'Find IP for that phone (e.g. 192.168.1.5), type filter, press Enter.',filter:'ip.addr == 192.168.1.1',tip:'Replace 192.168.1.1 with the IP you want. == means EQUAL.'},
-{n:'5. Filter - Find Passwords / Logins (HTTP)',what:'Old websites wey use HTTP (no S) dey send password as plain text! Wireshark fit see am.',how:'Type POST filter. Look for packet, Right-click > Follow > HTTP Stream. You go see username + password if site na HTTP.',filter:'http.request.method == "POST"',tip:'⚠️ FOR LEARNING ONLY. Never steal another person password! Use your own test site.'},
-{n:'6. Follow Stream - See Full Chat',what:'Packets dey small-small, but Follow Stream go join them to show full message like WhatsApp chat.',how:'Right-click any packet > Follow > TCP Stream (for general) or HTTP Stream (for website).',filter:'Right-click > Follow > TCP Stream',tip:'Best way to understand wetin two computers dey talk!'},
-{n:'7. Find Slow Network - Retransmission',what:'If network slow, packets dey loss, computer go resend am. That na Retransmission.',how:'Type retransmission filter. If you see MANY, network get problem - WiFi weak or cable bad.',filter:'tcp.analysis.retransmission',tip:'SOC: Many retransmissions = network wahala, no be hacker.'},
-{n:'8. Filter - Show Only Ping (ICMP)',what:'Ping = "Are you there?" computer dey ask another computer.',how:'Type icmp for filter. You go see Request + Reply.',filter:'icmp',tip:'If no Reply, device off or firewall dey block ping.'},
-{n:'9. Filter - Show ARP - Who Get This IP?',what:'ARP = "Who get IP 192.168.1.5? Tell me your MAC address!"',how:'Type arp. You go see devices dey find each other.',filter:'arp',tip:'Too much ARP fit mean ARP Spoofing attack! Hacker dey pretend to be router.'},
-{n:'10. Export Files - Download Pictures From Capture',what:'If person download picture for HTTP site, Wireshark fit extract am!',how:'File > Export Objects > HTTP > Select file > Save. Open picture!',filter:'File > Export Objects > HTTP',tip:'Only work for HTTP, not HTTPS (HTTPS dey encrypted).'}
+{n:'1. Start Capture - How To Start',what:'Wireshark dey capture packets = small pieces of data wey dey fly for WiFi.',how:'1. Open Wireshark 2. Select your WiFi (wlan0 / Wi-Fi) 3. Click blue shark fin to Start 4. Open browser, visit site 5. Click red square to Stop',filter:'wireshark',tip:'⚠️ Only capture YOUR OWN WiFi!'},
+{n:'2. Filter - Show Only HTTP Websites',what:'HTTP = websites wey no get lock (not secure). HTTPS = with lock.',how:'Type for filter bar at top, press Enter.',filter:'http',tip:'HTTP go show you website names + sometimes passwords for old sites!'},
+{n:'3. Filter - Show Only DNS',what:'DNS = Phonebook. When you type google.com, your phone go ask DNS: "Wetin be IP for google.com?"',how:'Type dns for filter. You go see all websites person dey try visit!',filter:'dns',tip:'SOC analysts use DNS to see if person visit bad site!'},
+{n:'4. Filter - Show One Device Only',what:'If 10 phones dey for WiFi, you fit focus on ONE phone.',how:'Find IP for that phone, type filter, press Enter.',filter:'ip.addr == 192.168.1.1',tip:'Replace 192.168.1.1 with the IP you want.'},
+{n:'5. Filter - Find Passwords / Logins (HTTP)',what:'Old websites wey use HTTP dey send password as plain text!',how:'Type POST filter. Look for packet, Right-click > Follow > HTTP Stream.',filter:'http.request.method == "POST"',tip:'⚠️ FOR LEARNING ONLY. Never steal another person password!'},
+{n:'6. Follow Stream - See Full Chat',what:'Packets dey small-small, but Follow Stream go join them to show full message.',how:'Right-click any packet > Follow > TCP Stream or HTTP Stream.',filter:'Right-click > Follow > TCP Stream',tip:'Best way to understand wetin two computers dey talk!'},
+{n:'7. Find Slow Network - Retransmission',what:'If network slow, packets dey loss, computer go resend am.',how:'Type retransmission filter. If you see MANY, network get problem.',filter:'tcp.analysis.retransmission',tip:'Many retransmissions = network wahala, no be hacker.'},
+{n:'8. Filter - Show Only Ping (ICMP)',what:'Ping = "Are you there?" computer dey ask another computer.',how:'Type icmp for filter.',filter:'icmp',tip:'If no Reply, device off or firewall dey block ping.'},
+{n:'9. Filter - Show ARP - Who Get This IP?',what:'ARP = "Who get IP 192.168.1.5? Tell me your MAC address!"',how:'Type arp. You go see devices dey find each other.',filter:'arp',tip:'Too much ARP fit mean ARP Spoofing attack!'},
+{n:'10. Export Files - Download Pictures From Capture',what:'If person download picture for HTTP site, Wireshark fit extract am!',how:'File > Export Objects > HTTP > Select file > Save.',filter:'File > Export Objects > HTTP',tip:'Only work for HTTP, not HTTPS (HTTPS dey encrypted).'}
 ];
 let myCmds=JSON.parse(localStorage.getItem('roxy_cmds')||'[]');
 function allCmds(){return [...DEFAULT_CMDS.map(c=>({...c,mine:false})), ...myCmds.map((c,i)=>({...c,mine:true,idx:i}))];}
 window.onload=function(){updateHistCount();updateCmdCount();if(myName){showChat(true);}};
-function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN for '+myName+'! Try again.');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
+function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN for '+myName+'! Tap "Forgot PIN? Reset" below to clear am, then use new PIN.');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
+function resetPin(){if(!confirm('Reset PIN? E go clear your old PIN only. Your commands go stay. Continue?'))return;localStorage.removeItem('roxy_pin');localStorage.removeItem('roxy_name');savedPin='';myName='';alert('PIN don reset! Now type your name + NEW PIN 8910 and tap Enter Chat.');location.reload();}
 function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
-function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands + 10 Linux fixes + 10 Wireshark lessons! Tap 🦈 Wireshark!`:`Hi ${myName}! Na me be ROXY v4.6 - Wireshark Lab! 🦈 I get 10 Wireshark lessons + 10 Linux fixes + Nmap!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
+function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands + 10 Linux fixes + 10 Wireshark lessons! Tap 🦈 Wireshark!`:`Hi ${myName}! Na me be ROXY v4.6.1 - Wireshark Lab! 🦈`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
 function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';b.className=voiceOn?'':'off';if(voiceOn)speak("Voice on!");}
 function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
 function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;window.speechSynthesis.speak(u);}
@@ -258,15 +258,62 @@ function updateCmdCount(){document.getElementById('cmdCount').innerText=allCmds(
 function saveToHistory(msg,score){let label=score>=70?'🚨 SCAM':score>=40?'⚠️ SUSPICIOUS':'✅ SAFE';history.unshift({msg:msg.substring(0,120),score:score,label:label,date:new Date().toLocaleString()});if(history.length>50)history=history.slice(0,50);localStorage.setItem('roxy_history',JSON.stringify(history));updateHistCount();}
 function renderHistory(){let list=document.getElementById('histList');if(history.length===0){list.innerHTML='<p style="color:#888;font-size:13px;margin-top:8px;">No history yet.</p>';return;}let sc=history.filter(x=>x.score>=70).length;let sf=history.filter(x=>x.score<40).length;list.innerHTML=`<p style="font-size:13px;margin:8px 0;"><b>Total:</b> ${history.length} | <span style="color:#ff0055;">🚨 Scams: ${sc}</span> | <span style="color:#00ff88;">✅ Safe: ${sf}</span></p>`+history.map(h=>{let c=h.score>=70?'#ff0055':h.score>=40?'#ffaa00':'#00ff88';return `<div class="histItem"><b style="color:${c};">${h.score}/100 - ${h.label}</b><br><span style="color:#aaa;">${h.date}</span><br>"${h.msg}"</div>`;}).join('');}
 function clearHistory(){if(!confirm('Delete all history?'))return;history=[];localStorage.removeItem('roxy_history');updateHistCount();renderHistory();}
-function renderCmds(){
-  let q=(document.getElementById('cmdSearch').value||'').toLowerCase();
-  let list=document.getElementById('cmdList');
-  let filtered=allCmds().filter(c=>(c.t+c.c+c.d+c.tag).toLowerCase().includes(q));
-  if(filtered.length===0){list.innerHTML='<p style="color:#888;font-size:13px;margin-top:8px;">No command found. Save your own below!</p>';return;}
-  list.innerHTML=filtered.map(c=>{
-    let del=c.mine?`<button class="delBtn" onclick="deleteMyCmd(${c.idx})">🗑️ Delete My Command</button>`:`<span style="color:#888;font-size:11px;">From Roland Book / ROXY</span>`;
-    return `<div class="cmdCard"><b>${c.t}</b> ${c.mine?'<span style="color:#c26bff;">• MY SAVED</span>':''}<code>${c.c}</code><span style="color:#aaa;">${c.d}</span><br><button class="copyBtn" onclick="copyCmd(\`${c.c.replace(/`/g,'').replace(/'/g,"")}\`)">📋 Copy Command</button><br>${del}</div>`;
-  }).join('');
+function renderCmds(){let q=(document.getElementById('cmdSearch').value||'').toLowerCase();let list=document.getElementById('cmdList');let filtered=allCmds().filter(c=>(c.t+c.c+c.d+c.tag).toLowerCase().includes(q));if(filtered.length===0){list.innerHTML='<p style="color:#888;font-size:13px;margin-top:8px;">No command found.</p>';return;}list.innerHTML=filtered.map(c=>{let del=c.mine?`<button class="delBtn" onclick="deleteMyCmd(${c.idx})">🗑️ Delete My Command</button>`:`<span style="color:#888;font-size:11px;">From Roland Book / ROXY</span>`;return `<div class="cmdCard"><b>${c.t}</b> ${c.mine?'<span style="color:#c26bff;">• MY SAVED</span>':''}<code>${c.c}</code><span style="color:#aaa;">${c.d}</span><br><button class="copyBtn" onclick="copyCmd(\`${c.c.replace(/`/g,'').replace(/'/g,"")}\`)">📋 Copy Command</button><br>${del}</div>`;}).join('');}
+function renderLinux(){let q=(document.getElementById('linuxSearch').value||'').toLowerCase();let list=document.getElementById('linuxList');let f=TROUBLE.filter(x=>(x.n+x.sym+x.steps+x.cmds).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="linuxCard"><b>🐧 ${x.n}</b><br><b>Symptoms:</b> ${x.sym}<br><b>Steps:</b> ${x.steps}<br><b>Commands:</b><code>${x.cmds}</code><button class="copyBtn" style="background:#ff0055!important;" onclick="copyCmd('${x.cmds}')">📋 Copy All Commands</button></div>`).join('');}
+function renderShark(){let q=(document.getElementById('sharkSearch').value||'').toLowerCase();let list=document.getElementById('sharkList');let f=SHARK.filter(x=>(x.n+x.what+x.how+x.filter+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="sharkCard"><b>🦈 ${x.n}</b><br><b>What:</b> ${x.what}<br><b>How:</b> ${x.how}<br><b>Filter:</b><code>${x.filter}</code><button class="copyBtn" style="background:#00aaaa!important;color:#000!important;" onclick="copyCmd('${x.filter}')">📋 Copy Filter</button><br><span style="color:#aaffff;">${x.tip}</span></div>`).join('');}
+function copyCmd(txt){navigator.clipboard.writeText(txt).then(()=>alert('Copied: '+txt)).catch(()=>{let ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();alert('Copied: '+txt);});}
+function saveMyCmd(){let t=document.getElementById('newCmdTitle').value.trim();let c=document.getElementById('newCmdText').value.trim();let d=document.getElementById('newCmdDesc').value.trim()||'My saved command';if(!t||!c){alert('Type Title + Command first!');return;}myCmds.unshift({t:t,c:c,d:d,tag:'mine'});localStorage.setItem('roxy_cmds',JSON.stringify(myCmds));document.getElementById('newCmdTitle').value='';document.getElementById('newCmdText').value='';document.getElementById('newCmdDesc').value='';updateCmdCount();renderCmds();alert('Saved! ✅');}
+function deleteMyCmd(i){if(!confirm('Delete this command?'))return;myCmds.splice(i,1);localStorage.setItem('roxy_cmds',JSON.stringify(myCmds));updateCmdCount();renderCmds();}
+function checkScam(){let txt=document.getElementById('scamInput').value.trim();if(!txt){alert('Paste message first!');return;}let res=scoreScam(txt);saveToHistory(txt,res.score);let color=res.score>=70?'#ff0055':res.score>=40?'#ffaa00':'#00ff88';let label=res.score>=70?'🚨 SCAM - DO NOT TRUST!':res.score>=40?'⚠️ SUSPICIOUS - BE CAREFUL!':'✅ SAFE - Looks Okay';document.getElementById('scamResult').innerHTML=`<div style="margin-top:10px;"><b style="color:${color};font-size:18px;">Score: ${res.score}/100</b><br><b style="color:${color};">${label}</b><div class="scoreBar"><div class="scoreFill" style="width:${res.score}%;background:${color}"></div></div><div style="font-size:13px;">${res.reasons.map(r=>'• '+r).join('<br>')}</div></div>`;speak(`Scam score is ${res.score} out of 100. ${label}`);}
+function scoreScam(text){let t=text.toLowerCase();let score=5;let reasons=[];let checks=[['urgent|immediately|act now|blocked|will be closed|24 hours',25,'Creates URGENCY / fear'],['verify your account|confirm your|update your account|login to|click here|click the link',25,'Asks you to CLICK LINK / VERIFY'],['send money|transfer|pay|bitcoin|crypto|gift card|otp|password|pin|bvn',25,'Asks for MONEY / OTP / PASSWORD / PIN / BVN'],['http|www\\.|\\.com|\\.ng|\\.xyz|\\.top|bit\\.ly|tinyurl',15,'Contains LINK - fit be fake'],['congratulations|you won|giveaway|free|lottery|prize|reward',20,'Promises FREE MONEY / PRIZE'],['bank|gtb|access|first bank|uba|zenith|opay|palmpay|moniepoint|instagram|whatsapp support',10,'Pretends to be BANK / APP SUPPORT'],['dear customer|dear user|account holder',8,'Generic greeting - "Dear Customer"']];checks.forEach(c=>{if(new RegExp(c[0]).test(t)){score+=c[1];reasons.push(c[2]);}});if(reasons.length===0)reasons.push('No common scam signs found');if(score>100)score=100;return {score,reasons};}
+function addMsg(text,who){let d=document.createElement('div');d.className='msg '+who;let name=who==='me'?myName:'ROXY 🐩';let extra='';if(who==='roxy')extra=`<br><button class="speakBtn" onclick="speak(this.parentElement.innerText)">🔊 Hear Again</button>`;d.innerHTML=`<b>${name}:</b> ${text}${extra}<span class="time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
+function send(){let t=inp.value.trim();if(!t)return;addMsg(t,'me');inp.value='';let ty=document.createElement('div');ty.className='typing';ty.id='typing';ty.innerText='ROXY is thinking...';chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{document.getElementById('typing').remove();let ans=getReply(t);addMsg(ans,'roxy');speak(ans);},600);}
+const BRAIN = {
+"disk full":"<b>💾 DISK FULL</b><br><b>Fix:</b> df -h → du -sh /var/log/* → sudo find / -type f -size +1G → sudo lsof +L1",
+"high cpu":"<b>🔥 HIGH CPU</b><br><b>Fix:</b> top → ps aux --sort=-%cpu | head",
+"high memory":"<b>🧠 HIGH MEMORY</b><br><b>Fix:</b> free -h → ps aux --sort=-%mem | head",
+"server not reachable":"<b>📡 SERVER NOT REACHABLE</b><br><b>Fix:</b> ping -c 4 &lt;IP&gt; → traceroute → nslookup example.com",
+"service is down":"<b>⚙️ SERVICE IS DOWN</b><br><b>Fix:</b> sudo systemctl status &lt;service&gt; → journalctl -u &lt;service&gt; -n 100 → restart",
+"port not working":"<b>🔌 PORT NOT WORKING</b><br><b>Fix:</b> sudo ss -tlnp | grep :8000 → curl http://localhost:8888",
+"ssh":"<b>🔑 SSH LOGIN FAILURE</b><br><b>Fix:</b> sudo systemctl status ssh → ls -l ~/.ssh/authorized_keys → sudo sshd -t → sudo tail -n 50 /var/log/auth.log",
+"mount":"<b>💽 MOUNT ISSUE</b><br><b>Fix:</b> lsblk → df -h → cat /etc/fstab → sudo mount -a",
+"high load":"<b>📈 HIGH LOAD</b><br><b>Fix:</b> uptime → top → iostat -xz 1 5",
+"wireshark dns":"<b>🦈 WIRESHARK DNS</b><br>DNS = Phonebook.<br><b>Filter:</b><code>dns</code><br>Tap 🦈 Wireshark for 10 lessons!",
+"wireshark password":"<b>🦈 WIRESHARK PASSWORDS</b><br><b>Filter:</b><code>http.request.method == \"POST\"</code><br>Then Right-click > Follow > HTTP Stream. ⚠️ FOR LEARNING ONLY!",
+"wireshark http":"<b>🦈 WIRESHARK HTTP</b><br><b>Filter:</b><code>http</code>",
+"wireshark slow":"<b>🦈 WIRESHARK SLOW NETWORK</b><br><b>Filter:</b><code>tcp.analysis.retransmission</code><br>Many = WiFi weak!",
+"wireshark":"<b>Wireshark = Shark wey dey catch packets 🦈</b><br>Filters: http, dns, ip.addr == 192.168.1.1, icmp, arp<br>Tap 🦈 Wireshark for 10 lessons!",
+"nmap":"<b>Nmap = Network Mapper 📟</b><br>-sS SYN, -sT Connect, -sU UDP, -sN NULL, -sX XMAS, -sF FIN, -sA ACK<br>-p 22 single, -p- all ports, -T0-T5 speed, -O OS, -sV version",
+"phishing":"<b>Phishing = Fake Fishing 🎣</b><br>Scammer send fake link to steal password. Rule: <b>Verify Before You Trust!</b>",
+"linux":"<b>Linux Troubleshooting 🐧</b><br>Tap 🐧 Linux Fix - 10 scenarios!",
+"soc":"<b>SOC = Security Operations Center 🛡️</b><br>Na room where security people dey watch network 24/7."
+};
+function getReply(text){
+  let t=text.toLowerCase();
+  if(t.includes('check this scam')||t.includes('check scam')||t.includes('is this scam')){let r=scoreScam(text);saveToHistory(text,r.score);let label=r.score>=70?'🚨 SCAM!':r.score>=40?'⚠️ SUSPICIOUS':'✅ SAFE';return `🛡️ <b>SCAM CHECK: ${r.score}/100 - ${label}</b><br>${r.reasons.map(x=>'• '+x).join('<br>')}`;}
+  if(t.includes('disk'))return BRAIN["disk full"];
+  if(t.includes('high cpu'))return BRAIN["high cpu"];
+  if(t.includes('high memory'))return BRAIN["high memory"];
+  if(t.includes('not reachable'))return BRAIN["server not reachable"];
+  if(t.includes('service')&&t.includes('down'))return BRAIN["service is down"];
+  if(t.includes('port'))return BRAIN["port not working"];
+  if(t.includes('ssh'))return BRAIN["ssh"];
+  if(t.includes('mount')||t.includes('fstab'))return BRAIN["mount"];
+  if(t.includes('high load'))return BRAIN["high load"];
+  if(t.includes('wireshark')&&t.includes('dns'))return BRAIN["wireshark dns"];
+  if(t.includes('wireshark')&&t.includes('password'))return BRAIN["wireshark password"];
+  if(t.includes('wireshark')&&t.includes('http'))return BRAIN["wireshark http"];
+  if(t.includes('wireshark')&&t.includes('slow'))return BRAIN["wireshark slow"];
+  if(t.includes('wireshark')||t.includes('shark'))return BRAIN["wireshark"];
+  if(t.includes('dns'))return BRAIN["wireshark dns"];
+  if(t.includes('nmap'))return BRAIN["nmap"];
+  if(t.includes('linux'))return BRAIN["linux"];
+  for(let key in BRAIN){ if(t.includes(key)) return BRAIN[key]; }
+  if(t==="hi"||t==="hello"||t.startsWith("hi "))return `Hi ${myName}! Ask me: 'wireshark', 'disk full', 'ssh', or tap 🦈 Wireshark!`;
+  if(t.includes('thank'))return `You are welcome, ${myName}!`;
+  if(t.includes('bye'))return `Good night, ${myName}! ROXY dey watch.`;
+  return `Interesting, ${myName}! Ask me: 'wireshark', 'wireshark dns', 'disk full', or tap 🦈 Wireshark!`;
 }
-function renderLinux(){
- 
+</script>
+</body>
+</html>
