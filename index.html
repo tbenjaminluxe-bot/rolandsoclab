@@ -3,13 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY CHAT v3.2 - Voice</title>
+<title>ROXY CHAT v4.0 - With Login</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
 .header{background:#111;padding:15px;text-align:center;border-bottom:1px solid #222}
 .header h1{color:#00ff88;font-size:22px}.header h1 span{color:#ff0055}
 .header p{font-size:12px;color:#888}.status{color:#00ff88;font-size:12px}
+.login{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:25px;gap:14px;text-align:center}
+.login h2{color:#00ff88;font-size:28px}.login p{color:#aaa;font-size:14px}
+.login input{width:100%;max-width:320px;padding:14px;background:#111;color:#fff;border:1px solid #333;border-radius:12px;outline:none;font-size:16px}
+.login button{width:100%;max-width:320px;padding:14px;background:#00ff88;color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer}
 .voiceBar{display:flex;gap:8px;justify-content:center;padding:8px;background:#111}
 .voiceBar button{background:#00ff88;color:#000;border:none;padding:8px 14px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:13px}
 .voiceBar button.off{background:#333;color:#fff}
@@ -19,115 +23,146 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 .roxy{background:#1a1a1a;border:1px solid #333;align-self:flex-start;border-bottom-left-radius:5px}
 .roxy b{color:#00ff88}.time{font-size:10px;color:#888;display:block;margin-top:4px}
 .inputBox{display:flex;gap:8px;padding:12px;background:#111;border-top:1px solid #222}
-input{flex:1;padding:13px;background:#000;color:#fff;border:1px solid #333;border-radius:25px;outline:none}
+.inputBox input{flex:1;padding:13px;background:#000;color:#fff;border:1px solid #333;border-radius:25px;outline:none}
 .sendBtn{background:#00ff88;color:#000;border:none;padding:0 18px;border-radius:25px;font-weight:bold;font-size:18px;cursor:pointer}
 .micBtn{background:#ff0055;color:#fff;border:none;padding:0 15px;border-radius:25px;font-size:18px;cursor:pointer}
 .quick{display:flex;gap:6px;padding:8px 12px;background:#111;overflow-x:auto}
 .quick button{background:#1a1a1a;color:#fff;border:1px solid #333;padding:8px 12px;border-radius:20px;white-space:nowrap;cursor:pointer;font-size:12px}
 .typing{font-style:italic;color:#888;font-size:13px}
 .speakBtn{background:#222;color:#00ff88;border:1px solid #333;padding:4px 8px;border-radius:12px;font-size:11px;cursor:pointer;margin-top:6px}
+.hidden{display:none!important}
+.logout{background:#ff0055!important;color:#fff!important}
 </style>
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v3.2</span> 🔊💬</h1>
-<p>Now ROXY Can Talk! | Built by Roland 🇳🇬</p>
-<p class="status">● Online - Voice ON</p>
+<h1>ROXY <span>CHAT v4.0</span> 🔊💬</h1>
+<p>With Login + Voice | Built by Roland 🇳🇬</p>
+<p class="status" id="statusText">● Online</p>
 </div>
+
+<!-- LOGIN SCREEN -->
+<div class="login" id="loginScreen">
+<h2>Welcome to ROXY 🐩</h2>
+<p>Type your name to enter. ROXY go remember you!</p>
+<input id="nameInput" placeholder="Your name e.g. Roland" maxlength="20">
+<input id="pinInput" placeholder="Create 4-digit PIN e.g. 1234" maxlength="4" inputmode="numeric">
+<button onclick="doLogin()">Enter Chat →</button>
+<p style="font-size:11px;">⚠️ No use your real bank / Instagram password. Use simple PIN only!</p>
+</div>
+
+<!-- CHAT SCREEN -->
+<div id="chatScreen" class="hidden" style="display:flex;flex-direction:column;flex:1;">
 <div class="voiceBar">
 <button id="voiceBtn" onclick="toggleVoice()">🔊 Voice: ON</button>
-<button onclick="testVoice()">▶️ Test My Voice</button>
+<button onclick="testVoice()">▶️ Test Voice</button>
+<button class="logout" onclick="doLogout()">Logout</button>
 </div>
 <div class="quick">
 <button onclick="quickAsk('What is binary?')">0/1 Binary</button>
 <button onclick="quickAsk('What is DNS?')">🌐 DNS</button>
 <button onclick="quickAsk('How many operating systems?')">💻 OS</button>
-<button onclick="quickAsk('What is port scanning?')">🔍 Scanning</button>
 <button onclick="quickAsk('What is phishing?')">🎣 Phishing</button>
 </div>
-<div class="chat" id="chat">
-<div class="msg roxy"><b>ROXY 🐩:</b> Hi Roland! Na me be ROXY v3.2 - Now I fit TALK! 🔊 Tap Test My Voice, or ask me anything and I go talk am out! 🧠<span class="time">Now</span></div>
-</div>
+<div class="chat" id="chat"></div>
 <div class="inputBox">
 <button class="micBtn" onclick="startMic()">🎤</button>
 <input id="inp" placeholder="Ask ROXY anything..." onkeypress="if(event.key==='Enter')send()">
 <button class="sendBtn" onclick="send()">➤</button>
 </div>
+</div>
+
 <script>
 let chat=document.getElementById('chat');let inp=document.getElementById('inp');
-let voiceOn=true;
-function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';b.className=voiceOn?'':'off';if(voiceOn)speak("Voice on! I fit talk now.");}
-function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/&[^;]+;/g,' ').replace(/\s+/g,' ').trim();}
-function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;u.volume=1;let voices=window.speechSynthesis.getVoices();let female=voices.find(v=>v.name.toLowerCase().includes('female')||v.name.toLowerCase().includes('samantha')||v.name.toLowerCase().includes('zira')||v.name.toLowerCase().includes('google us english'));if(female)u.voice=female;window.speechSynthesis.speak(u);}
-function testVoice(){speak("Hi Roland! Na me be Roxy! I fit talk now. Ask me what is phishing, what is binary, what is DNS. I sabi everything!");}
+let voiceOn=true;let myName=localStorage.getItem('roxy_name')||'';
+let savedPin=localStorage.getItem('roxy_pin')||'';
+
+window.onload=function(){if(myName){showChat(true);}};
+
+function doLogin(){
+  let n=document.getElementById('nameInput').value.trim();
+  let p=document.getElementById('pinInput').value.trim();
+  if(!n){alert('Type your name first!');return;}
+  if(!p||p.length<4){alert('Create 4-digit PIN!');return;}
+  if(savedPin && savedPin!==p){alert('Wrong PIN for '+myName+'! Try again.');return;}
+  myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);
+}
+function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
+function showChat(isBack){
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('chatScreen').classList.remove('hidden');
+  document.getElementById('statusText').innerText='● Online - Welcome '+myName;
+  chat.innerHTML='';
+  let welcome=isBack?`Welcome back, ${myName}! I remember you! 😊 Ask me anything - binary, DNS, phishing...`:`Hi ${myName}! Na me be ROXY v4.0 - Now I fit remember your name and TALK! 🔊 Ask me anything!`;
+  addMsg(welcome,'roxy');if(!isBack)speak(welcome);
+}
+function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';b.className=voiceOn?'':'off';if(voiceOn)speak("Voice on!");}
+function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
+function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;window.speechSynthesis.speak(u);}
+function testVoice(){speak(`Hi ${myName}! Na me be Roxy! I fit talk now. Ask me what is phishing, what is binary, what is DNS.`);}
 function startMic(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert("Your browser no support mic. Type instead!");return;}let Rec=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=new Rec();rec.lang='en-US';rec.onresult=(e)=>{inp.value=e.results[0][0].transcript;send();};rec.start();}
 function quickAsk(t){inp.value=t;send();}
-function addMsg(text,who){let d=document.createElement('div');d.className='msg '+who;let name=who==='me'?'You':'ROXY 🐩';let extra='';if(who==='roxy')extra=`<br><button class="speakBtn" onclick="speak(this.parentElement.innerText)">🔊 Hear Again</button>`;d.innerHTML=`<b>${name}:</b> ${text}${extra}<span class="time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
+function addMsg(text,who){let d=document.createElement('div');d.className='msg '+who;let name=who==='me'?myName:'ROXY 🐩';let extra='';if(who==='roxy')extra=`<br><button class="speakBtn" onclick="speak(this.parentElement.innerText)">🔊 Hear Again</button>`;d.innerHTML=`<b>${name}:</b> ${text}${extra}<span class="time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
 function send(){let t=inp.value.trim();if(!t)return;addMsg(t,'me');inp.value='';let ty=document.createElement('div');ty.className='typing';ty.id='typing';ty.innerText='ROXY is thinking...';chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{document.getElementById('typing').remove();let ans=getReply(t);addMsg(ans,'roxy');speak(ans);},600);}
 
 const BRAIN = {
-"binary":"<b>Binary = 0 and 1 💻</b><br>Computer no understand English, e only understand 0 and 1.<br>0 = OFF, 1 = ON.<br>Example: Letter A = 01000001, Number 5 = 0101.<br>Everything for your phone - photos, videos, WhatsApp - na binary inside!",
-"dns":"<b>DNS = Domain Name System 🌐</b><br>Na phonebook for internet.<br>You type google.com, DNS translate am to IP like 142.250.80.46 so phone fit find am.<br>Without DNS, you go memorize numbers for every website!",
-"operating system":"<b>Operating System (OS) = Boss of Computer 💻</b><br>Na software wey dey control everything - phone, apps, memory.<br><b>How many OS we get?</b><br>1. Windows - for many computers<br>2. macOS - for Apple computers<br>3. Linux - for hackers / servers (Kali Linux na for cybersecurity!)<br>4. Android - for many phones<br>5. iOS - for iPhone<br>6. ChromeOS - for Chromebook<br><br>You dey use Android now, and iSH na Linux inside your phone!",
-"os":"<b>Operating System (OS) = Boss of Computer 💻</b><br>Na software wey dey control everything.<br><b>How many OS we get?</b> Windows, macOS, Linux, Android, iOS, ChromeOS = 6 main ones.<br>For hacking, Linux (Kali) na the best!",
-"ip":"<b>IP = Internet Protocol Address 🌍</b><br>Na your phone address for internet, like house address.<br>Example: 45.3.32.156<br>If person get your IP, dem fit try scan your ports. That's why Watchdog dey watch am!",
-"port":"<b>Port = Door for your computer 🔌</b><br>Each door get number.<br>21=FTP, 22=SSH, 23=Telnet (very risky!), 80=HTTP, 443=HTTPS.<br>If door open and you no lock am, hacker fit enter!",
-"scanning":"<b>Port Scanning = Knocking Doors 🔍</b><br>Hacker go knock all your doors (ports) to see which one open.<br>Example: Your Watchdog catch 45.3.32.156 scanning 10 ports: [21,22,23,25,53,80,110,135,139,443].<br>Na like thief dey check which window for house open!",
-"scan":"<b>Port Scanning = Knocking Doors 🔍</b><br>Hacker go knock all your doors to see which one open. Your Watchdog go catch am and block am!",
-"firewall":"<b>Firewall = Security Gate 🔥</b><br>Na wall between your network and internet. E block bad traffic, allow good traffic. Like gate for your house.",
-"malware":"<b>Malware = Bad Software 🦠</b><br>Na any software wey dey harm phone: virus, spyware, ransomware. E fit steal password or lock phone. No download app from strange site!",
+"binary":"<b>Binary = 0 and 1 💻</b><br>Computer no understand English, e only understand 0 and 1.<br>0 = OFF, 1 = ON.<br>Example: Letter A = 01000001, Number 5 = 0101.",
+"dns":"<b>DNS = Domain Name System 🌐</b><br>Na phonebook for internet.<br>You type google.com, DNS translate am to IP like 142.250.80.46 so phone fit find am.",
+"operating system":"<b>Operating System (OS) = Boss of Computer 💻</b><br>Na software wey dey control everything.<br><b>How many OS we get?</b> Windows, macOS, Linux, Android, iOS, ChromeOS = 6 main ones.<br>For hacking, Linux (Kali) na the best!",
+"os":"<b>Operating System (OS) = Boss of Computer 💻</b><br>Na software wey dey control everything.<br><b>How many OS we get?</b> Windows, macOS, Linux, Android, iOS, ChromeOS = 6 main ones.",
+"ip":"<b>IP = Internet Protocol Address 🌍</b><br>Na your phone address for internet, like house address.<br>Example: 45.3.32.156",
+"port":"<b>Port = Door for your computer 🔌</b><br>21=FTP, 22=SSH, 23=Telnet (very risky!), 80=HTTP, 443=HTTPS.",
+"scanning":"<b>Port Scanning = Knocking Doors 🔍</b><br>Hacker go knock all your doors to see which one open.<br>Example: Your Watchdog catch 45.3.32.156 scanning 10 ports.",
+"scan":"<b>Port Scanning = Knocking Doors 🔍</b><br>Hacker go knock all your doors to see which one open. Your Watchdog go catch am!",
+"firewall":"<b>Firewall = Security Gate 🔥</b><br>Na wall between your network and internet. E block bad traffic, allow good traffic.",
+"malware":"<b>Malware = Bad Software 🦠</b><br>Na any software wey dey harm phone: virus, spyware, ransomware.",
 "virus":"<b>Virus =</b> Malware wey dey copy itself and spoil files. Use antivirus, no click strange link!",
-"ransomware":"<b>Ransomware = Kidnap Software 💀</b><br>E go lock your files, then ask you pay money to unlock am. Never pay! Backup your files always.",
+"ransomware":"<b>Ransomware = Kidnap Software 💀</b><br>E go lock your files, then ask you pay money to unlock am. Never pay!",
 "phishing":"<b>Phishing = Fake Fishing 🎣</b><br>Scammer send fake link wey look like real bank / Instagram, to steal your password. Rule: <b>Verify Before You Trust!</b>",
-"social engineering":"<b>Social Engineering = Mind Trick 🧠</b><br>Hacker no hack computer, e hack HUMAN. E go lie, pretend to be bank manager, make you trust am, then you go give am your password yourself.",
-"soc":"<b>SOC = Security Operations Center 🛡️</b><br>Na room where security people dey watch network 24/7 for attacks, like ROXY Watchdog. Na the job you wan do! SOC Analyst na your future job!",
-"vpn":"<b>VPN = Virtual Private Network</b><br>E dey hide your IP and encrypt your internet. Good for public WiFi. No use free VPN wey dey steal data!",
-"encryption":"<b>Encryption = Secret Code 🔒</b><br>Na to turn your message to nonsense so only person wey get key fit read am.<br>Example: 'Hello' become 'Xj93#k'. WhatsApp use end-to-end encryption!",
-"password":"<b>Strong Password:</b><br>1. At least 12 characters<br>2. Mix CAPITAL + small + number + symbol<br>Example: <b>Roland@Lagos2026!</b><br>3. No use your name or birthday alone. And turn ON 2FA!",
-"2fa":"<b>2FA = Two Factor Authentication</b><br>Na extra lock. Even if person get your password, dem still need code from your phone. Always turn am ON for Instagram, WhatsApp, Bank!",
-"wifi":"<b>Public WiFi:</b> No do bank transaction for public WiFi! Hacker fit steal your data. Use VPN or your own data.",
-"crypto":"<b>Crypto = Digital Money</b><br>Like Bitcoin. But 90% of crypto investment messages for WhatsApp na scam! No send money to stranger wey promise double.",
-"hacker":"<b>Hacker =</b> Person wey dey try break into system. Good hacker (White Hat) = protect people like you. Bad hacker (Black Hat) = steal. You dey become White Hat - SOC Analyst! 🔥",
-"hacking":"<b>Hacking =</b> To find weakness for system. Good hacking na to protect, bad hacking na to steal. You dey learn good hacking!",
-"cloud":"<b>Cloud = Computer for Internet ☁️</b><br>Instead of saving file for your phone, you save am for big computer for internet (Google Drive, iCloud). E good, but protect am with strong password!",
-"antivirus":"<b>Antivirus = Doctor for Phone 🩺</b><br>E dey scan your phone, find virus, kill am. Keep am updated!",
-"data breach":"<b>Data Breach = Leak 💧</b><br>When hacker steal plenty people data from company, like passwords, phone numbers. If your password leak, change am sharp!",
-"dark web":"<b>Dark Web = Hidden Internet 🌑</b><br>Na part of internet wey Google no fit see. Bad people dey sell stolen password there. No go there!",
-"cookie":"<b>Cookie = Small File 🍪</b><br>Website dey save am for your phone to remember you. E fit track you. Clear cookies sometimes!",
-"trojan":"<b>Trojan = Gift with Bomb 🎁💣</b><br>App wey look good, but inside e get virus. Like Greek Trojan Horse story. No download cracked apps!",
-"spyware":"<b>Spyware = Spy 👁️</b><br>Malware wey dey watch everything you dey type, your password, your chats. Na why you no go give phone to stranger!",
-"keylogger":"<b>Keylogger = Thief wey dey record keys ⌨️</b><br>E dey record everything you type - password, bank PIN. No type password for public computer!",
-"ddos":"<b>DDoS = Plenty People Knocking Door 🚪</b><br>Hacker go send plenty fake traffic to website until website fall down. Like 1 million people enter small shop at once!",
-"sql":"<b>SQL Injection = Trick Database 💉</b><br>Hacker go type code inside login box to trick website to give am all passwords. Na why website need secure code.",
-"linux":"<b>Linux = Hacker OS 🐧</b><br>Na free OS. Kali Linux na version for cybersecurity, e get all hacking tools inside. iSH for your phone na Linux!",
-"windows":"<b>Windows = Microsoft OS</b><br>Na OS for many computers. E easy to use, but hackers dey attack am well because plenty people dey use am.",
-"android":"<b>Android = Google OS for Phone 📱</b><br>Na OS for many phones including your own. E dey use Linux inside!",
-"ios":"<b>iOS = Apple OS for iPhone 🍎</b><br>Na OS for iPhone and iPad. E dey very secure, but still need strong password!",
-"cybersecurity":"<b>Cybersecurity = Protection 🛡️</b><br>Na to protect computer, phone, network from hackers. Na the work you dey learn! From Lagos to the world!",
-"internet":"<b>Internet = Big Network 🌍</b><br>Na connection of millions of computers for world. Your phone, my server, Google - all dey connected. DNS, IP, Ports na how dem dey talk!",
-"website":"<b>Website =</b> Page for internet. Your ROXY CHAT na website! E get HTML, CSS, JavaScript inside. You don build website already!",
-"html":"<b>HTML = Skeleton for Website 🦴</b><br>Na language wey dey build structure for website. You don use am to build ROXY!",
-"javascript":"<b>JavaScript = Brain for Website 🧠</b><br>Na language wey dey make website talk, like ROXY CHAT brain. You don use am!",
-"python":"<b>Python = Language for Hacking 🐍</b><br>Na language wey dem use to build Watchdog, tools, AI. E easy to learn. Na next language you go learn!",
+"social engineering":"<b>Social Engineering = Mind Trick 🧠</b><br>Hacker no hack computer, e hack HUMAN. E go lie, pretend to be bank manager.",
+"soc":"<b>SOC = Security Operations Center 🛡️</b><br>Na room where security people dey watch network 24/7 for attacks, like ROXY Watchdog. Na the job you wan do!",
+"vpn":"<b>VPN = Virtual Private Network</b><br>E dey hide your IP and encrypt your internet. Good for public WiFi.",
+"encryption":"<b>Encryption = Secret Code 🔒</b><br>Na to turn your message to nonsense so only person wey get key fit read am.",
+"password":"<b>Strong Password:</b><br>1. At least 12 characters<br>2. Mix CAPITAL + small + number + symbol<br>Example: <b>Roland@Lagos2026!</b>",
+"2fa":"<b>2FA = Two Factor Authentication</b><br>Na extra lock. Even if person get your password, dem still need code from your phone.",
+"wifi":"<b>Public WiFi:</b> No do bank transaction for public WiFi! Hacker fit steal your data.",
+"crypto":"<b>Crypto = Digital Money</b><br>Like Bitcoin. But 90% of crypto messages for WhatsApp na scam!",
+"hacker":"<b>Hacker =</b> Person wey dey try break into system. Good hacker (White Hat) = protect people like you.",
+"hacking":"<b>Hacking =</b> To find weakness for system. Good hacking na to protect, bad hacking na to steal.",
+"cloud":"<b>Cloud = Computer for Internet ☁️</b><br>Instead of saving file for your phone, you save am for big computer for internet.",
+"antivirus":"<b>Antivirus = Doctor for Phone 🩺</b><br>E dey scan your phone, find virus, kill am.",
+"dark web":"<b>Dark Web = Hidden Internet 🌑</b><br>Na part of internet wey Google no fit see. No go there!",
+"trojan":"<b>Trojan = Gift with Bomb 🎁💣</b><br>App wey look good, but inside e get virus.",
+"spyware":"<b>Spyware = Spy 👁️</b><br>Malware wey dey watch everything you dey type.",
+"ddos":"<b>DDoS = Plenty People Knocking Door 🚪</b><br>Hacker go send plenty fake traffic to website until website fall down.",
+"linux":"<b>Linux = Hacker OS 🐧</b><br>Na free OS. Kali Linux na version for cybersecurity.",
+"windows":"<b>Windows = Microsoft OS</b><br>Na OS for many computers.",
+"android":"<b>Android = Google OS for Phone 📱</b><br>Na OS for many phones including your own.",
+"ios":"<b>iOS = Apple OS for iPhone 🍎</b><br>Na OS for iPhone and iPad.",
+"cybersecurity":"<b>Cybersecurity = Protection 🛡️</b><br>Na to protect computer, phone, network from hackers. Na the work you dey learn!",
+"internet":"<b>Internet = Big Network 🌍</b><br>Na connection of millions of computers for world.",
+"html":"<b>HTML = Skeleton for Website 🦴</b><br>Na language wey dey build structure for website.",
+"javascript":"<b>JavaScript = Brain for Website 🧠</b><br>Na language wey dey make website talk, like ROXY brain.",
+"python":"<b>Python = Language for Hacking 🐍</b><br>Na language wey dem use to build Watchdog, tools, AI.",
 "watchdog":"🐩 <b>Watchdog na my dog!</b> E dey watch your network 24/7. If person scan your ports, e go bark: 'SCAN DETECTED!' and block the IP. Last real alert na from 45.3.32.156!"
 };
-
 function getReply(text){
   let t=text.toLowerCase();
-  if(t.includes('bank account')||t.includes('manager')||t.includes('handle my finances')||t.includes('urgent')||t.includes('verify your account')||t.includes('send money')||t.includes('giveaway'))return"🚨 <b>SCAM ALERT! Score: 95/100</b><br><br>This message get scam signs.<br><b>DO:</b> Block, Report, Delete.<br><b>DON'T:</b> Reply, send money, click link.";
-  if(t.includes('http')||t.includes('www.')||t.includes('.com')){if(t.includes('free')||t.includes('verify')||t.includes('login')||t.includes('gift'))return"🚨 <b>That link look suspicious!</b> E get bait words like free/verify/gift. No click am.";return"That link look okay for now, but still be careful. Rule: Verify Before You Trust!";}
+  if(t.includes('bank account')||t.includes('manager')||t.includes('handle my finances')||t.includes('urgent')||t.includes('verify your account')||t.includes('send money')||t.includes('giveaway'))return"🚨 <b>SCAM ALERT! Score: 95/100</b><br><br>This message get scam signs.<br><b>DO:</b> Block, Report, Delete.";
+  if(t.includes('http')||t.includes('www.')||t.includes('.com')){if(t.includes('free')||t.includes('verify')||t.includes('login')||t.includes('gift'))return"🚨 <b>That link look suspicious!</b> No click am.";return"That link look okay for now, but still be careful. Rule: Verify Before You Trust!";}
   for(let key in BRAIN){ if(t.includes(key)) return BRAIN[key]; }
   if(t.includes('how many')&&t.includes('operating'))return BRAIN["operating system"];
-  if(t==="hi"||t==="hello"||t.startsWith("hi ")||t.startsWith("hello ")||t.includes(" hi ")||t.includes(" hello "))return"Hi Roland! Good to see you 😊 Ask me anything - binary, DNS, OS, scanning, firewall... I sabi everything now!";
-  if(t.includes('how are you')||t.includes('how far'))return"I dey fine, dey guard your network like watchdog! How you dey?";
-  if(t.includes('who built')||t.includes('who made'))return"Roland from Lagos build me! 16-year-old SOC engineer. E build ROXY v9 and ROXY CHAT v3.2 with voice!";
-  if(t.includes('thank'))return"You are welcome, boss! Anything else?";
-  if(t.includes('bye')||t.includes('good night'))return"Good night, Roland! Lock your phone, no click strange link. ROXY dey watch.";
+  if(t==="hi"||t==="hello"||t.startsWith("hi ")||t.startsWith("hello ")||t.includes(" hi ")||t.includes(" hello "))return`Hi ${myName}! Good to see you 😊 Ask me anything - binary, DNS, OS, scanning, firewall...`;
+  if(t.includes('how are you')||t.includes('how far'))return`I dey fine, ${myName}, dey guard your network like watchdog! How you dey?`;
+  if(t.includes('who built')||t.includes('who made'))return"Roland from Lagos build me! 16-year-old SOC engineer. E build ROXY v9 and ROXY CHAT v4.0!";
+  if(t.includes('thank'))return`You are welcome, ${myName}! Anything else?`;
+  if(t.includes('bye')||t.includes('good night'))return`Good night, ${myName}! Lock your phone, no click strange link. ROXY dey watch.`;
   if(t.includes('joke'))return"Why did the hacker break up with the internet? Because e get too many connections!";
-  if(t.includes('love')||t.includes('girlfriend'))return"Haha Roland, focus on building ROXY first, love go come later. Secure your future first!";
+  if(t.includes('love')||t.includes('girlfriend'))return`Haha ${myName}, focus on building ROXY first, love go come later!`;
   if(t.includes('lagos'))return"Lagos na the best! Na where Roland build ROXY. From Lagos to the world!";
-  if(t.includes('roxy'))return"Na me be ROXY! Your Security Friend. I sabi 40+ topics now and I fit talk! Ask me any!";
-  let d=["Interesting! Ask me: 'What is binary?', 'How many OS?', 'What is DNS?', 'What is port scanning?'","I hear you! I now sabi 40+ topics - binary, DNS, OS, scanning, firewall, malware, encryption. Ask me one!","Hmm, try ask me: What is binary? What is DNS? How many OS? What is scanning?"];return d[Math.floor(Math.random()*d.length)];
+  if(t.includes('roxy'))return`Na me be ROXY! Your Security Friend, ${myName}. I sabi 40+ topics and I fit talk!`;
+  if(t.includes('my name')||t.includes('who am i'))return`You be ${myName}! I remember you. I no go forget you.`;
+  let d=[`Interesting, ${myName}! Ask me: 'What is binary?', 'How many OS?', 'What is DNS?'`,`I hear you, ${myName}! I sabi 40+ topics - binary, DNS, OS, scanning, firewall. Ask me one!`];return d[Math.floor(Math.random()*d.length)];
 }
 </script>
 </body>
