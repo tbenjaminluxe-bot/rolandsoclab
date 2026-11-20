@@ -1,101 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ROXY v8 - All Labs</title>
-<link rel="icon" href="data:image/svg+xml,[STRIPPED]">
-<link rel="apple-touch-icon" href="data:image/svg+xml,[STRIPPED]">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="ROXY v8">
-<meta name="theme-color" content="#0a0f1e">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROXY CHAT - Talk to ROXY</title>
 <style>
-body{background:#0a0f1e;color:white;font-family:Arial;padding:15px;text-align:center}
-h2{color:#00ff88;margin:5px}
-.tabs{display:flex;gap:5px;overflow-x:auto;margin:10px 0}
-.tab{flex:1;min-width:70px;padding:10px;background:#1a2340;border-radius:10px;border:1px solid #333;cursor:pointer;font-size:13px;font-weight:bold}
-.tab.active{background:#00c3ff;color:#000}
-.box{background:#1a2340;padding:15px;border-radius:15px;text-align:left;display:none}
-.box.active{display:block}
-input,textarea{width:95%;padding:12px;border-radius:10px;border:1px solid #00ff88;background:#000;color:#fff;font-size:15px;margin:5px 0}
-button{width:100%;padding:13px;border:none;border-radius:10px;background:#00c3ff;font-weight:bold;font-size:16px;margin-top:10px}
-#map{height:260px;border-radius:15px;margin-top:10px}
-pre{white-space:pre-wrap;font-size:13px}
-.verdict{padding:10px;border-radius:10px;margin-top:10px;font-weight:bold;text-align:center}
-.good{background:#00ff88;color:#000}.bad{background:#ff3b3b;color:#fff}.mid{background:#ffcc00;color:#000}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
+.header{background:#111;padding:15px;text-align:center;border-bottom:1px solid #222}
+.header h1{color:#00ff88;font-size:22px}.header h1 span{color:#ff0055}
+.header p{font-size:12px;color:#888}
+.status{color:#00ff88;font-size:12px}
+.chat{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px}
+.msg{max-width:85%;padding:12px 14px;border-radius:15px;font-size:15px;line-height:1.4}
+.me{background:#00ff88;color:#000;align-self:flex-end;border-bottom-right-radius:5px}
+.roxy{background:#1a1a1a;border:1px solid #333;align-self:flex-start;border-bottom-left-radius:5px}
+.roxy b{color:#00ff88}
+.time{font-size:10px;color:#888;display:block;margin-top:4px}
+.inputBox{display:flex;gap:8px;padding:12px;background:#111;border-top:1px solid #222}
+input{flex:1;padding:13px;background:#000;color:#fff;border:1px solid #333;border-radius:25px;outline:none}
+.sendBtn{background:#00ff88;color:#000;border:none;padding:0 20px;border-radius:25px;font-weight:bold;font-size:18px;cursor:pointer}
+.quick{display:flex;gap:6px;padding:8px 12px;background:#111;overflow-x:auto}
+.quick button{background:#1a1a1a;color:#fff;border:1px solid #333;padding:8px 12px;border-radius:20px;white-space:nowrap;cursor:pointer;font-size:12px}
+.typing{font-style:italic;color:#888;font-size:13px}
 </style>
 </head>
 <body>
-<h2>ROXY v8 ALL LABS</h2>
-<p>Built by Roland from Lagos 🇳🇬</p>
-
-<div class="tabs">
-<div class="tab active" onclick="show('ip',this)">IP Tracker</div>
-<div class="tab" onclick="show('scam',this)">Scam</div>
-<div class="tab" onclick="show('pass',this)">Password</div>
-<div class="tab" onclick="show('link',this)">Link</div>
-<div class="tab" onclick="show('port',this)">Ports</div>
+<div class="header">
+<h1>ROXY <span>CHAT</span> 💬</h1>
+<p>Your AI Security Friend | Built by Roland 🇳🇬</p>
+<p class="status">● Online - Ready to Chat</p>
 </div>
-
-<div id="ip" class="box active">
-<b>YOUR IP</b><p id="myip">Loading...</p>
-<input id="ipinput" placeholder="Enter IP e.g 8.8.8.8" value="8.8.8.8">
-<button onclick="track()">TRACK IP + MAP</button>
-<div id="map"></div><pre id="result"></pre>
+<div class="quick">
+<button onclick="quickAsk('Hi Roxy')">👋 Hi Roxy</button>
+<button onclick="quickAsk('Is this a scam?')">🚨 Check Scam</button>
+<button onclick="quickAsk('How to make strong password?')">🔑 Password</button>
+<button onclick="quickAsk('What is phishing?')">🎣 Phishing</button>
+<button onclick="quickAsk('Who built you?')">👑 Who built you?</button>
 </div>
-
-<div id="scam" class="box">
-<b>SCAM CHECKER</b><p>Paste any WhatsApp / SMS message</p>
-<textarea id="scammsg" rows="4" placeholder="Paste message here... e.g You have won... send OTP..."></textarea>
-<button onclick="checkScam()">CHECK SCAM</button>
-<div id="scamout"></div>
+<div class="chat" id="chat">
+<div class="msg roxy"><b>ROXY 🐩:</b> Hi Roland! Na me be ROXY CHAT. I fit chat with you, check scam messages, and teach you cybersecurity.<br><br>Try type: <b>"Hi"</b> or paste any suspicious message make I check am! 💬<span class="time">Now</span></div>
 </div>
-
-<div id="pass" class="box">
-<b>PASSWORD CHECKER</b>
-<input id="pw" type="text" placeholder="Type password e.g Roxy123!">
-<button onclick="checkPass()">CHECK PASSWORD</button>
-<div id="passout"></div>
-<p style="font-size:12px;color:#aaa">Note: This checks inside your phone only, e no send your password anywhere.</p>
+<div class="inputBox">
+<input id="inp" placeholder="Type message to ROXY..." onkeypress="if(event.key==='Enter')send()">
+<button class="sendBtn" onclick="send()">➤</button>
 </div>
-
-<div id="link" class="box">
-<b>LINK / PHISHING CHECKER</b>
-<input id="linkinput" placeholder="Paste link e.g http://bit.ly/free-money">
-<button onclick="checkLink()">CHECK LINK</button>
-<div id="linkout"></div>
-</div>
-
-<div id="port" class="box">
-<b>PORT SCANNER (EDUCATIONAL)</b>
-<p>Common ports and what they mean. This no dey hack — na to learn.</p>
-<input id="host" placeholder="Enter IP or domain e.g 8.8.8.8" value="8.8.8.8">
-<button onclick="checkPorts()">SHOW COMMON PORTS</button>
-<div id="portout"></div>
-</div>
-
 <script>
-function show(id,el){document.querySelectorAll('.box').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById(id).classList.add('active');el.classList.add('active');if(id==='ip'){setTimeout(()=>map.invalidateSize(),200)}}
-let map=L.map('map').setView([6.5244,3.3792],10);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);let marker;
-async function getIP(ip){
-  try{
-    let r=await fetch(ip?`https://ipwho.is/${ip}`:`https://ipwho.is/`);
-    let d=await r.json();
-    if(d.success!==false) return d;
-  }catch(e){}
-  try{
-    let r2=await fetch(ip?`https://ip-api.com/json/${ip}`:`https://ip-api.com/json/`);
-    let d2=await r2.json();
-    return {ip:d2.query,city:d2.city,country:d2.country,latitude:d2.lat,longitude:d2.lon,connection:{isp:d2.isp}};
-  }catch(e){ return {ip:'Check network - try TRACK again',city:'',country:''}; }
-}
-async function track(){let ip=document.getElementById('ipinput').value;document.getElementById('result').textContent='Tracking...';let d=await getIP(ip);document.getElementById('result').textContent=JSON.stringify(d,null,2);if(d.latitude){map.setView([d.latitude,d.longitude],10);if(marker)map.removeLayer(marker);marker=L.marker([d.latitude,d.longitude]).addTo(map).bindPopup(`${d.city}, ${d.country} - ${d.connection?.isp||''}`).openPopup();}}
-window.onload=async()=>{let me=await getIP();document.getElementById('myip').innerText=`${me.ip} - ${me.city}, ${me.country} - ${me.connection?.isp||''}`;track();}
-function checkScam(){let m=document.getElementById('scammsg').value.toLowerCase();let s=0;if(m.includes('win')||m.includes('won'))s+=30;if(m.includes('urgent')||m.includes('now'))s+=20;if(m.includes('pay')||m.includes('account'))s+=30;if(m.includes('otp')||m.includes('code')||m.includes('pin'))s+=40;if(m.includes('free')||m.includes('lottery'))s+=25;let c=s>=50?'bad':s>=30?'mid':'good';let t=s>=50?'🚨 SCAM - BLOCK REPORT DELETE':s>=30?'⚠️ SUSPICIOUS - Be Careful':'✅ Looks OK - Still be careful';document.getElementById('scamout').innerHTML=`<div class="verdict ${c}">Score: ${s}<br>${t}</div>`;}
-function checkPass(){let pw=document.getElementById('pw').value;let s=0;if(pw.length>=8)s+=20;if(/[A-Z]/.test(pw))s+=20;if(/[a-z]/.test(pw))s+=20;if(/[0-9]/.test(pw))s+=20;if(/[!@#$%^&*]/.test(pw))s+=20;let c=s==100?'good':s>=60?'mid':'bad';let t=s==100?'✅ STRONG PASSWORD':s>=60?'⚠️ MEDIUM - Add symbol/number':'🚨 WEAK - CHANGE NOW';document.getElementById('passout').innerHTML=`<div class="verdict ${c}">Score: ${s}/100<br>${t}<br>Length: ${pw.length}</div>`;}
-function checkLink(){let l=document.getElementById('linkinput').value.toLowerCase();let s=0;if(l.includes('http://'))s+=30;if(l.includes('bit.ly')||l.includes('tinyurl'))s+=30;if(l.includes('free')||l.includes('money'))s+=25;if(l.includes('verify')||l.includes('login'))s+=25;let c=s>=50?'bad':s>=30?'mid':'good';let t=s>=50?'🚨 PHISHING - DO NOT CLICK':s>=30?'⚠️ SUSPICIOUS - Verify first':'✅ Looks OK - Still verify';document.getElementById('linkout').innerHTML=`<div class="verdict ${c}">Score: ${s}<br>${t}</div>`;}
-function checkPorts(){let h=document.getElementById('host').value||'8.8.8.8';let ports=[[21,'FTP - File Transfer'],[22,'SSH - Secure Login'],[23,'Telnet - Old & Unsafe'],[25,'SMTP - Email Sending'],[53,'DNS - Website Names'],[80,'HTTP - Website'],[443,'HTTPS - Secure Website'],[3306,'MySQL - Database'],[8080,'Alt Web Server']];let html=`<p>Checking common ports for <b>${h}</b> (learning list):</p>`;ports.forEach(p=>{html+=`<div style="padding:8px;border-bottom:1px solid #333"><b>Port ${p[0]}</b> - ${p[1]}</div>`});html+=`<p style="font-size:12px;color:#aaa">Real port scanning needs a server. This version na to learn wetin each port dey do.</p>`;document.getElementById('portout').innerHTML=html;}
+let chat=document.getElementById('chat');let inp=document.getElementById('inp');
+function quickAsk(t){inp.value=t;send();}
+function addMsg(text,who){let d=document.createElement('div');d.className='msg '+who;let name=who==='me'?'You':'ROXY 🐩';d.innerHTML=`<b>${name}:</b> ${text}<span class="time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
+function send(){let t=inp.value.trim();if(!t)return;addMsg(t,'me');inp.value='';let ty=document.createElement('div');ty.className='typing';ty.id='typing';ty.innerText='ROXY is typing...';chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{document.getElementById('typing').remove();addMsg(getReply(t),'roxy');},800);}
+function getReply(text){let t=text.toLowerCase();
+if(t.includes('hi')||t.includes('hello')||t.includes('good morning')||t.includes('hey'))return"Hi Roland! Good to see you 😊 How far today? You wan make I check scam message, or you wan learn cybersecurity?";
+if(t.includes('how are you')||t.includes('how far'))return"I dey fine, dey guard your network like watchdog 🐩! How you dey? Your ROXY still dey work well?";
+if(t.includes('who built')||t.includes('who made')||t.includes('your creator'))return"Roland from Lagos 🇳🇬 build me! E be 16-year-old SOC engineer. E build ROXY v9 and now ROXY CHAT. E sabi work!";
+if(t.includes('thank'))return"You are welcome, boss! Na my work to protect you. Anything else? 💯";
+if(t.includes('bye')||t.includes('good night'))return"Good night, Roland! Lock your phone, no click strange link. ROXY dey watch 🐩💤";
+if(t.includes('phishing'))return"<b>Phishing na:</b> When scammer send fake link wey look like real bank / Instagram, to steal your password.<br><br>Rule: <b>Verify Before You Trust!</b> No click link from stranger.";
+if(t.includes('password')&&t.includes('strong'))return"<b>Strong Password:</b><br>1. At least 12 characters<br>2. Mix CAPITAL + small + number + symbol<br>Example: <b>Roland@Lagos2026!</b><br>3. No use your name or birthday alone.";
+if(t.includes('password'))return"For strong password, use 12+ characters, CAPITAL + number + symbol. Want example? Type 'how to make strong password?'";
+if(t.includes('hacker')||t.includes('hack'))return"Hacker na person wey dey try break into system. Good hacker = protect people (like you). Bad hacker = steal. You dey become good hacker - SOC Analyst! 🔥";
+if(t.includes('scam')&&t.includes('what'))return"Scam na trick to steal your money or account. Common ones for Nigeria: Fake bank manager, fake crypto investment, fake giveaway. If e too good to be true, na scam!";
+if(t.includes('vpn'))return"VPN dey hide your IP and protect you for public WiFi. E good, but no use free VPN wey dey steal data. Use trusted one.";
+if(t.includes('ip'))return"IP na your phone/computer address for internet, like house address. If person get your IP, dem fit try scan your ports. That's why ROXY Watchdog dey watch am!";
+if(t.includes('port'))return"Port na door for your computer. Port 21, 22, 23 na risky if open. ROXY Port Checker fit check am for you!";
+if(t.includes('watchdog'))return"🐩 Watchdog na my dog! E dey watch your network 24/7. If person scan your ports, e go bark: 'SCAN DETECTED!' and block the IP. Your last real alert na from 45.3.32.156!";
+if(t.includes('bank account')||t.includes('manager')||t.includes('handle my finances')||t.includes('urgent')||t.includes('verify your account')||t.includes('send money')||t.includes('giveaway'))return"🚨 <b>SCAM ALERT! Score: 95/100</b><br><br>This message get scam signs: bank / manager / urgent / money.<br><br><b>DO:</b> Block, Report, Delete.<br><b>DON'T:</b> Reply, send money, click link.<br><br>You did well to ask me first, Roland!";
+if(t.includes('http')||t.includes('www.')||t.includes('.com')){if(t.includes('free')||t.includes('verify')||t.includes('login')||t.includes('gift'))return"🚨 <b>That link look suspicious!</b> E get bait words like free/verify/gift. No click am. If na bank, go to bank app directly, no use link.";return"That link look okay for now, but still be careful. Rule: Verify Before You Trust!";}
+if(t.includes('joke'))return"Why did the hacker break up with the internet? Because e get too many connections! 😂";
+if(t.includes('love')||t.includes('girlfriend'))return"Haha Roland 😂 Focus on building ROXY first, love go come later. Secure your future first!";
+if(t.includes('age')||t.includes('how old'))return"I be AI, I no get age. But my builder Roland na 16 and e don build 2 apps! How many 16-year-old you know wey don do that? 🔥";
+if(t.includes('roxy'))return"Na me be ROXY! Your Security Friend 🐩. I dey here to chat, check scam, and teach you cybersecurity. Ask me anything!";
+if(t.includes('lagos'))return"Lagos na the best! 🇳🇬 Na where Roland build ROXY. From Lagos to the world!";
+let d=["Interesting! Tell me more, Roland. You wan make I check if na scam, or you wan learn something new?","I hear you! You fit ask me: 'What is phishing?', 'Check this scam', or 'How to make strong password?'","Hmm, I never learn that one yet. But I sabi scam, password, phishing, IP, ports, watchdog. Ask me one of those!","Good question! Can you explain small? Or try paste the message make I check if na scam."];return d[Math.floor(Math.random()*d.length)];}
 </script>
 </body>
 </html>
