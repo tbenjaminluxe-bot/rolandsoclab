@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY v5.4 - Real Comments</title>
+<title>ROXY v5.5 - Share + Search</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column;transition:0.3s}
@@ -89,12 +89,14 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 .postActions{display:flex;gap:8px;flex-wrap:wrap}
 .postActions button{background:#222!important;color:#fff!important;border:1px solid #444!important;padding:6px 10px!important;font-size:12px!important;width:auto!important;border-radius:20px!important}
 .postActions button.liked{background:#ff0055!important;color:#fff!important;border-color:#ff0055!important}
+.postActions button.shareBtn{background:#00aaff!important;color:#fff!important;border-color:#00aaff!important}
 .commentBox{background:#111;border-radius:10px;padding:8px;margin-top:8px}
 .commentItem{background:#000;border:1px solid #222;border-radius:8px;padding:7px 8px;margin-top:6px;font-size:13px;line-height:1.4}
 .commentItem b{color:#00ff88;font-size:12px}
 .commentRow{display:flex;gap:6px;margin-top:8px}
 .commentRow input{flex:1;background:#000!important;color:#fff!important;border:1px solid #333!important;border-radius:20px!important;padding:8px 12px!important;min-height:36px!important;font-size:13px}
 .commentRow button{width:52px!important;background:#00ff88!important;color:#000!important;border:none!important;border-radius:20px!important;font-weight:bold!important;font-size:13px!important;padding:0!important}
+.searchInput{background:#000!important;border:1px solid #00ff88!important;border-radius:25px!important;padding:10px 14px!important;font-size:14px!important}
 body.light{background:#f2f2f2;color:#000}
 body.light .header{background:#fff;border-color:#ddd}
 body.light .header p{color:#666}
@@ -112,12 +114,13 @@ body.light .inputBox input{background:#f9f9f9;color:#000;border-color:#ddd}
 body.light .commentBox{background:#eee}
 body.light .commentItem{background:#fff;border-color:#ddd;color:#000}
 body.light .commentRow input{background:#fff!important;color:#000!important;border-color:#ddd!important}
+body.light .searchInput{background:#fff!important;color:#000!important}
 </style>
 </head>
 <body>
 <div class="header">
 <button class="themeBtn" id="themeBtn" onclick="toggleTheme()">🌙</button>
-<h1>ROXY <span>CHAT v5.4 COMMENTS</span> 📱🧠</h1>
+<h1>ROXY <span>CHAT v5.5 SHARE</span> 📱🧠</h1>
 <p>Social App Style + Smart AI + Quiz L1/L2/L3 | By Roland 🇳🇬</p>
 <p class="status" id="statusText">● Online</p>
 </div>
@@ -150,7 +153,8 @@ body.light .commentRow input{background:#fff!important;color:#000!important;bord
 </div>
 
 <div id="feedBox" class="scamBox hidden" style="border-color:#ff0055;">
-<h3 style="color:#ffaaaa;">📝 ROXY FEED - Post + Comment Like TikTok!</h3>
+<h3 style="color:#ffaaaa;">📝 ROXY FEED - Post + Comment + Share!</h3>
+<input class="searchInput" id="postSearch" placeholder="🔍 Search posts... type 'good' or 'Nmap' or 'Roland'" oninput="renderPosts()">
 <textarea id="postInput" placeholder="Wetin dey your mind? e.g. I just score 10/10 for L3! 🔥"></textarea>
 <button style="background:#ff0055;color:#fff;" onclick="createPost()">📤 POST NOW</button>
 <div id="postsList"></div>
@@ -244,6 +248,7 @@ body.light .commentRow input{background:#fff!important;color:#000!important;bord
 
 <div id="friendsPage" class="scamBox hidden" style="border-color:#00aaff;">
 <h3 style="color:#aaffff;">👥 SOC FRIENDS - Leaderboard</h3>
+<input class="searchInput" id="friendSearch" placeholder="🔍 Search friends... type 'Felix' or 'Ada'" oninput="renderFriends()">
 <div id="friendsList"></div>
 <button class="toolBtn" onclick="alert('Share your link bit.ly/4t9oetQ!')">➕ Add Friend</button>
 </div>
@@ -279,6 +284,7 @@ body.light .commentRow input{background:#fff!important;color:#000!important;bord
 <button style="background:#333;color:#fff;" onclick="document.getElementById('editProfileBox').classList.add('hidden')">Cancel</button>
 </div>
 <button style="background:#fff;color:#000;margin-top:10px;" onclick="openEditProfile()">✏️ Edit Profile</button>
+<button style="background:#00aaff;color:#fff;margin-top:8px;" onclick="shareProfile()">📤 Share My Profile</button>
 <button class="clearBtn" onclick="doLogout()">🚪 Logout</button>
 </div>
 
@@ -461,24 +467,27 @@ function resetPin(){if(!confirm('Reset PIN?'))return;localStorage.removeItem('ro
 function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
 function toggleTheme(){let isLight=document.body.classList.contains('light');if(isLight){document.body.classList.remove('light');localStorage.setItem('roxy_theme','dark');document.getElementById('themeBtn').innerText='🌙';}else{document.body.classList.add('light');localStorage.setItem('roxy_theme','light');document.getElementById('themeBtn').innerText='☀️';}}
 function applyTheme(){if(localStorage.getItem('roxy_theme')==='light'){document.body.classList.add('light');document.getElementById('themeBtn').innerText='☀️';}}
-// FEED + COMMENTS
+// FEED + COMMENTS + SHARE + SEARCH
 function toggleFeed(){let b=document.getElementById('feedBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderPosts();}}
-function renderPosts(){let list=document.getElementById('postsList');if(posts.length===0){list.innerHTML='<p style="color:#888;">No posts yet. Be first!</p>';return;}list.innerHTML=posts.map((p,i)=>{let cmts=(p.comments||[]).map(c=>`<div class="commentItem"><b>${c.name}:</b> ${c.text}</div>`).join('');return `<div class="postCard"><b>${p.name}</b> <span style="color:#888;font-size:12px;">${p.handle} • ${p.time}</span><div class="postText">${p.text}</div><div class="postActions"><button class="${p.liked?'liked':''}" onclick="likePost(${i})">❤️ ${p.likes}</button><button onclick="document.getElementById('cbox-${i}').classList.toggle('hidden')">💬 ${(p.comments||[]).length} Comments</button><button onclick="deletePost(${i})">🗑️</button></div><div class="commentBox" id="cbox-${i}"><div>${cmts||'<span style="color:#888;font-size:12px;">No comments yet. Be first!</span>'}</div><div class="commentRow"><input id="cinput-${i}" placeholder="Write a comment..." onkeypress="if(event.key==='Enter')addComment(${i})"><button onclick="addComment(${i})">➤</button></div></div></div>`;}).join('');}
+function renderPosts(){let q=(document.getElementById('postSearch').value||'').toLowerCase();let list=document.getElementById('postsList');let filtered=posts.map((p,origIdx)=>({...p,origIdx})).filter(p=>(p.name+p.handle+p.text).toLowerCase().includes(q));if(filtered.length===0){list.innerHTML='<p style="color:#888;">No posts found for "'+q+'". Try another word!</p>';return;}list.innerHTML=filtered.map(p=>{let i=p.origIdx;let cmts=(p.comments||[]).map(c=>`<div class="commentItem"><b>${c.name}:</b> ${c.text}</div>`).join('');return `<div class="postCard"><b>${p.name}</b> <span style="color:#888;font-size:12px;">${p.handle} • ${p.time}</span><div class="postText">${p.text}</div><div class="postActions"><button class="${p.liked?'liked':''}" onclick="likePost(${i})">❤️ ${p.likes}</button><button onclick="document.getElementById('cbox-${i}').classList.toggle('hidden')">💬 ${(p.comments||[]).length}</button><button class="shareBtn" onclick="sharePost(${i})">📤 Share</button><button onclick="deletePost(${i})">🗑️</button></div><div class="commentBox" id="cbox-${i}"><div>${cmts||'<span style="color:#888;font-size:12px;">No comments yet. Be first!</span>'}</div><div class="commentRow"><input id="cinput-${i}" placeholder="Write a comment..." onkeypress="if(event.key==='Enter')addComment(${i})"><button onclick="addComment(${i})">➤</button></div></div></div>`;}).join('');}
 function createPost(){let t=document.getElementById('postInput').value.trim();if(!t){alert('Type something first!');return;}posts.unshift({name:myName||'Roland',handle:'@rolandsoclab',text:t,likes:0,liked:false,time:'Just now',comments:[]});localStorage.setItem('roxy_posts',JSON.stringify(posts));document.getElementById('postInput').value='';renderPosts();alert('Posted! 🔥');}
 function likePost(i){posts[i].liked=!posts[i].liked;posts[i].likes+=posts[i].liked?1:-1;localStorage.setItem('roxy_posts',JSON.stringify(posts));renderPosts();}
 function deletePost(i){if(!confirm('Delete this post?'))return;posts.splice(i,1);localStorage.setItem('roxy_posts',JSON.stringify(posts));renderPosts();}
 function addComment(i){let el=document.getElementById('cinput-'+i);let t=el.value.trim();if(!t){alert('Type comment first!');return;}if(!posts[i].comments)posts[i].comments=[];posts[i].comments.push({name:myName||'Roland',text:t});localStorage.setItem('roxy_posts',JSON.stringify(posts));renderPosts();}
+function sharePost(i){let p=posts[i];let text=`🔥 ${p.name} (${p.handle}) on ROXY:\n"${p.text}"\n❤️ ${p.likes} likes\n\nCheck ROXY App: https://bit.ly/4t9oetQ`;if(navigator.share){navigator.share({title:'ROXY Post',text:text,url:'https://bit.ly/4t9oetQ'}).catch(()=>{});}else{navigator.clipboard.writeText(text).then(()=>alert('Copied! Paste am for WhatsApp! 📤')).catch(()=>alert(text));}}
+function shareProfile(){let text=`👑 Check my Verified ROXY Profile!\n${myName} - @rolandsoclab ✅\n1M Followers | 5M Likes | L3 10/10 🔥\n\nhttps://bit.ly/4t9oetQ`;if(navigator.share){navigator.share({title:'My ROXY Profile',text:text,url:'https://bit.ly/4t9oetQ'}).catch(()=>{});}else{navigator.clipboard.writeText(text).then(()=>alert('Copied! Share for WhatsApp!')).catch(()=>alert(text));}}
+function renderFriends(){let q=(document.getElementById('friendSearch').value||'').toLowerCase();let filtered=FRIENDS.filter(f=>(f.name+f.handle+f.bio+f.score).toLowerCase().includes(q));document.getElementById('friendsList').innerHTML=filtered.length?filtered.map(f=>`<div class="friendCard"><div class="friendAvatar">${f.avatar}</div><div style="flex:1;"><b>${f.name}</b> <span style="color:#888;font-size:12px;">${f.handle}</span><br><span style="font-size:12px;color:#aaa;">${f.bio}</span><br><span style="font-size:12px;color:#00ff88;">🏆 ${f.score}</span></div><button style="background:#00ff88;color:#000;padding:6px 12px;border-radius:20px;border:none;font-weight:bold;cursor:pointer;" onclick="alert('Follow ${f.name}!')">Follow</button></div>`).join(''):'<p style="color:#888;">No friend found for "'+q+'"</p>';}
 // PROFILE
 function loadProfile(){let p=JSON.parse(localStorage.getItem('roxy_profile')||'null');if(!p)return;applyProfile(p);}
 function applyProfile(p){if(p.name)document.getElementById('profileName').innerHTML=p.name+' <span class="verified">✓</span>';if(p.handle)document.getElementById('profileHandle').innerHTML=p.handle+' <span class="verified">✓</span>';if(p.bio)document.getElementById('profileBio').innerHTML=p.bio.replace(/\n/g,'<br>');if(p.emoji){document.getElementById('profilePic').innerText=p.emoji;selectedEmoji=p.emoji;}}
 function openEditProfile(){let box=document.getElementById('editProfileBox');box.classList.remove('hidden');let p=JSON.parse(localStorage.getItem('roxy_profile')||'{}');document.getElementById('editName').value=p.name||('# Cybersecurity - '+myName);document.getElementById('editHandle').value=p.handle||'@rolandsoclab';document.getElementById('editBio').value=(p.bio||'').replace(/<br>/g,' ');document.getElementById('editFollowing').value=p.following||'3';document.getElementById('editFollowers').value=p.followers||'1M';document.getElementById('editLikes').value=p.likes||'5M';}
 function pickEmoji(e,btn){selectedEmoji=e;document.querySelectorAll('.emojiRow button').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');}
 function saveProfile(){let p={name:document.getElementById('editName').value.trim()||('# Cybersecurity - '+myName),handle:document.getElementById('editHandle').value.trim()||'@rolandsoclab',bio:document.getElementById('editBio').value.trim()||'NOC Engineer | Aspiring SOC Analyst',emoji:selectedEmoji,following:document.getElementById('editFollowing').value.trim()||'3',followers:document.getElementById('editFollowers').value.trim()||'1M',likes:document.getElementById('editLikes').value.trim()||'5M'};localStorage.setItem('roxy_profile',JSON.stringify(p));applyProfile(p);let stats=document.querySelectorAll('#profilePage > div:nth-child(4) > div b');if(stats.length>=3){stats[0].innerText=p.following;stats[1].innerText=p.followers;stats[2].innerText=p.likes;}document.getElementById('editProfileBox').classList.add('hidden');alert('Profile Saved! ✅ Verified!');speak('Profile saved, verified star!');}
-function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('bottomNav').style.display='flex';document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! Real Comments don land!`:`Hi ${myName}! ROXY v5.4! Tap 📝 Feed, comment on post!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
+function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('bottomNav').style.display='flex';document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! Share + Search don land!`:`Hi ${myName}! ROXY v5.5! Tap 📤 Share, 🔍 Search!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
 function setNav(active){['navHome','navFriends','navInbox','navProfile'].forEach(id=>document.getElementById(id).classList.remove('active'));if(active)document.getElementById(active).classList.add('active');}
 function hideAll(){['feedBox','smartBox','scamBox','histBox','cmdBox','linuxBox','sharkBox','pyBox','mbBox','quizBox','quiz2Box','quiz3Box','phishBox','friendsPage','profilePage','inboxPage'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
 function goHome(){setNav('navHome');hideAll();let b=document.getElementById('feedBox');b.classList.remove('hidden');renderPosts();}
-function goFriends(){setNav('navFriends');hideAll();let b=document.getElementById('friendsPage');b.classList.remove('hidden');document.getElementById('friendsList').innerHTML=FRIENDS.map(f=>`<div class="friendCard"><div class="friendAvatar">${f.avatar}</div><div style="flex:1;"><b>${f.name}</b> <span style="color:#888;font-size:12px;">${f.handle}</span><br><span style="font-size:12px;color:#aaa;">${f.bio}</span><br><span style="font-size:12px;color:#00ff88;">🏆 ${f.score}</span></div><button style="background:#00ff88;color:#000;padding:6px 12px;border-radius:20px;border:none;font-weight:bold;cursor:pointer;" onclick="alert('Follow ${f.name}!')">Follow</button></div>`).join('');}
+function goFriends(){setNav('navFriends');hideAll();let b=document.getElementById('friendsPage');b.classList.remove('hidden');renderFriends();}
 function goPlus(){hideAll();let c=confirm('➕ PLUS!\\nOK = Create Post 📝\\nCancel = Check Scam');if(c){toggleFeed();}else{toggleScam();}}
 function goInbox(){setNav('navInbox');hideAll();let b=document.getElementById('inboxPage');b.classList.remove('hidden');document.getElementById('inboxBadge').style.display='none';let l1=localStorage.getItem('roxy_score_l1')||'No play yet';let l2=localStorage.getItem('roxy_score_l2')||'No play yet';let l3=localStorage.getItem('roxy_score_l3')||'No play yet';document.getElementById('inboxList').innerHTML=`<div class="friendCard"><div class="friendAvatar">🐩</div><div><b>ROXY</b><br><span style="font-size:12px;">Welcome ${myName}! L1: ${l1}, L2: ${l2}, L3: ${l3}</span></div></div>`;}
 function goProfile(){setNav('navProfile');hideAll();let b=document.getElementById('profilePage');b.classList.remove('hidden');loadProfile();let l1=localStorage.getItem('roxy_score_l1')||'No play yet';let l2=localStorage.getItem('roxy_score_l2')||'No play yet';let l3=localStorage.getItem('roxy_score_l3')||'No play yet';document.getElementById('profileScores').innerHTML=`<b>🏆 MY SCORES:</b><br>🎮 L1: ${l1}<br>🔥 L2: ${l2}<br>💜 L3: ${l3}<br>📟 Commands: ${allCmds().length}<br>🛡️ Scams: ${history.length}`;}
