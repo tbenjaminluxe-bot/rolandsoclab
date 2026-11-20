@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY v5.2 - Verified</title>
+<title>ROXY v5.3 - Feed + Theme</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
-.header{background:#000;padding:12px;text-align:center;border-bottom:1px solid #222}
+body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column;transition:0.3s}
+.header{background:#000;padding:12px;text-align:center;border-bottom:1px solid #222;position:relative}
 .header h1{color:#00ff88;font-size:20px}.header h1 span{color:#ff0055}
 .header p{font-size:11px;color:#888}.status{color:#00ff88;font-size:11px}
+.themeBtn{position:absolute;top:10px;right:10px;background:#222;color:#fff;border:1px solid #555;border-radius:50%;width:38px;height:38px;font-size:18px;cursor:pointer}
 .login{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:25px;gap:14px;text-align:center}
 .login h2{color:#00ff88;font-size:28px}.login p{color:#aaa;font-size:14px}
 .login input{width:100%;max-width:320px;padding:14px;background:#111;color:#fff;border:1px solid #333;border-radius:12px;outline:none;font-size:16px}
@@ -29,6 +30,7 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 .voiceBar button.phishBtn{background:#ff6600;color:#fff}
 .voiceBar button.mbBtn{background:#ff99cc;color:#000}
 .voiceBar button.smartBtn{background:#fff;color:#000}
+.voiceBar button.feedBtn{background:#ff0055;color:#fff}
 .chat{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px;padding-bottom:170px}
 .msg{max-width:88%;padding:12px 14px;border-radius:15px;font-size:15px;line-height:1.45}
 .me{background:#00ff88;color:#000;align-self:flex-end;border-bottom-right-radius:5px}
@@ -81,11 +83,33 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 .emojiRow{display:flex;gap:8px;justify-content:center;margin:8px 0}
 .emojiRow button{background:#222!important;color:#fff!important;border:1px solid #444!important;width:45px!important;height:45px!important;font-size:22px!important;padding:0!important;border-radius:50%!important}
 .emojiRow button.sel{border:2px solid #00ff88!important;background:#00ff88!important}
+.postCard{background:#000;border:1px solid #333;border-radius:14px;padding:12px;margin-top:10px;text-align:left}
+.postCard b{color:#fff}
+.postCard .postText{font-size:14px;line-height:1.5;margin:8px 0}
+.postActions{display:flex;gap:8px}
+.postActions button{background:#222!important;color:#fff!important;border:1px solid #444!important;padding:6px 10px!important;font-size:12px!important;width:auto!important;border-radius:20px!important}
+.postActions button.liked{background:#ff0055!important;color:#fff!important;border-color:#ff0055!important}
+/* LIGHT MODE */
+body.light{background:#f2f2f2;color:#000}
+body.light .header{background:#fff;border-color:#ddd}
+body.light .header p{color:#666}
+body.light .voiceBar,body.light .quick,body.light .inputBox{background:#fff;border-color:#ddd}
+body.light .scamBox{background:#fff;border-color:#ddd;color:#000}
+body.light .scamBox input,body.light .scamBox textarea{background:#f9f9f9;color:#000;border-color:#ddd}
+body.light .bottomNav{background:#fff;border-color:#ddd}
+body.light .bottomNav button{color:#666}
+body.light .postCard{background:#f9f9f9;border-color:#ddd}
+body.light .postCard b{color:#000}
+body.light .roxy{background:#fff;border-color:#ddd;color:#000}
+body.light .login input{background:#fff;color:#000;border-color:#ddd}
+body.light .quick button{background:#eee;color:#000;border-color:#ddd}
+body.light .inputBox input{background:#f9f9f9;color:#000;border-color:#ddd}
 </style>
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v5.2 VERIFIED</span> 📱🧠</h1>
+<button class="themeBtn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+<h1>ROXY <span>CHAT v5.3 FEED</span> 📱🧠</h1>
 <p>Social App Style + Smart AI + Quiz L1/L2/L3 | By Roland 🇳🇬</p>
 <p class="status" id="statusText">● Online</p>
 </div>
@@ -101,6 +125,7 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 <div id="chatScreen" class="hidden" style="display:flex;flex-direction:column;flex:1;">
 <div class="voiceBar">
 <button id="voiceBtn" onclick="toggleVoice()">🔊 Voice: ON</button>
+<button class="feedBtn" onclick="toggleFeed()">📝 Feed</button>
 <button class="smartBtn" onclick="toggleSmart()">🧠 Smart Tools</button>
 <button class="scamBtn" onclick="toggleScam()">🛡️ Scam</button>
 <button class="histBtn" onclick="toggleHistory()">📜 History (<span id="histCount">0</span>)</button>
@@ -114,6 +139,13 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 <button class="quiz3Btn" onclick="toggleQuiz3()">💜 L3</button>
 <button class="phishBtn" onclick="togglePhish()">🌐 Phishing</button>
 <button class="logout" onclick="doLogout()">Logout</button>
+</div>
+
+<div id="feedBox" class="scamBox hidden" style="border-color:#ff0055;">
+<h3 style="color:#ffaaaa;">📝 ROXY FEED - Post Like TikTok!</h3>
+<textarea id="postInput" placeholder="Wetin dey your mind? e.g. I just score 10/10 for L3! 🔥"></textarea>
+<button style="background:#ff0055;color:#fff;" onclick="createPost()">📤 POST NOW</button>
+<div id="postsList"></div>
 </div>
 
 <div id="smartBox" class="scamBox hidden" style="border-color:#fff;">
@@ -219,7 +251,6 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 <div><b>5M</b><br><span style="color:#888;font-size:12px;">Likes</span></div>
 </div>
 <div id="profileScores" style="text-align:left;background:#000;border-radius:10px;padding:10px;font-size:13px;"></div>
-
 <div id="editProfileBox" class="editBox hidden">
 <h3 style="color:#1DA1F2;">✏️ EDIT PROFILE</h3>
 <p style="font-size:12px;color:#aaa;">Choose your emoji:</p>
@@ -239,7 +270,6 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 <button style="background:#1DA1F2;color:#fff;" onclick="saveProfile()">💾 SAVE PROFILE</button>
 <button style="background:#333;color:#fff;" onclick="document.getElementById('editProfileBox').classList.add('hidden')">Cancel</button>
 </div>
-
 <button style="background:#fff;color:#000;margin-top:10px;" onclick="openEditProfile()">✏️ Edit Profile</button>
 <button class="clearBtn" onclick="doLogout()">🚪 Logout</button>
 </div>
@@ -277,6 +307,8 @@ let voiceOn=true;let myName=localStorage.getItem('roxy_name')||'';
 let savedPin=localStorage.getItem('roxy_pin')||'';
 let history=JSON.parse(localStorage.getItem('roxy_history')||'[]');
 let selectedEmoji='🦈';
+let posts=JSON.parse(localStorage.getItem('roxy_posts')||'[]');
+if(posts.length===0){posts=[{name:'ROXY 🐩',handle:'@roxy_ai',text:'Welcome to ROXY Feed! Post your win here! I just score 10/10 for L3! 🔥',likes:152,liked:false,time:'Just now'},{name:'Felix',handle:'@felix_soc',text:'Nmap -sS is my best command! Who else sabi am?',likes:89,liked:false,time:'1h ago'}];localStorage.setItem('roxy_posts',JSON.stringify(posts));}
 let DEFAULT_CMDS=[
 {t:'Nmap - Scan One Device',c:'nmap 192.168.1.1',d:'Check ports.',tag:'nmap'},
 {t:'Nmap - Scan All WiFi',c:'nmap -sn 192.168.1.0/24',d:'Find all devices.',tag:'nmap'},
@@ -414,22 +446,31 @@ let FRIENDS=[
 let myCmds=JSON.parse(localStorage.getItem('roxy_cmds')||'[]');
 let quizIdx=0,quizScore=0,quiz2Idx=0,quiz2Score=0,quiz3Idx=0,quiz3Score=0;
 function allCmds(){return [...DEFAULT_CMDS.map(c=>({...c,mine:false})), ...myCmds.map((c,i)=>({...c,mine:true,idx:i}))];}
-window.onload=function(){updateHistCount();updateCmdCount();loadProfile();if(myName){showChat(true);}};
+window.onload=function(){updateHistCount();updateCmdCount();loadProfile();applyTheme();if(myName){showChat(true);}};
 function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN!');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
 function resetPin(){if(!confirm('Reset PIN?'))return;localStorage.removeItem('roxy_pin');localStorage.removeItem('roxy_name');location.reload();}
 function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
-// --- NEW: PROFILE EDIT ---
+// THEME
+function toggleTheme(){let isLight=document.body.classList.contains('light');if(isLight){document.body.classList.remove('light');localStorage.setItem('roxy_theme','dark');document.getElementById('themeBtn').innerText='🌙';}else{document.body.classList.add('light');localStorage.setItem('roxy_theme','light');document.getElementById('themeBtn').innerText='☀️';}}
+function applyTheme(){if(localStorage.getItem('roxy_theme')==='light'){document.body.classList.add('light');document.getElementById('themeBtn').innerText='☀️';}}
+// FEED
+function toggleFeed(){let b=document.getElementById('feedBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderPosts();}}
+function renderPosts(){let list=document.getElementById('postsList');if(posts.length===0){list.innerHTML='<p style="color:#888;">No posts yet. Be first!</p>';return;}list.innerHTML=posts.map((p,i)=>`<div class="postCard"><b>${p.name}</b> <span style="color:#888;font-size:12px;">${p.handle} • ${p.time}</span><div class="postText">${p.text}</div><div class="postActions"><button class="${p.liked?'liked':''}" onclick="likePost(${i})">❤️ ${p.likes}</button><button onclick="alert('Comment coming soon!')">💬 Comment</button><button onclick="deletePost(${i})">🗑️</button></div></div>`).join('');}
+function createPost(){let t=document.getElementById('postInput').value.trim();if(!t){alert('Type something first!');return;}posts.unshift({name:myName||'Roland',handle:'@rolandsoclab',text:t,likes:0,liked:false,time:'Just now'});localStorage.setItem('roxy_posts',JSON.stringify(posts));document.getElementById('postInput').value='';renderPosts();alert('Posted! 🔥');}
+function likePost(i){posts[i].liked=!posts[i].liked;posts[i].likes+=posts[i].liked?1:-1;localStorage.setItem('roxy_posts',JSON.stringify(posts));renderPosts();}
+function deletePost(i){if(!confirm('Delete this post?'))return;posts.splice(i,1);localStorage.setItem('roxy_posts',JSON.stringify(posts));renderPosts();}
+// PROFILE
 function loadProfile(){let p=JSON.parse(localStorage.getItem('roxy_profile')||'null');if(!p)return;applyProfile(p);}
-function applyProfile(p){if(p.name)document.getElementById('profileName').innerHTML=p.name+' <span class="verified">✓</span>';if(p.handle)document.getElementById('profileHandle').innerHTML=p.handle+' <span class="verified">✓</span>';if(p.bio)document.getElementById('profileBio').innerHTML=p.bio.replace(/\n/g,'<br>');if(p.emoji){document.getElementById('profilePic').innerText=p.emoji;selectedEmoji=p.emoji;}if(p.following||p.followers||p.likes){let divs=document.querySelectorAll('#profilePage > div:nth-child(4) > div');}}
+function applyProfile(p){if(p.name)document.getElementById('profileName').innerHTML=p.name+' <span class="verified">✓</span>';if(p.handle)document.getElementById('profileHandle').innerHTML=p.handle+' <span class="verified">✓</span>';if(p.bio)document.getElementById('profileBio').innerHTML=p.bio.replace(/\n/g,'<br>');if(p.emoji){document.getElementById('profilePic').innerText=p.emoji;selectedEmoji=p.emoji;}}
 function openEditProfile(){let box=document.getElementById('editProfileBox');box.classList.remove('hidden');let p=JSON.parse(localStorage.getItem('roxy_profile')||'{}');document.getElementById('editName').value=p.name||('# Cybersecurity - '+myName);document.getElementById('editHandle').value=p.handle||'@rolandsoclab';document.getElementById('editBio').value=(p.bio||'').replace(/<br>/g,' ');document.getElementById('editFollowing').value=p.following||'3';document.getElementById('editFollowers').value=p.followers||'1M';document.getElementById('editLikes').value=p.likes||'5M';}
 function pickEmoji(e,btn){selectedEmoji=e;document.querySelectorAll('.emojiRow button').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');}
 function saveProfile(){let p={name:document.getElementById('editName').value.trim()||('# Cybersecurity - '+myName),handle:document.getElementById('editHandle').value.trim()||'@rolandsoclab',bio:document.getElementById('editBio').value.trim()||'NOC Engineer | Aspiring SOC Analyst',emoji:selectedEmoji,following:document.getElementById('editFollowing').value.trim()||'3',followers:document.getElementById('editFollowers').value.trim()||'1M',likes:document.getElementById('editLikes').value.trim()||'5M'};localStorage.setItem('roxy_profile',JSON.stringify(p));applyProfile(p);let stats=document.querySelectorAll('#profilePage > div:nth-child(4) > div b');if(stats.length>=3){stats[0].innerText=p.following;stats[1].innerText=p.followers;stats[2].innerText=p.likes;}document.getElementById('editProfileBox').classList.add('hidden');alert('Profile Saved! ✅ Verified!');speak('Profile saved, verified star!');}
-function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('bottomNav').style.display='flex';document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! Verified ✅ Profile don work!`:`Hi ${myName}! ROXY v5.2 Verified! Tap Profile > Edit Profile!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
+function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('bottomNav').style.display='flex';document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! Feed + Light Mode don land!`:`Hi ${myName}! ROXY v5.3! Tap 📝 Feed to post, Tap 🌙 for Light Mode!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
 function setNav(active){['navHome','navFriends','navInbox','navProfile'].forEach(id=>document.getElementById(id).classList.remove('active'));if(active)document.getElementById(active).classList.add('active');}
-function hideAll(){['smartBox','scamBox','histBox','cmdBox','linuxBox','sharkBox','pyBox','mbBox','quizBox','quiz2Box','quiz3Box','phishBox','friendsPage','profilePage','inboxPage'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
-function goHome(){setNav('navHome');hideAll();}
+function hideAll(){['feedBox','smartBox','scamBox','histBox','cmdBox','linuxBox','sharkBox','pyBox','mbBox','quizBox','quiz2Box','quiz3Box','phishBox','friendsPage','profilePage','inboxPage'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
+function goHome(){setNav('navHome');hideAll();let b=document.getElementById('feedBox');b.classList.remove('hidden');renderPosts();}
 function goFriends(){setNav('navFriends');hideAll();let b=document.getElementById('friendsPage');b.classList.remove('hidden');document.getElementById('friendsList').innerHTML=FRIENDS.map(f=>`<div class="friendCard"><div class="friendAvatar">${f.avatar}</div><div style="flex:1;"><b>${f.name}</b> <span style="color:#888;font-size:12px;">${f.handle}</span><br><span style="font-size:12px;color:#aaa;">${f.bio}</span><br><span style="font-size:12px;color:#00ff88;">🏆 ${f.score}</span></div><button style="background:#00ff88;color:#000;padding:6px 12px;border-radius:20px;border:none;font-weight:bold;cursor:pointer;" onclick="alert('Follow ${f.name}!')">Follow</button></div>`).join('');}
-function goPlus(){hideAll();let c=confirm('➕ PLUS!\\nOK = Check Scam\\nCancel = Save Command');if(c){toggleScam();}else{toggleCmd();}}
+function goPlus(){hideAll();let c=confirm('➕ PLUS!\\nOK = Create Post 📝\\nCancel = Check Scam');if(c){toggleFeed();}else{toggleScam();}}
 function goInbox(){setNav('navInbox');hideAll();let b=document.getElementById('inboxPage');b.classList.remove('hidden');document.getElementById('inboxBadge').style.display='none';let l1=localStorage.getItem('roxy_score_l1')||'No play yet';let l2=localStorage.getItem('roxy_score_l2')||'No play yet';let l3=localStorage.getItem('roxy_score_l3')||'No play yet';document.getElementById('inboxList').innerHTML=`<div class="friendCard"><div class="friendAvatar">🐩</div><div><b>ROXY</b><br><span style="font-size:12px;">Welcome ${myName}! L1: ${l1}, L2: ${l2}, L3: ${l3}</span></div></div>`;}
 function goProfile(){setNav('navProfile');hideAll();let b=document.getElementById('profilePage');b.classList.remove('hidden');loadProfile();let l1=localStorage.getItem('roxy_score_l1')||'No play yet';let l2=localStorage.getItem('roxy_score_l2')||'No play yet';let l3=localStorage.getItem('roxy_score_l3')||'No play yet';document.getElementById('profileScores').innerHTML=`<b>🏆 MY SCORES:</b><br>🎮 L1: ${l1}<br>🔥 L2: ${l2}<br>💜 L3: ${l3}<br>📟 Commands: ${allCmds().length}<br>🛡️ Scams: ${history.length}`;}
 function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';if(voiceOn)speak("Voice on!");}
