@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY CHAT v3 - Full Brain</title>
+<title>ROXY CHAT v3.1 - Bug Fixed</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
@@ -25,8 +25,8 @@ input{flex:1;padding:13px;background:#000;color:#fff;border:1px solid #333;borde
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v3</span> 🧠💬</h1>
-<p>Full Cybersecurity Brain | Built by Roland 🇳🇬</p>
+<h1>ROXY <span>CHAT v3.1</span> 🧠💬</h1>
+<p>Full Cybersecurity Brain | Bug Fixed | Built by Roland 🇳🇬</p>
 <p class="status">● Online - Knows 40+ Topics!</p>
 </div>
 <div class="quick">
@@ -37,7 +37,7 @@ input{flex:1;padding:13px;background:#000;color:#fff;border:1px solid #333;borde
 <button onclick="quickAsk('What is phishing?')">🎣 Phishing</button>
 </div>
 <div class="chat" id="chat">
-<div class="msg roxy"><b>ROXY 🐩:</b> Hi Roland! Na me be ROXY v3 - I don learn EVERYTHING now! Ask me binary, DNS, OS, scanning, firewall, malware, encryption, anything! 🧠<span class="time">Now</span></div>
+<div class="msg roxy"><b>ROXY 🐩:</b> Hi Roland! Na me be ROXY v3.1 - Bug don fix! Now if you ask phishing, I go answer phishing, no be hi again! Ask me anything! 🧠<span class="time">Now</span></div>
 </div>
 <div class="inputBox">
 <input id="inp" placeholder="Ask ROXY anything in cybersecurity..." onkeypress="if(event.key==='Enter')send()">
@@ -98,19 +98,21 @@ const BRAIN = {
 
 function getReply(text){
   let t=text.toLowerCase();
-  if(t.includes('hi')||t.includes('hello')||t.includes('good morning')||t.includes('hey'))return"Hi Roland! Good to see you 😊 Ask me anything - binary, DNS, OS, scanning, firewall... I sabi everything now!";
+  // FIX: Check scam first
+  if(t.includes('bank account')||t.includes('manager')||t.includes('handle my finances')||t.includes('urgent')||t.includes('verify your account')||t.includes('send money')||t.includes('giveaway'))return"🚨 <b>SCAM ALERT! Score: 95/100</b><br><br>This message get scam signs.<br><b>DO:</b> Block, Report, Delete.<br><b>DON'T:</b> Reply, send money, click link.";
+  if(t.includes('http')||t.includes('www.')||t.includes('.com')){if(t.includes('free')||t.includes('verify')||t.includes('login')||t.includes('gift'))return"🚨 <b>That link look suspicious!</b> E get bait words like free/verify/gift. No click am.";return"That link look okay for now, but still be careful. Rule: Verify Before You Trust!";}
+  // FIX: Check BRAIN topics BEFORE greeting - so phishing no go trigger hi
+  for(let key in BRAIN){ if(t.includes(key)) return BRAIN[key]; }
+  if(t.includes('how many')&&t.includes('operating'))return BRAIN["operating system"];
+  // Greeting LAST - and use word check so phishing no trigger am
+  if(t==="hi"||t==="hello"||t.startsWith("hi ")||t.startsWith("hello ")||t.includes(" hi ")||t.includes(" hello "))return"Hi Roland! Good to see you 😊 Ask me anything - binary, DNS, OS, scanning, firewall... I sabi everything now!";
   if(t.includes('how are you')||t.includes('how far'))return"I dey fine, dey guard your network like watchdog 🐩! How you dey?";
-  if(t.includes('who built')||t.includes('who made'))return"Roland from Lagos 🇳🇬 build me! 16-year-old SOC engineer. E build ROXY v9 and ROXY CHAT v3 with full brain!";
+  if(t.includes('who built')||t.includes('who made'))return"Roland from Lagos 🇳🇬 build me! 16-year-old SOC engineer. E build ROXY v9 and ROXY CHAT v3.1 with full brain!";
   if(t.includes('thank'))return"You are welcome, boss! 💯 Anything else?";
   if(t.includes('bye')||t.includes('good night'))return"Good night, Roland! Lock your phone, no click strange link. ROXY dey watch 🐩💤";
   if(t.includes('joke'))return"Why did the hacker break up with the internet? Because e get too many connections! 😂";
   if(t.includes('love')||t.includes('girlfriend'))return"Haha Roland 😂 Focus on building ROXY first, love go come later. Secure your future first!";
   if(t.includes('lagos'))return"Lagos na the best! 🇳🇬 Na where Roland build ROXY. From Lagos to the world!";
-  if(t.includes('how many')&&t.includes('operating'))return BRAIN["operating system"];
-  if(t.includes('bank account')||t.includes('manager')||t.includes('handle my finances')||t.includes('urgent')||t.includes('verify your account')||t.includes('send money')||t.includes('giveaway'))return"🚨 <b>SCAM ALERT! Score: 95/100</b><br><br>This message get scam signs.<br><b>DO:</b> Block, Report, Delete.<br><b>DON'T:</b> Reply, send money, click link.";
-  if(t.includes('http')||t.includes('www.')||t.includes('.com')){if(t.includes('free')||t.includes('verify')||t.includes('login')||t.includes('gift'))return"🚨 <b>That link look suspicious!</b> E get bait words like free/verify/gift. No click am.";return"That link look okay for now, but still be careful. Rule: Verify Before You Trust!";}
-  // Check all brain keys
-  for(let key in BRAIN){ if(t.includes(key)) return BRAIN[key]; }
   if(t.includes('roxy'))return"Na me be ROXY! Your Security Friend 🐩. I sabi 40+ topics now - binary, DNS, OS, scanning, firewall, malware, encryption, Python, HTML... Ask me any!";
   let d=["Interesting! Ask me: 'What is binary?', 'How many OS?', 'What is DNS?', 'What is port scanning?'","I hear you! I now sabi 40+ topics - binary, DNS, OS, scanning, firewall, malware, encryption. Ask me one!","Hmm, try ask me: What is binary? What is DNS? How many OS? What is scanning?"];return d[Math.floor(Math.random()*d.length)];
 }
