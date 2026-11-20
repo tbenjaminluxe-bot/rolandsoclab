@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY CHAT v4.0 - With Login</title>
+<title>ROXY CHAT v4.1 - Name Fix</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
@@ -36,12 +36,10 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v4.0</span> 🔊💬</h1>
+<h1>ROXY <span>CHAT v4.1</span> 🔊💬</h1>
 <p>With Login + Voice | Built by Roland 🇳🇬</p>
 <p class="status" id="statusText">● Online</p>
 </div>
-
-<!-- LOGIN SCREEN -->
 <div class="login" id="loginScreen">
 <h2>Welcome to ROXY 🐩</h2>
 <p>Type your name to enter. ROXY go remember you!</p>
@@ -50,8 +48,6 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <button onclick="doLogin()">Enter Chat →</button>
 <p style="font-size:11px;">⚠️ No use your real bank / Instagram password. Use simple PIN only!</p>
 </div>
-
-<!-- CHAT SCREEN -->
 <div id="chatScreen" class="hidden" style="display:flex;flex-direction:column;flex:1;">
 <div class="voiceBar">
 <button id="voiceBtn" onclick="toggleVoice()">🔊 Voice: ON</button>
@@ -71,31 +67,14 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <button class="sendBtn" onclick="send()">➤</button>
 </div>
 </div>
-
 <script>
 let chat=document.getElementById('chat');let inp=document.getElementById('inp');
 let voiceOn=true;let myName=localStorage.getItem('roxy_name')||'';
 let savedPin=localStorage.getItem('roxy_pin')||'';
-
 window.onload=function(){if(myName){showChat(true);}};
-
-function doLogin(){
-  let n=document.getElementById('nameInput').value.trim();
-  let p=document.getElementById('pinInput').value.trim();
-  if(!n){alert('Type your name first!');return;}
-  if(!p||p.length<4){alert('Create 4-digit PIN!');return;}
-  if(savedPin && savedPin!==p){alert('Wrong PIN for '+myName+'! Try again.');return;}
-  myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);
-}
+function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN for '+myName+'! Try again.');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
 function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
-function showChat(isBack){
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('chatScreen').classList.remove('hidden');
-  document.getElementById('statusText').innerText='● Online - Welcome '+myName;
-  chat.innerHTML='';
-  let welcome=isBack?`Welcome back, ${myName}! I remember you! 😊 Ask me anything - binary, DNS, phishing...`:`Hi ${myName}! Na me be ROXY v4.0 - Now I fit remember your name and TALK! 🔊 Ask me anything!`;
-  addMsg(welcome,'roxy');if(!isBack)speak(welcome);
-}
+function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! I remember you! 😊 Ask me anything - binary, DNS, phishing...`:`Hi ${myName}! Na me be ROXY v4.1 - Now I fit remember your name and TALK! 🔊 Ask me anything!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
 function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';b.className=voiceOn?'':'off';if(voiceOn)speak("Voice on!");}
 function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
 function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;window.speechSynthesis.speak(u);}
@@ -104,7 +83,6 @@ function startMic(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition
 function quickAsk(t){inp.value=t;send();}
 function addMsg(text,who){let d=document.createElement('div');d.className='msg '+who;let name=who==='me'?myName:'ROXY 🐩';let extra='';if(who==='roxy')extra=`<br><button class="speakBtn" onclick="speak(this.parentElement.innerText)">🔊 Hear Again</button>`;d.innerHTML=`<b>${name}:</b> ${text}${extra}<span class="time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
 function send(){let t=inp.value.trim();if(!t)return;addMsg(t,'me');inp.value='';let ty=document.createElement('div');ty.className='typing';ty.id='typing';ty.innerText='ROXY is thinking...';chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{document.getElementById('typing').remove();let ans=getReply(t);addMsg(ans,'roxy');speak(ans);},600);}
-
 const BRAIN = {
 "binary":"<b>Binary = 0 and 1 💻</b><br>Computer no understand English, e only understand 0 and 1.<br>0 = OFF, 1 = ON.<br>Example: Letter A = 01000001, Number 5 = 0101.",
 "dns":"<b>DNS = Domain Name System 🌐</b><br>Na phonebook for internet.<br>You type google.com, DNS translate am to IP like 142.250.80.46 so phone fit find am.",
@@ -150,18 +128,19 @@ function getReply(text){
   let t=text.toLowerCase();
   if(t.includes('bank account')||t.includes('manager')||t.includes('handle my finances')||t.includes('urgent')||t.includes('verify your account')||t.includes('send money')||t.includes('giveaway'))return"🚨 <b>SCAM ALERT! Score: 95/100</b><br><br>This message get scam signs.<br><b>DO:</b> Block, Report, Delete.";
   if(t.includes('http')||t.includes('www.')||t.includes('.com')){if(t.includes('free')||t.includes('verify')||t.includes('login')||t.includes('gift'))return"🚨 <b>That link look suspicious!</b> No click am.";return"That link look okay for now, but still be careful. Rule: Verify Before You Trust!";}
+  if(t.includes('your name')||t.includes('your own name')||t.includes('what are you called')||t.includes('who are you'))return `Na me be ROXY! Your Security Friend, ${myName}. I be your chatbot from Lagos! 🐩`;
+  if(t.includes('my name')||t.includes('who am i'))return `You be ${myName}! I remember you. I no go forget you.`;
   for(let key in BRAIN){ if(t.includes(key)) return BRAIN[key]; }
   if(t.includes('how many')&&t.includes('operating'))return BRAIN["operating system"];
-  if(t==="hi"||t==="hello"||t.startsWith("hi ")||t.startsWith("hello ")||t.includes(" hi ")||t.includes(" hello "))return`Hi ${myName}! Good to see you 😊 Ask me anything - binary, DNS, OS, scanning, firewall...`;
-  if(t.includes('how are you')||t.includes('how far'))return`I dey fine, ${myName}, dey guard your network like watchdog! How you dey?`;
-  if(t.includes('who built')||t.includes('who made'))return"Roland from Lagos build me! 16-year-old SOC engineer. E build ROXY v9 and ROXY CHAT v4.0!";
-  if(t.includes('thank'))return`You are welcome, ${myName}! Anything else?`;
-  if(t.includes('bye')||t.includes('good night'))return`Good night, ${myName}! Lock your phone, no click strange link. ROXY dey watch.`;
+  if(t==="hi"||t==="hello"||t.startsWith("hi ")||t.startsWith("hello ")||t.includes(" hi ")||t.includes(" hello "))return `Hi ${myName}! Good to see you 😊 Ask me anything - binary, DNS, OS, scanning, firewall...`;
+  if(t.includes('how are you')||t.includes('how far'))return `I dey fine, ${myName}, dey guard your network like watchdog! How you dey?`;
+  if(t.includes('who built')||t.includes('who made'))return"Roland from Lagos build me! 16-year-old SOC engineer. E build ROXY v9 and ROXY CHAT v4.1!";
+  if(t.includes('thank'))return `You are welcome, ${myName}! Anything else?`;
+  if(t.includes('bye')||t.includes('good night'))return `Good night, ${myName}! Lock your phone, no click strange link. ROXY dey watch.`;
   if(t.includes('joke'))return"Why did the hacker break up with the internet? Because e get too many connections!";
-  if(t.includes('love')||t.includes('girlfriend'))return`Haha ${myName}, focus on building ROXY first, love go come later!`;
+  if(t.includes('love')||t.includes('girlfriend'))return `Haha ${myName}, focus on building ROXY first, love go come later!`;
   if(t.includes('lagos'))return"Lagos na the best! Na where Roland build ROXY. From Lagos to the world!";
-  if(t.includes('roxy'))return`Na me be ROXY! Your Security Friend, ${myName}. I sabi 40+ topics and I fit talk!`;
-  if(t.includes('my name')||t.includes('who am i'))return`You be ${myName}! I remember you. I no go forget you.`;
+  if(t.includes('roxy'))return `Na me be ROXY! Your Security Friend, ${myName}. I sabi 40+ topics and I fit talk!`;
   let d=[`Interesting, ${myName}! Ask me: 'What is binary?', 'How many OS?', 'What is DNS?'`,`I hear you, ${myName}! I sabi 40+ topics - binary, DNS, OS, scanning, firewall. Ask me one!`];return d[Math.floor(Math.random()*d.length)];
 }
 </script>
