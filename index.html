@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY CHAT v4.1 - Name Fix</title>
+<title>ROXY CHAT v4.2 - Scam Checker</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
@@ -14,9 +14,10 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 .login h2{color:#00ff88;font-size:28px}.login p{color:#aaa;font-size:14px}
 .login input{width:100%;max-width:320px;padding:14px;background:#111;color:#fff;border:1px solid #333;border-radius:12px;outline:none;font-size:16px}
 .login button{width:100%;max-width:320px;padding:14px;background:#00ff88;color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer}
-.voiceBar{display:flex;gap:8px;justify-content:center;padding:8px;background:#111}
-.voiceBar button{background:#00ff88;color:#000;border:none;padding:8px 14px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:13px}
+.voiceBar{display:flex;gap:6px;justify-content:center;padding:8px;background:#111;flex-wrap:wrap}
+.voiceBar button{background:#00ff88;color:#000;border:none;padding:8px 12px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:12px}
 .voiceBar button.off{background:#333;color:#fff}
+.voiceBar button.scamBtn{background:#ffaa00;color:#000}
 .chat{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px}
 .msg{max-width:88%;padding:12px 14px;border-radius:15px;font-size:15px;line-height:1.45}
 .me{background:#00ff88;color:#000;align-self:flex-end;border-bottom-right-radius:5px}
@@ -32,12 +33,18 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 .speakBtn{background:#222;color:#00ff88;border:1px solid #333;padding:4px 8px;border-radius:12px;font-size:11px;cursor:pointer;margin-top:6px}
 .hidden{display:none!important}
 .logout{background:#ff0055!important;color:#fff!important}
+.scamBox{background:#1a1a1a;border:1px solid #ffaa00;border-radius:15px;padding:12px;margin:0 12px 8px}
+.scamBox h3{color:#ffaa00;font-size:15px;margin-bottom:6px}
+.scamBox textarea{width:100%;background:#000;color:#fff;border:1px solid #333;border-radius:10px;padding:10px;min-height:70px;outline:none;font-family:Arial;font-size:14px}
+.scamBox button{background:#ffaa00;color:#000;border:none;padding:10px;border-radius:10px;font-weight:bold;width:100%;margin-top:8px;cursor:pointer}
+.scoreBar{height:12px;background:#222;border-radius:10px;overflow:hidden;margin:8px 0}
+.scoreFill{height:100%;transition:width 0.5s}
 </style>
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v4.1</span> 🔊💬</h1>
-<p>With Login + Voice | Built by Roland 🇳🇬</p>
+<h1>ROXY <span>CHAT v4.2</span> 🛡️💬</h1>
+<p>Login + Voice + Scam Checker | Built by Roland 🇳🇬</p>
 <p class="status" id="statusText">● Online</p>
 </div>
 <div class="login" id="loginScreen">
@@ -52,13 +59,22 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <div class="voiceBar">
 <button id="voiceBtn" onclick="toggleVoice()">🔊 Voice: ON</button>
 <button onclick="testVoice()">▶️ Test Voice</button>
+<button class="scamBtn" onclick="toggleScam()">🛡️ Check Scam</button>
 <button class="logout" onclick="doLogout()">Logout</button>
+</div>
+<div id="scamBox" class="scamBox hidden">
+<h3>🛡️ ROXY Scam Checker</h3>
+<p style="font-size:12px;color:#aaa;margin-bottom:6px;">Paste any suspicious message / link here. ROXY go score am 0-100.</p>
+<textarea id="scamInput" placeholder="Paste here e.g. Dear customer, your account will be blocked, click http://... to verify..."></textarea>
+<button onclick="checkScam()">🔍 CHECK NOW</button>
+<div id="scamResult"></div>
 </div>
 <div class="quick">
 <button onclick="quickAsk('What is binary?')">0/1 Binary</button>
 <button onclick="quickAsk('What is DNS?')">🌐 DNS</button>
 <button onclick="quickAsk('How many operating systems?')">💻 OS</button>
 <button onclick="quickAsk('What is phishing?')">🎣 Phishing</button>
+<button onclick="quickAsk('Check this scam: Your account blocked, click link to verify, send money urgently')">🛡️ Try Scam Example</button>
 </div>
 <div class="chat" id="chat"></div>
 <div class="inputBox">
@@ -74,13 +90,40 @@ let savedPin=localStorage.getItem('roxy_pin')||'';
 window.onload=function(){if(myName){showChat(true);}};
 function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN for '+myName+'! Try again.');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
 function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
-function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! I remember you! 😊 Ask me anything - binary, DNS, phishing...`:`Hi ${myName}! Na me be ROXY v4.1 - Now I fit remember your name and TALK! 🔊 Ask me anything!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
+function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! I remember you! 😊 Ask me anything - or tap 🛡️ Check Scam to test a suspicious message.`:`Hi ${myName}! Na me be ROXY v4.2 - Now I get SCAM CHECKER! 🛡️ Paste any suspicious message, I go score am 0-100. Try am!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
 function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';b.className=voiceOn?'':'off';if(voiceOn)speak("Voice on!");}
 function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
 function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;window.speechSynthesis.speak(u);}
-function testVoice(){speak(`Hi ${myName}! Na me be Roxy! I fit talk now. Ask me what is phishing, what is binary, what is DNS.`);}
+function testVoice(){speak(`Hi ${myName}! Na me be Roxy! I fit talk now. And I fit check scam for you.`);}
 function startMic(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert("Your browser no support mic. Type instead!");return;}let Rec=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=new Rec();rec.lang='en-US';rec.onresult=(e)=>{inp.value=e.results[0][0].transcript;send();};rec.start();}
 function quickAsk(t){inp.value=t;send();}
+function toggleScam(){document.getElementById('scamBox').classList.toggle('hidden');}
+function checkScam(){
+  let txt=document.getElementById('scamInput').value.trim();
+  if(!txt){alert('Paste message first!');return;}
+  let res=scoreScam(txt);
+  let color=res.score>=70?'#ff0055':res.score>=40?'#ffaa00':'#00ff88';
+  let label=res.score>=70?'🚨 SCAM - DO NOT TRUST!':res.score>=40?'⚠️ SUSPICIOUS - BE CAREFUL!':'✅ SAFE - Looks Okay';
+  let reasons=res.reasons.map(r=>`• ${r}`).join('<br>');
+  document.getElementById('scamResult').innerHTML=`<div style="margin-top:10px;"><b style="color:${color};font-size:18px;">Score: ${res.score}/100</b><br><b style="color:${color};">${label}</b><div class="scoreBar"><div class="scoreFill" style="width:${res.score}%;background:${color}"></div></div><div style="font-size:13px;line-height:1.5;">${reasons}</div><p style="font-size:12px;color:#aaa;margin-top:6px;"><b>ROXY Advice:</b> ${res.score>=70?'Block, Report, Delete. No click link, no send money!':res.score>=40?'No click link yet. Verify by calling official number.':'Still use rule: Verify Before You Trust!'}</p></div>`;
+  speak(`Scam score is ${res.score} out of 100. ${label}`);
+}
+function scoreScam(text){
+  let t=text.toLowerCase();let score=5;let reasons=[];
+  let checks=[
+    ['urgent|immediately|act now|blocked|will be closed|24 hours',25,'Creates URGENCY / fear - "blocked", "urgent", "act now"'],
+    ['verify your account|confirm your|update your account|login to|click here|click the link',25,'Asks you to CLICK LINK / VERIFY account'],
+    ['send money|transfer|pay|bitcoin|crypto|gift card|otp|password|pin|bvn',25,'Asks for MONEY / OTP / PASSWORD / PIN / BVN'],
+    ['http|www\\.|\\.com|\\.ng|\\.xyz|\\.top|bit\\.ly|tinyurl',15,'Contains LINK - fit be fake link'],
+    ['congratulations|you won|giveaway|free|lottery|prize|reward',20,'Promises FREE MONEY / PRIZE / GIVEAWAY'],
+    ['bank|gtb|access|first bank|uba|zenith|opay|palmpay|moniepoint|instagram|whatsapp support',10,'Pretends to be BANK / APP SUPPORT'],
+    ['dear customer|dear user|account holder',8,'Generic greeting - "Dear Customer" - real bank dey call your name']
+  ];
+  checks.forEach(c=>{if(new RegExp(c[0]).test(t)){score+=c[1];reasons.push(c[2]);}});
+  if(reasons.length===0)reasons.push('No common scam signs found');
+  if(score>100)score=100;
+  return {score,reasons};
+}
 function addMsg(text,who){let d=document.createElement('div');d.className='msg '+who;let name=who==='me'?myName:'ROXY 🐩';let extra='';if(who==='roxy')extra=`<br><button class="speakBtn" onclick="speak(this.parentElement.innerText)">🔊 Hear Again</button>`;d.innerHTML=`<b>${name}:</b> ${text}${extra}<span class="time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
 function send(){let t=inp.value.trim();if(!t)return;addMsg(t,'me');inp.value='';let ty=document.createElement('div');ty.className='typing';ty.id='typing';ty.innerText='ROXY is thinking...';chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{document.getElementById('typing').remove();let ans=getReply(t);addMsg(ans,'roxy');speak(ans);},600);}
 const BRAIN = {
@@ -126,6 +169,11 @@ const BRAIN = {
 };
 function getReply(text){
   let t=text.toLowerCase();
+  if(t.includes('check this scam')||t.includes('check scam')||t.includes('is this scam')){
+    let r=scoreScam(text);
+    let label=r.score>=70?'🚨 SCAM!':r.score>=40?'⚠️ SUSPICIOUS':'✅ SAFE';
+    return `🛡️ <b>SCAM CHECK: ${r.score}/100 - ${label}</b><br><br>${r.reasons.map(x=>'• '+x).join('<br>')}<br><br><b>Advice:</b> ${r.score>=70?'Block, Report, Delete!':'Verify Before You Trust!'}`;
+  }
   if(t.includes('bank account')||t.includes('manager')||t.includes('handle my finances')||t.includes('urgent')||t.includes('verify your account')||t.includes('send money')||t.includes('giveaway'))return"🚨 <b>SCAM ALERT! Score: 95/100</b><br><br>This message get scam signs.<br><b>DO:</b> Block, Report, Delete.";
   if(t.includes('http')||t.includes('www.')||t.includes('.com')){if(t.includes('free')||t.includes('verify')||t.includes('login')||t.includes('gift'))return"🚨 <b>That link look suspicious!</b> No click am.";return"That link look okay for now, but still be careful. Rule: Verify Before You Trust!";}
   if(t.includes('your name')||t.includes('your own name')||t.includes('what are you called')||t.includes('who are you'))return `Na me be ROXY! Your Security Friend, ${myName}. I be your chatbot from Lagos! 🐩`;
@@ -134,7 +182,7 @@ function getReply(text){
   if(t.includes('how many')&&t.includes('operating'))return BRAIN["operating system"];
   if(t==="hi"||t==="hello"||t.startsWith("hi ")||t.startsWith("hello ")||t.includes(" hi ")||t.includes(" hello "))return `Hi ${myName}! Good to see you 😊 Ask me anything - binary, DNS, OS, scanning, firewall...`;
   if(t.includes('how are you')||t.includes('how far'))return `I dey fine, ${myName}, dey guard your network like watchdog! How you dey?`;
-  if(t.includes('who built')||t.includes('who made'))return"Roland from Lagos build me! 16-year-old SOC engineer. E build ROXY v9 and ROXY CHAT v4.1!";
+  if(t.includes('who built')||t.includes('who made'))return"Roland from Lagos build me! 16-year-old SOC engineer. E build ROXY v9 and ROXY CHAT v4.2!";
   if(t.includes('thank'))return `You are welcome, ${myName}! Anything else?`;
   if(t.includes('bye')||t.includes('good night'))return `Good night, ${myName}! Lock your phone, no click strange link. ROXY dey watch.`;
   if(t.includes('joke'))return"Why did the hacker break up with the internet? Because e get too many connections!";
