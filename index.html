@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY v5.0 - Social App</title>
+<title>ROXY v5.1 - Type Fix</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
@@ -17,7 +17,6 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 .resetBtn{background:#222!important;color:#ffaaaa!important;border:1px solid #555!important;font-size:13px!important;padding:10px!important}
 .voiceBar{display:flex;gap:6px;justify-content:center;padding:8px;background:#111;flex-wrap:wrap}
 .voiceBar button{background:#00ff88;color:#000;border:none;padding:8px 11px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:12px}
-.voiceBar button.off{background:#333;color:#fff}
 .voiceBar button.scamBtn{background:#ffaa00;color:#000}
 .voiceBar button.histBtn{background:#00aaff;color:#fff}
 .voiceBar button.cmdBtn{background:#aa00ff;color:#fff}
@@ -30,12 +29,13 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 .voiceBar button.phishBtn{background:#ff6600;color:#fff}
 .voiceBar button.mbBtn{background:#ff99cc;color:#000}
 .voiceBar button.smartBtn{background:#fff;color:#000}
-.chat{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px;padding-bottom:90px}
+.chat{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px;padding-bottom:170px}
 .msg{max-width:88%;padding:12px 14px;border-radius:15px;font-size:15px;line-height:1.45}
 .me{background:#00ff88;color:#000;align-self:flex-end;border-bottom-right-radius:5px}
 .roxy{background:#1a1a1a;border:1px solid #333;align-self:flex-start;border-bottom-left-radius:5px}
 .roxy b{color:#00ff88}.time{font-size:10px;color:#888;display:block;margin-top:4px}
-.inputBox{display:flex;gap:8px;padding:12px;background:#111;border-top:1px solid #222}
+/* FIXED TYPE BOX - NOW ON TOP OF BOTTOM NAV */
+.inputBox{position:fixed;bottom:72px;left:0;right:0;display:flex;gap:8px;padding:12px;background:#111;border-top:2px solid #00ff88;z-index:1000}
 .inputBox input{flex:1;padding:13px;background:#000;color:#fff;border:1px solid #333;border-radius:25px;outline:none}
 .sendBtn{background:#00ff88;color:#000;border:none;padding:0 18px;border-radius:25px;font-weight:bold;font-size:18px;cursor:pointer}
 .micBtn{background:#ff0055;color:#fff;border:none;padding:0 15px;border-radius:25px;font-size:18px;cursor:pointer}
@@ -67,12 +67,12 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 .mbCard b{color:#ffccee}.mbCard code{background:#111;color:#00ff88;padding:4px 6px;border-radius:5px;display:block;margin:4px 0;word-break:break-all}
 .quizOpt{background:#000;color:#fff;border:1px solid #333;padding:10px;border-radius:10px;width:100%;text-align:left;margin-top:6px;cursor:pointer;font-size:14px}
 .toolBtn{background:#222!important;color:#fff!important;border:1px solid #444!important;margin-top:6px}
-/* BOTTOM NAV - LIKE YOUR PICTURE */
-.bottomNav{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:2px solid #00ff88;display:flex;justify-content:space-around;align-items:center;padding:8px 5px 12px;z-index:999}
+/* BOTTOM NAV - NOW SMALLER, BELOW TYPE BOX */
+.bottomNav{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:2px solid #00ff88;display:flex;justify-content:space-around;align-items:center;padding:6px 5px 10px;z-index:999;height:72px}
 .bottomNav button{background:none;border:none;color:#aaa;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;cursor:pointer;flex:1;padding:4px}
 .bottomNav button.active{color:#00ff88;font-weight:bold}
-.bottomNav button .ico{font-size:24px;line-height:1}
-.plusBtn{flex:none!important;width:55px;height:55px;border-radius:50%!important;background:#00ff88!important;color:#000!important;font-size:28px!important;font-weight:bold!important;margin-top:-28px;border:3px solid #000!important;box-shadow:0 0 15px #00ff88}
+.bottomNav button .ico{font-size:22px;line-height:1}
+.plusBtn{flex:none!important;width:52px;height:52px;border-radius:50%!important;background:#00ff88!important;color:#000!important;font-size:26px!important;font-weight:bold!important;margin-top:-20px;border:3px solid #000!important;box-shadow:0 0 15px #00ff88}
 .badge{background:#ff0055;color:#fff;font-size:10px;border-radius:10px;padding:1px 6px;position:absolute;margin-top:-5px;margin-left:18px}
 .profilePic{width:80px;height:80px;border-radius:50%;background:#ff0055;display:flex;align-items:center;justify-content:center;font-size:40px;border:3px solid #00ff88;margin:0 auto}
 .friendCard{background:#000;border:1px solid #333;border-radius:12px;padding:10px;margin-top:8px;display:flex;gap:10px;align-items:center}
@@ -81,7 +81,7 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v5.0</span> 📱🧠</h1>
+<h1>ROXY <span>CHAT v5.1 FIXED</span> 📱🧠</h1>
 <p>Social App Style + Smart AI + Quiz L1/L2/L3 | By Roland 🇳🇬</p>
 <p class="status" id="statusText">● Online</p>
 </div>
@@ -198,32 +198,27 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 <div id="phishResult"></div>
 </div>
 
-<!-- FRIENDS PAGE -->
 <div id="friendsPage" class="scamBox hidden" style="border-color:#00aaff;">
 <h3 style="color:#aaffff;">👥 SOC FRIENDS - Leaderboard</h3>
-<p style="font-size:12px;color:#aaa;">Your SOC community! Who be top scorer?</p>
 <div id="friendsList"></div>
-<button class="toolBtn" onclick="alert('To add friend, share your link rolandsoclab!')">➕ Add Friend</button>
+<button class="toolBtn" onclick="alert('Share your link bit.ly/4t9oetQ!')">➕ Add Friend</button>
 </div>
 
-<!-- PROFILE PAGE - LIKE YOUR PICTURE -->
 <div id="profilePage" class="scamBox hidden" style="border-color:#ff0055;text-align:center;">
 <div class="profilePic">🦈</div>
-<h3 style="color:#fff;font-size:20px;margin-top:8px;" id="profileName"># "Cybersecurity"</h3>
+<h3 style="color:#fff;font-size:20px;margin-top:8px;" id="profileName"># Cybersecurity</h3>
 <p style="color:#aaa;" id="profileHandle">@rolandsoclab</p>
-<p style="font-size:12px;color:#888;margin:6px 0;" id="profileBio">NOC Engineer | Aspiring SOC Analyst<br>Network Monitoring | Threat Detection |<br>Python</p>
-<p style="font-size:12px;color:#00aaff;">Link: https://rolandsoclab.blogspot.com</p>
+<p style="font-size:12px;color:#888;margin:6px 0;">NOC Engineer | Aspiring SOC Analyst<br>Network Monitoring | Threat Detection | Python</p>
 <div style="display:flex;justify-content:space-around;margin:12px 0;text-align:center;">
-<div><b id="pFollowing">6</b><br><span style="color:#888;font-size:12px;">Following</span></div>
-<div><b id="pFollowers">10</b><br><span style="color:#888;font-size:12px;">Followers</span></div>
-<div><b id="pLikes">96</b><br><span style="color:#888;font-size:12px;">Likes</span></div>
+<div><b>6</b><br><span style="color:#888;font-size:12px;">Following</span></div>
+<div><b>10</b><br><span style="color:#888;font-size:12px;">Followers</span></div>
+<div><b>96</b><br><span style="color:#888;font-size:12px;">Likes</span></div>
 </div>
 <div id="profileScores" style="text-align:left;background:#000;border-radius:10px;padding:10px;font-size:13px;"></div>
-<button style="background:#fff;color:#000;margin-top:10px;" onclick="alert('Edit Profile coming soon! For now, your name na '+myName)">✏️ Edit Profile</button>
+<button style="background:#fff;color:#000;margin-top:10px;" onclick="alert('Edit Profile coming soon!')">✏️ Edit Profile</button>
 <button class="clearBtn" onclick="doLogout()">🚪 Logout</button>
 </div>
 
-<!-- INBOX PAGE -->
 <div id="inboxPage" class="scamBox hidden" style="border-color:#ffaa00;">
 <h3 style="color:#ffaa00;">💬 Inbox - Messages</h3>
 <div id="inboxList"></div>
@@ -238,12 +233,11 @@ body{background:#000;color:#fff;font-family:Arial;height:100vh;display:flex;flex
 <div class="chat" id="chat"></div>
 <div class="inputBox">
 <button class="micBtn" onclick="startMic()">🎤</button>
-<input id="inp" placeholder="Ask ROXY: what is vpn? 5+5? joke?..." onkeypress="if(event.key==='Enter')send()">
+<input id="inp" placeholder="Type here... Ask ROXY: what is vpn? 5+5? joke?..." onkeypress="if(event.key==='Enter')send()">
 <button class="sendBtn" onclick="send()">➤</button>
 </div>
 </div>
 
-<!-- BOTTOM NAV - EXACT LIKE YOUR PICTURE -->
 <div class="bottomNav" id="bottomNav">
 <button id="navHome" class="active" onclick="goHome()"><span class="ico">🏠</span>Home</button>
 <button id="navFriends" onclick="goFriends()"><span class="ico">👥</span>Friends</button>
@@ -299,14 +293,14 @@ let DEFAULT_CMDS=[
 {t:'Ping Alive',c:'ping 192.168.1.1',d:'Online?',tag:'general'}
 ];
 let TROUBLE=[
-{n:'1. Disk Full',sym:'No space',steps:'df -h, find files',cmds:'df -h | du -sh /var/log/*'},
+{n:'1. Disk Full',sym:'No space',steps:'df -h',cmds:'df -h | du -sh /var/log/*'},
 {n:'2. High CPU',sym:'Slow',steps:'top',cmds:'top | ps aux --sort=-%cpu | head'},
 {n:'3. High Memory',sym:'Out of memory',steps:'free -h',cmds:'free -h | ps aux --sort=-%mem | head'},
-{n:'4. Not Reachable',sym:'Cannot ping',steps:'Ping, traceroute',cmds:'ping -c 4 <IP> | traceroute <IP>'},
+{n:'4. Not Reachable',sym:'Cannot ping',steps:'Ping',cmds:'ping -c 4 <IP> | traceroute <IP>'},
 {n:'5. Service Down',sym:'Not running',steps:'status, logs',cmds:'sudo systemctl status <service>'},
 {n:'6. Port Not Working',sym:'Refused',steps:'ss, curl',cmds:'sudo ss -tlnp | grep :8000'},
-{n:'7. SSH Fail',sym:'Permission denied',steps:'Check SSH, logs',cmds:'sudo tail -n 50 /var/log/auth.log'},
-{n:'8. Mount Issue',sym:'Not mounted',steps:'lsblk, fstab',cmds:'lsblk | cat /etc/fstab'},
+{n:'7. SSH Fail',sym:'Permission denied',steps:'Check SSH',cmds:'sudo tail -n 50 /var/log/auth.log'},
+{n:'8. Mount Issue',sym:'Not mounted',steps:'lsblk',cmds:'lsblk | cat /etc/fstab'},
 {n:'9. High Load',sym:'Very slow',steps:'uptime, top',cmds:'uptime | top'},
 {n:'10. General Slow',sym:'Slow',steps:'uptime, top, free, df',cmds:'uptime | top | free -h | df -h'}
 ];
@@ -398,18 +392,17 @@ window.onload=function(){updateHistCount();updateCmdCount();if(myName){showChat(
 function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN!');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
 function resetPin(){if(!confirm('Reset PIN?'))return;localStorage.removeItem('roxy_pin');localStorage.removeItem('roxy_name');location.reload();}
 function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
-function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('bottomNav').style.display='flex';document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! ROXY v5.0 with bottom nav like TikTok! Tap 👤 Profile to see your page!`:`Hi ${myName}! ROXY v5.0! Tap bottom icons: Home, Friends, +, Inbox, Profile - like your picture!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
+function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('bottomNav').style.display='flex';document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! ROXY v5.1 Type Box don fix! Type line dey on top of bottom nav now!`:`Hi ${myName}! ROXY v5.1! Type line don fix - you fit type now!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
 function setNav(active){['navHome','navFriends','navInbox','navProfile'].forEach(id=>document.getElementById(id).classList.remove('active'));if(active)document.getElementById(active).classList.add('active');}
 function hideAll(){['smartBox','scamBox','histBox','cmdBox','linuxBox','sharkBox','pyBox','mbBox','quizBox','quiz2Box','quiz3Box','phishBox','friendsPage','profilePage','inboxPage'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
-function goHome(){setNav('navHome');hideAll();chat.scrollTop=chat.scrollHeight;}
+function goHome(){setNav('navHome');hideAll();}
 function goFriends(){setNav('navFriends');hideAll();let b=document.getElementById('friendsPage');b.classList.remove('hidden');document.getElementById('friendsList').innerHTML=FRIENDS.map(f=>`<div class="friendCard"><div class="friendAvatar">${f.avatar}</div><div style="flex:1;"><b>${f.name}</b> <span style="color:#888;font-size:12px;">${f.handle}</span><br><span style="font-size:12px;color:#aaa;">${f.bio}</span><br><span style="font-size:12px;color:#00ff88;">🏆 ${f.score}</span></div><button style="background:#00ff88;color:#000;padding:6px 12px;border-radius:20px;border:none;font-weight:bold;cursor:pointer;" onclick="alert('Follow ${f.name}!')">Follow</button></div>`).join('');}
-function goPlus(){hideAll();let c=confirm('➕ PLUS BUTTON!\\n\\nOK = Check Scam\\nCancel = Save New Command');if(c){toggleScam();}else{toggleCmd();}}
-function goInbox(){setNav('navInbox');hideAll();let b=document.getElementById('inboxPage');b.classList.remove('hidden');document.getElementById('inboxBadge').style.display='none';let l1=localStorage.getItem('roxy_score_l1')||'No play yet';let l2=localStorage.getItem('roxy_score_l2')||'No play yet';let l3=localStorage.getItem('roxy_score_l3')||'No play yet';document.getElementById('inboxList').innerHTML=`<div class="friendCard"><div class="friendAvatar">🐩</div><div><b>ROXY</b><br><span style="font-size:12px;">Welcome back ${myName}! You score L1: ${l1}, L2: ${l2}, L3: ${l3}. Keep going!</span><br><span style="font-size:11px;color:#888;">Just now</span></div></div>`+(history.length?history.slice(0,5).map(h=>`<div class="friendCard"><div class="friendAvatar">🛡️</div><div><b>Scam Check ${h.score}/100</b><br><span style="font-size:12px;">${h.msg}</span><br><span style="font-size:11px;color:#888;">${h.date}</span></div></div>`).join(''):`<p style="color:#888;font-size:13px;">No scam history yet.</p>`);}
-function goProfile(){setNav('navProfile');hideAll();let b=document.getElementById('profilePage');b.classList.remove('hidden');document.getElementById('profileName').innerText='# "Cybersecurity" - '+myName;document.getElementById('profileHandle').innerText='@'+myName.toLowerCase().replace(/\s/g,'')+'soclab';let l1=localStorage.getItem('roxy_score_l1')||'No play yet';let l2=localStorage.getItem('roxy_score_l2')||'No play yet';let l3=localStorage.getItem('roxy_score_l3')||'No play yet';document.getElementById('profileScores').innerHTML=`<b>🏆 MY SCORES:</b><br>🎮 Quiz L1: ${l1}<br>🔥 Quiz L2: ${l2}<br>💜 Quiz L3: ${l3}<br>📟 Commands Saved: ${allCmds().length}<br>🛡️ Scams Checked: ${history.length}<br><br><span style="color:#00ff88;">Level: ${l2==='10/10'?'HARDWARE + SOC MASTER 🏆🏆':'Aspiring SOC Analyst ⭐'}</span>`;}
-function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';b.className=voiceOn?'':'off';if(voiceOn)speak("Voice on!");}
+function goPlus(){hideAll();let c=confirm('➕ PLUS!\\nOK = Check Scam\\nCancel = Save Command');if(c){toggleScam();}else{toggleCmd();}}
+function goInbox(){setNav('navInbox');hideAll();let b=document.getElementById('inboxPage');b.classList.remove('hidden');document.getElementById('inboxBadge').style.display='none';let l1=localStorage.getItem('roxy_score_l1')||'No play yet';let l2=localStorage.getItem('roxy_score_l2')||'No play yet';let l3=localStorage.getItem('roxy_score_l3')||'No play yet';document.getElementById('inboxList').innerHTML=`<div class="friendCard"><div class="friendAvatar">🐩</div><div><b>ROXY</b><br><span style="font-size:12px;">Welcome ${myName}! L1: ${l1}, L2: ${l2}, L3: ${l3}</span></div></div>`;}
+function goProfile(){setNav('navProfile');hideAll();let b=document.getElementById('profilePage');b.classList.remove('hidden');document.getElementById('profileName').innerText='# Cybersecurity - '+myName;document.getElementById('profileHandle').innerText='@'+myName.toLowerCase().replace(/\s/g,'')+'soclab';let l1=localStorage.getItem('roxy_score_l1')||'No play yet';let l2=localStorage.getItem('roxy_score_l2')||'No play yet';let l3=localStorage.getItem('roxy_score_l3')||'No play yet';document.getElementById('profileScores').innerHTML=`<b>🏆 MY SCORES:</b><br>🎮 L1: ${l1}<br>🔥 L2: ${l2}<br>💜 L3: ${l3}<br>📟 Commands: ${allCmds().length}<br>🛡️ Scams: ${history.length}`;}
+function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';if(voiceOn)speak("Voice on!");}
 function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
 function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;window.speechSynthesis.speak(u);}
-function testVoice(){speak(`Hi ${myName}!`);}
 function startMic(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert("Browser no support mic.");return;}let Rec=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=new Rec();rec.lang='en-US';rec.onresult=(e)=>{inp.value=e.results[0][0].transcript;send();};rec.start();}
 function quickAsk(t){inp.value=t;send();}
 function toggleSmart(){let b=document.getElementById('smartBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
@@ -466,9 +459,9 @@ function getReply(text){
   if(t.includes('what is ip'))return `<b>IP = Internet Address</b><br>Like house address for internet! Tap Smart Tools > Show My IP!`;
   if(t.includes('what is dns'))return `<b>DNS = Phonebook</b><br>google.com -> IP!`;
   if(t.includes('what is firewall'))return `<b>Firewall = Security Guard</b><br>Block bad traffic!`;
-  if(t.includes('hack'))return `<b>⚠️ ROXY Rule:</b> I teach DEFEND, not hack real people! Nmap, Wireshark = Ethical!`;
+  if(t.includes('hack'))return `<b>⚠️ ROXY Rule:</b> I teach DEFEND, not hack real people!`;
   if(t.includes('password'))return `Tap 🧠 Smart Tools > Generate Password!`;
-  if(t.includes('motherboard')||t.includes('cmos')||t.includes('bios'))return `<b>🖥️ MOTHERBOARD</b><br>Tap 🖥️ Motherboard! CPU, RAM, CMOS, BIOS!`;
+  if(t.includes('motherboard')||t.includes('cmos')||t.includes('bios'))return `<b>🖥️ MOTHERBOARD</b><br>Tap 🖥️ Motherboard!`;
   if(t.includes('quiz level 3'))return `<b>💜 QUIZ L3</b><br>Tap 💜 L3! LEGEND!`;
   if(t.includes('quiz'))return `Tap 🎮 L1, 🔥 L2, 💜 L3!`;
   if(t.includes('python'))return `<b>🐍 PYTHON</b><br><code>print("Hello Roland")</code>`;
