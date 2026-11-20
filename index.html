@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY v4.5 - Linux Troubleshooting Master</title>
+<title>ROXY v4.6 - Wireshark Lab</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
@@ -21,6 +21,7 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 .voiceBar button.histBtn{background:#00aaff;color:#fff}
 .voiceBar button.cmdBtn{background:#aa00ff;color:#fff}
 .voiceBar button.linuxBtn{background:#ff0055;color:#fff}
+.voiceBar button.sharkBtn{background:#00ffff;color:#000}
 .chat{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px}
 .msg{max-width:88%;padding:12px 14px;border-radius:15px;font-size:15px;line-height:1.45}
 .me{background:#00ff88;color:#000;align-self:flex-end;border-bottom-right-radius:5px}
@@ -50,12 +51,14 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 .delBtn{background:#333!important;color:#fff!important;padding:6px!important;font-size:12px!important;margin-top:4px}
 .linuxCard{background:#000;border:1px solid #ff0055;border-radius:12px;padding:12px;margin-top:10px;font-size:13px;line-height:1.5}
 .linuxCard b{color:#ffaaaa}.linuxCard code{background:#111;color:#00ff88;padding:4px 6px;border-radius:5px;display:block;margin:4px 0;word-break:break-all}
+.sharkCard{background:#000;border:1px solid #00ffff;border-radius:12px;padding:12px;margin-top:10px;font-size:13px;line-height:1.5}
+.sharkCard b{color:#aaffff}.sharkCard code{background:#111;color:#00ff88;padding:4px 6px;border-radius:5px;display:block;margin:4px 0;word-break:break-all}
 </style>
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v4.5</span> 🐧🛡️</h1>
-<p>Linux Troubleshooting + Nmap + Wireshark + Scam | By Roland 🇳🇬</p>
+<h1>ROXY <span>CHAT v4.6</span> 🦈🛡️</h1>
+<p>Linux + Nmap + Wireshark Lab + Scam | By Roland 🇳🇬</p>
 <p class="status" id="statusText">● Online</p>
 </div>
 <div class="login" id="loginScreen">
@@ -74,6 +77,7 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <button class="histBtn" onclick="toggleHistory()">📜 History (<span id="histCount">0</span>)</button>
 <button class="cmdBtn" onclick="toggleCmd()">📟 Commands (<span id="cmdCount">0</span>)</button>
 <button class="linuxBtn" onclick="toggleLinux()">🐧 Linux Fix</button>
+<button class="sharkBtn" onclick="toggleShark()">🦈 Wireshark</button>
 <button class="logout" onclick="doLogout()">Logout</button>
 </div>
 <div id="scamBox" class="scamBox hidden">
@@ -88,7 +92,7 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <button class="clearBtn" onclick="clearHistory()">🗑️ Clear All History</button>
 </div>
 <div id="cmdBox" class="scamBox hidden" style="border-color:#aa00ff;">
-<h3 style="color:#c26bff;">📟 ROXY Command Vault - 52 Commands</h3>
+<h3 style="color:#c26bff;">📟 ROXY Command Vault</h3>
 <p style="font-size:12px;color:#aaa;">Search: nmap, wireshark, disk, cpu, memory, ssh, port, service</p>
 <input id="cmdSearch" placeholder="🔍 Search command..." oninput="renderCmds()">
 <div id="cmdList"></div>
@@ -99,23 +103,28 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <button style="background:#aa00ff;color:#fff;" onclick="saveMyCmd()">💾 SAVE COMMAND</button>
 </div>
 <div id="linuxBox" class="scamBox hidden" style="border-color:#ff0055;">
-<h3 style="color:#ffaaaa;">🐧 TOP 10 Linux Troubleshooting - From Roland's Book</h3>
-<p style="font-size:12px;color:#aaa;">Tap any problem. ROXY go show Symptoms → Steps → Commands.</p>
+<h3 style="color:#ffaaaa;">🐧 TOP 10 Linux Troubleshooting</h3>
 <input id="linuxSearch" placeholder="🔍 Search e.g. disk full, cpu, ssh, port..." oninput="renderLinux()">
 <div id="linuxList"></div>
+</div>
+<div id="sharkBox" class="scamBox hidden" style="border-color:#00ffff;">
+<h3 style="color:#aaffff;">🦈 WIRESHARK LAB - 10 Lessons</h3>
+<p style="font-size:12px;color:#aaa;">Learn how to catch packets like SOC analyst. Tap Copy to copy any filter!</p>
+<input id="sharkSearch" placeholder="🔍 Search e.g. dns, http, password, slow..." oninput="renderShark()">
+<div id="sharkList"></div>
 </div>
 <div class="quick">
 <button onclick="quickAsk('disk full')">💾 Disk Full</button>
 <button onclick="quickAsk('high cpu')">🔥 High CPU</button>
 <button onclick="quickAsk('ssh login failure')">🔑 SSH Fail</button>
-<button onclick="quickAsk('nmap')">📟 Nmap</button>
 <button onclick="quickAsk('wireshark')">🦈 Wireshark</button>
-<button onclick="quickAsk('port not working')">🔌 Port Not Working</button>
+<button onclick="quickAsk('wireshark dns')">🌐 DNS</button>
+<button onclick="quickAsk('wireshark password')">🔑 Password</button>
 </div>
 <div class="chat" id="chat"></div>
 <div class="inputBox">
 <button class="micBtn" onclick="startMic()">🎤</button>
-<input id="inp" placeholder="Ask ROXY: disk full, high cpu, ssh, nmap..." onkeypress="if(event.key==='Enter')send()">
+<input id="inp" placeholder="Ask ROXY: disk full, wireshark, dns, http..." onkeypress="if(event.key==='Enter')send()">
 <button class="sendBtn" onclick="send()">➤</button>
 </div>
 </div>
@@ -125,109 +134,125 @@ let voiceOn=true;let myName=localStorage.getItem('roxy_name')||'';
 let savedPin=localStorage.getItem('roxy_pin')||'';
 let history=JSON.parse(localStorage.getItem('roxy_history')||'[]');
 let DEFAULT_CMDS=[
-// NMAP - From your book
+// NMAP
 {t:'Nmap - Scan One Device',c:'nmap 192.168.1.1',d:'Check which ports open for one device.',tag:'nmap'},
-{t:'Nmap - Scan All Devices For WiFi',c:'nmap -sn 192.168.1.0/24',d:'Find ALL phones/laptops for your WiFi. -sn = Ping Scan, no port scan.',tag:'nmap'},
+{t:'Nmap - Scan All Devices For WiFi',c:'nmap -sn 192.168.1.0/24',d:'Find ALL phones/laptops for your WiFi. -sn = Ping Scan.',tag:'nmap'},
 {t:'Nmap - Aggressive Scan',c:'nmap -A 192.168.1.1',d:'Deep scan: OS, version, ports. -A = Aggressive.',tag:'nmap'},
-{t:'Nmap - Service Version Detection',c:'nmap -sV 192.168.1.1',d:'From your book: -sV = Service Version detection. See version of services.',tag:'nmap'},
-{t:'Nmap - OS Detection',c:'nmap -O 192.168.1.1',d:'From your book: -O = Operating System detection. Guess Windows/Linux.',tag:'nmap'},
+{t:'Nmap - Service Version Detection',c:'nmap -sV 192.168.1.1',d:'-sV = Service Version detection.',tag:'nmap'},
+{t:'Nmap - OS Detection',c:'nmap -O 192.168.1.1',d:'-O = Operating System detection.',tag:'nmap'},
 {t:'Nmap - Fast Scan',c:'nmap -F 192.168.1.1',d:'Fast scan, only top 100 ports.',tag:'nmap'},
-{t:'Nmap - Scan ALL Ports',c:'nmap -p- 192.168.1.1',d:'From your book: -p- = Scan ALL 65535 ports.',tag:'nmap'},
-{t:'Nmap - Scan Single Port 22',c:'nmap -p 22 192.168.1.1',d:'From your book: -p 22 = Scan a single port. 22 = SSH.',tag:'nmap'},
-{t:'Nmap - Scan Ports 80,443',c:'nmap -p 80,443 192.168.1.1',d:'Scan only web ports 80 (HTTP) and 443 (HTTPS).',tag:'nmap'},
-{t:'Nmap - SYN Stealth Scan',c:'nmap -sS 192.168.1.1',d:'From your book: -sS = SYN scan. Fast + stealthy. Most popular.',tag:'nmap'},
-{t:'Nmap - TCP Connect Scan',c:'nmap -sT 192.168.1.1',d:'From your book: -sT = Full TCP Connect. No need root.',tag:'nmap'},
-{t:'Nmap - UDP Scan',c:'nmap -sU 192.168.1.1',d:'From your book: -sU = UDP scan. Check UDP services like DNS.',tag:'nmap'},
-{t:'Nmap - NULL Scan',c:'nmap -sN 192.168.1.1',d:'From your book: -sN = NULL scan. Send packet with no flags.',tag:'nmap'},
-{t:'Nmap - XMAS Scan',c:'nmap -sX 192.168.1.1',d:'From your book: -sX = XMAS scan. FIN+PSH+URG flags like Christmas tree.',tag:'nmap'},
-{t:'Nmap - FIN Scan',c:'nmap -sF 192.168.1.1',d:'From your book: -sF = FIN scan. Send only FIN flag.',tag:'nmap'},
-{t:'Nmap - ACK Scan',c:'nmap -sA 192.168.1.1',d:'From your book: -sA = ACK scan. Check firewall rules.',tag:'nmap'},
-{t:'Nmap - Speed T0-T1-T2 Slow',c:'nmap -T0 192.168.1.1  |  nmap -T2 192.168.1.1',d:'From your book: T0,T1,T2 = Slower speed. Use to avoid detection.',tag:'nmap'},
-{t:'Nmap - Speed T3 Normal',c:'nmap -T3 192.168.1.1',d:'From your book: T3 = Normal speed. Default.',tag:'nmap'},
-{t:'Nmap - Speed T4-T5 Faster',c:'nmap -T4 192.168.1.1  |  nmap -T5 192.168.1.1',d:'From your book: T4,T5 = Faster speed. For your own fast network only.',tag:'nmap'},
-{t:'Nmap - Save Output To File',c:'nmap -oN result.txt 192.168.1.1',d:'From your book: -oN = Save output to file (Normal format).',tag:'nmap'},
-{t:'Nmap - Save Output XML',c:'nmap -oX result.xml 192.168.1.1',d:'Save as XML for tools to read.',tag:'nmap'},
-{t:'Nmap - Spoof MAC Address',c:'nmap --spoof-mac 00:11:22:33:44:55 192.168.1.1',d:'From your book: --spoof-mac = Fake your MAC address.',tag:'nmap'},
-{t:'Nmap - Use Specific Interface',c:'nmap -e eth0 192.168.1.1',d:'From your book: -e = Interface. eth0 = cable, wlan0 = WiFi.',tag:'nmap'},
-{t:'Nmap - NSE Script Scan',c:'nmap --script vuln 192.168.1.1',d:'From your book: NSE = Nmap Scripting Engine. --script vuln = check vulnerabilities.',tag:'nmap'},
-{t:'Nmap - Default Scripts',c:'nmap -sC 192.168.1.1',d:'Run default NSE scripts. -sC = Script scan.',tag:'nmap'},
+{t:'Nmap - Scan ALL Ports',c:'nmap -p- 192.168.1.1',d:'-p- = Scan ALL 65535 ports.',tag:'nmap'},
+{t:'Nmap - Scan Single Port 22',c:'nmap -p 22 192.168.1.1',d:'-p 22 = Scan a single port. 22 = SSH.',tag:'nmap'},
+{t:'Nmap - Scan Ports 80,443',c:'nmap -p 80,443 192.168.1.1',d:'Scan only web ports.',tag:'nmap'},
+{t:'Nmap - SYN Stealth Scan',c:'nmap -sS 192.168.1.1',d:'-sS = SYN scan. Fast + stealthy.',tag:'nmap'},
+{t:'Nmap - TCP Connect Scan',c:'nmap -sT 192.168.1.1',d:'-sT = Full TCP Connect.',tag:'nmap'},
+{t:'Nmap - UDP Scan',c:'nmap -sU 192.168.1.1',d:'-sU = UDP scan. Check UDP services like DNS.',tag:'nmap'},
+{t:'Nmap - NULL Scan',c:'nmap -sN 192.168.1.1',d:'-sN = NULL scan.',tag:'nmap'},
+{t:'Nmap - XMAS Scan',c:'nmap -sX 192.168.1.1',d:'-sX = XMAS scan. FIN+PSH+URG.',tag:'nmap'},
+{t:'Nmap - FIN Scan',c:'nmap -sF 192.168.1.1',d:'-sF = FIN scan.',tag:'nmap'},
+{t:'Nmap - ACK Scan',c:'nmap -sA 192.168.1.1',d:'-sA = ACK scan. Check firewall.',tag:'nmap'},
+{t:'Nmap - Speed T0-T2 Slow',c:'nmap -T0 192.168.1.1',d:'T0,T1,T2 = Slower speed. Avoid detection.',tag:'nmap'},
+{t:'Nmap - Speed T3 Normal',c:'nmap -T3 192.168.1.1',d:'T3 = Normal speed. Default.',tag:'nmap'},
+{t:'Nmap - Speed T4-T5 Faster',c:'nmap -T4 192.168.1.1',d:'T4,T5 = Faster speed.',tag:'nmap'},
+{t:'Nmap - Save Output To File',c:'nmap -oN result.txt 192.168.1.1',d:'-oN = Save output to file.',tag:'nmap'},
+{t:'Nmap - Save Output XML',c:'nmap -oX result.xml 192.168.1.1',d:'Save as XML.',tag:'nmap'},
+{t:'Nmap - Spoof MAC',c:'nmap --spoof-mac 00:11:22:33:44:55 192.168.1.1',d:'--spoof-mac = Fake your MAC.',tag:'nmap'},
+{t:'Nmap - Use Interface',c:'nmap -e eth0 192.168.1.1',d:'-e = Interface. eth0=cable, wlan0=WiFi.',tag:'nmap'},
+{t:'Nmap - NSE Script Scan',c:'nmap --script vuln 192.168.1.1',d:'NSE = Nmap Scripting Engine.',tag:'nmap'},
+{t:'Nmap - Default Scripts',c:'nmap -sC 192.168.1.1',d:'Run default NSE scripts.',tag:'nmap'},
 // WIRESHARK
 {t:'Wireshark - Capture All Traffic',c:'wireshark',d:'Open Wireshark, select WiFi, click Start.',tag:'wireshark'},
-{t:'Wireshark Filter - Show Only HTTP',c:'http',d:'Type for filter bar. Show only websites.',tag:'wireshark'},
+{t:'Wireshark Filter - Show Only HTTP',c:'http',d:'Show only websites (HTTP).',tag:'wireshark'},
+{t:'Wireshark Filter - Show Only HTTPS',c:'tls',d:'Show only encrypted HTTPS traffic.',tag:'wireshark'},
 {t:'Wireshark Filter - Show One IP',c:'ip.addr == 192.168.1.1',d:'Show only traffic from that one device.',tag:'wireshark'},
 {t:'Wireshark Filter - Show DNS',c:'dns',d:'Show only DNS - which websites person dey try visit.',tag:'wireshark'},
-{t:'Wireshark Filter - Show POST (Logins)',c:'http.request.method == "POST"',d:'Show login forms. For learning - never steal password!',tag:'wireshark'},
-{t:'Wireshark - Follow TCP Stream',c:'Right-click packet > Follow > TCP Stream',d:'See full conversation between two computers.',tag:'wireshark'},
-// LINUX TROUBLESHOOTING - From your book
-{t:'LINUX 1 - Disk Full: Check Disk Space',c:'df -h',d:'1. DISK FULL: Check which partition is full. -h = human readable.',tag:'linux disk'},
-{t:'LINUX 1 - Disk Full: Find Big Files in Logs',c:'du -sh /var/log/*',d:'Find large files. du -sh = size of folder.',tag:'linux disk'},
-{t:'LINUX 1 - Disk Full: Find Files Over 1GB',c:'sudo find / -type f -size +1G',d:'From your book: Find files bigger than 1GB.',tag:'linux disk'},
-{t:'LINUX 1 - Disk Full: Check Deleted But Open Files',c:'sudo lsof +L1',d:'From your book: Check deleted files still using space.',tag:'linux disk'},
-{t:'LINUX 1 - Disk Full: Clear Docker Images',c:'sudo docker image prune -a',d:'From your book: Clear Docker images [if used] to free space.',tag:'linux disk'},
-{t:'LINUX 2 - High CPU: See Live CPU',c:'top',d:'2. HIGH CPU: See live CPU. Press q to quit, Shift+P to sort by CPU.',tag:'linux cpu'},
-{t:'LINUX 2 - High CPU: Top CPU Processes',c:'ps aux --sort=-%cpu | head',d:'From your book: List processes sorted by CPU, top first.',tag:'linux cpu'},
-{t:'LINUX 2 - High CPU: Check One Process',c:'top -p <PID>',d:'From your book: Watch one process. Replace <PID> with number.',tag:'linux cpu'},
-{t:'LINUX 3 - High Memory: Check RAM',c:'free -h',d:'3. HIGH MEMORY: Check RAM + Swap. -h = human.',tag:'linux memory'},
-{t:'LINUX 3 - High Memory: Top Memory Processes',c:'ps aux --sort=-%mem | head',d:'From your book: List processes sorted by Memory.',tag:'linux memory'},
-{t:'LINUX 3 - High Memory: Check Memory Details',c:'cat /proc/meminfo',d:'Show full memory info from system.',tag:'linux memory'},
-{t:'LINUX 3 - High Memory: Watch Memory Live',c:'vmstat 1 5',d:'From your book: vmstat 1 5 = check every 1 sec, 5 times.',tag:'linux memory'},
-{t:'LINUX 4 - Server Not Reachable: Ping',c:'ping -c 4 <IP>',d:'4. NOT REACHABLE: ping -c 4 = send 4 pings only.',tag:'linux network'},
-{t:'LINUX 4 - Server Not Reachable: Trace Route',c:'traceroute <IP>',d:'Show path packet dey follow to reach server.',tag:'linux network'},
-{t:'LINUX 4 - Server Not Reachable: DNS Check',c:'nslookup example.com',d:'Check if DNS dey work. Try dig example.com too.',tag:'linux network'},
-{t:'LINUX 5 - Service Down: Check Service',c:'sudo systemctl status <service>',d:'5. SERVICE DOWN: Replace <service> e.g. ssh, apache2, nginx.',tag:'linux service'},
-{t:'LINUX 5 - Service Down: Check Logs',c:'sudo journalctl -u <service> -n 100',d:'From your book: Show last 100 lines of logs for that service.',tag:'linux service'},
-{t:'LINUX 5 - Service Down: Restart Service',c:'sudo systemctl restart <service>',d:'Restart am, then check status again.',tag:'linux service'},
-{t:'LINUX 6 - Port Not Working: Check Port 8000',c:'sudo ss -tlnp | grep :8000',d:'6. PORT NOT WORKING: ss -tlnp = show listening ports. Replace 8000.',tag:'linux port'},
-{t:'LINUX 6 - Port Not Working: Check Port 8888',c:'sudo netstat -tlnp | grep :8888',d:'Old way to check port. Same as ss.',tag:'linux port'},
-{t:'LINUX 6 - Port Not Working: Test Locally',c:'curl http://localhost:8888',d:'From your book: Test if app dey work for inside server.',tag:'linux port'},
-{t:'LINUX 6 - Port Not Working: Check Firewall',c:'sudo ufw status',d:'Check if firewall dey block port. Also: sudo firewall-cmd --list-ports',tag:'linux port'},
-{t:'LINUX 6 - Port Not Working: Check Firewall Rules',c:'sudo iptables -L -n -v',d:'From your book: iptables -L -n -v = List all firewall rules.',tag:'linux port'},
-{t:'LINUX 7 - SSH Fail: Check SSH Service',c:'sudo systemctl status ssh',d:'7. SSH LOGIN FAILURE: Check if SSH dey running.',tag:'linux ssh'},
-{t:'LINUX 7 - SSH Fail: Check SSH Logs',c:'sudo journalctl -u ssh',d:'See why SSH fail.',tag:'linux ssh'},
-{t:'LINUX 7 - SSH Fail: Check Key Permissions',c:'ls -l ~/.ssh/authorized_keys',d:'From your book: Permissions must be correct, or SSH go reject key.',tag:'linux ssh'},
-{t:'LINUX 7 - SSH Fail: Test SSH Config',c:'sudo sshd -t',d:'From your book: Test sshd config. If no output, config OK.',tag:'linux ssh'},
-{t:'LINUX 7 - SSH Fail: Check SSH Config',c:'grep -E "PasswordAuthentication|PubkeyAuthentication" /etc/ssh/sshd_config',d:'From your book: Check if password / key login dey allowed.',tag:'linux ssh'},
-{t:'LINUX 7 - SSH Fail: Check Auth Log',c:'sudo tail -n 50 /var/log/auth.log',d:'From your book: Last 50 lines of login attempts.',tag:'linux ssh'},
-{t:'LINUX 8 - Mount Issue: List Disks',c:'lsblk',d:'8. MOUNT / FILESYSTEM: lsblk = list all disks + partitions.',tag:'linux mount'},
-{t:'LINUX 8 - Mount Issue: Check Mounted',c:'df -h',d:'See which disks dey mounted now.',tag:'linux mount'},
-{t:'LINUX 8 - Mount Issue: Check fstab',c:'cat /etc/fstab',d:'From your book: fstab = file wey tell Linux what to mount on boot.',tag:'linux mount'},
-{t:'LINUX 8 - Mount Issue: Try Mount All',c:'sudo mount -a',d:'From your book: Try mount everything for fstab.',tag:'linux mount'},
-{t:'LINUX 8 - Mount Issue: Check Disk Errors',c:'sudo fsck /dev/sdx',d:'From your book: fsck = check + fix filesystem. Replace sdx.',tag:'linux mount'},
-{t:'LINUX 9 - High Load: Check Load',c:'uptime',d:'9. HIGH LOAD AVERAGE: uptime = show load for 1,5,15 mins.',tag:'linux load'},
-{t:'LINUX 9 - High Load: Check Disk I/O',c:'iostat -xz 1 5',d:'From your book: Check if disk dey slow.',tag:'linux load'},
-// GENERAL
-{t:'Ping - Check If Device Dey Alive',c:'ping 192.168.1.1',d:'Check if device dey online.',tag:'general'},
+{t:'Wireshark Filter - Show POST (Logins)',c:'http.request.method == "POST"',d:'Show login forms.',tag:'wireshark'},
+{t:'Wireshark Filter - Show GET',c:'http.request.method == "GET"',d:'Show pages person dey open.',tag:'wireshark'},
+{t:'Wireshark Filter - Show TCP Only',c:'tcp',d:'Show only TCP packets.',tag:'wireshark'},
+{t:'Wireshark Filter - Show UDP Only',c:'udp',d:'Show only UDP packets.',tag:'wireshark'},
+{t:'Wireshark Filter - Show ICMP Ping',c:'icmp',d:'Show only ping packets.',tag:'wireshark'},
+{t:'Wireshark Filter - Show ARP',c:'arp',d:'Show who dey ask "who get this IP?"',tag:'wireshark'},
+{t:'Wireshark Filter - Show Errors / Retransmission',c:'tcp.analysis.retransmission',d:'Show packets wey need resend - sign of slow network!',tag:'wireshark'},
+{t:'Wireshark Filter - Show Large Packets',c:'frame.len > 1000',d:'Show only big packets.',tag:'wireshark'},
+{t:'Wireshark Filter - Show One Port 80',c:'tcp.port == 80',d:'Show only traffic for port 80 (HTTP).',tag:'wireshark'},
+{t:'Wireshark Filter - Show One Port 443',c:'tcp.port == 443',d:'Show only traffic for port 443 (HTTPS).',tag:'wireshark'},
+{t:'Wireshark Filter - Exclude My IP',c:'!ip.addr == 192.168.1.5',d:'Hide your own traffic, see others only. ! = NOT.',tag:'wireshark'},
+{t:'Wireshark - Follow TCP Stream',c:'Right-click packet > Follow > TCP Stream',d:'See full conversation.',tag:'wireshark'},
+{t:'Wireshark - Follow HTTP Stream',c:'Right-click packet > Follow > HTTP Stream',d:'See full website request.',tag:'wireshark'},
+{t:'Wireshark - Export Objects (Pictures)',c:'File > Export Objects > HTTP',d:'Download pictures / files wey person download for HTTP!',tag:'wireshark'},
+{t:'Wireshark - Check Expert Info',c:'Analyze > Expert Information',d:'Wireshark go tell you wetin e think say be problem!',tag:'wireshark'},
+// LINUX
+{t:'LINUX 1 - Disk Full: Check Disk',c:'df -h',d:'Check which partition is full.',tag:'linux disk'},
+{t:'LINUX 1 - Disk Full: Big Files Logs',c:'du -sh /var/log/*',d:'Find large files.',tag:'linux disk'},
+{t:'LINUX 1 - Disk Full: Files Over 1GB',c:'sudo find / -type f -size +1G',d:'Find files bigger than 1GB.',tag:'linux disk'},
+{t:'LINUX 1 - Disk Full: Deleted Open Files',c:'sudo lsof +L1',d:'Check deleted files still using space.',tag:'linux disk'},
+{t:'LINUX 2 - High CPU: See Live CPU',c:'top',d:'See live CPU.',tag:'linux cpu'},
+{t:'LINUX 2 - High CPU: Top CPU',c:'ps aux --sort=-%cpu | head',d:'List by CPU.',tag:'linux cpu'},
+{t:'LINUX 3 - High Memory: Check RAM',c:'free -h',d:'Check RAM + Swap.',tag:'linux memory'},
+{t:'LINUX 3 - High Memory: Top Memory',c:'ps aux --sort=-%mem | head',d:'List by Memory.',tag:'linux memory'},
+{t:'LINUX 4 - Not Reachable: Ping',c:'ping -c 4 <IP>',d:'Send 4 pings.',tag:'linux network'},
+{t:'LINUX 4 - Not Reachable: Trace',c:'traceroute <IP>',d:'Show path to server.',tag:'linux network'},
+{t:'LINUX 4 - Not Reachable: DNS',c:'nslookup example.com',d:'Check DNS.',tag:'linux network'},
+{t:'LINUX 5 - Service Down: Check',c:'sudo systemctl status <service>',d:'Check service.',tag:'linux service'},
+{t:'LINUX 5 - Service Down: Logs',c:'sudo journalctl -u <service> -n 100',d:'Last 100 log lines.',tag:'linux service'},
+{t:'LINUX 5 - Service Down: Restart',c:'sudo systemctl restart <service>',d:'Restart service.',tag:'linux service'},
+{t:'LINUX 6 - Port: Check Port',c:'sudo ss -tlnp | grep :8000',d:'Check port 8000.',tag:'linux port'},
+{t:'LINUX 6 - Port: Test Locally',c:'curl http://localhost:8888',d:'Test inside server.',tag:'linux port'},
+{t:'LINUX 6 - Port: Firewall',c:'sudo ufw status',d:'Check firewall.',tag:'linux port'},
+{t:'LINUX 7 - SSH Fail: Check Service',c:'sudo systemctl status ssh',d:'Check SSH.',tag:'linux ssh'},
+{t:'LINUX 7 - SSH Fail: Key Perms',c:'ls -l ~/.ssh/authorized_keys',d:'Check key permissions.',tag:'linux ssh'},
+{t:'LINUX 7 - SSH Fail: Test Config',c:'sudo sshd -t',d:'Test sshd config.',tag:'linux ssh'},
+{t:'LINUX 7 - SSH Fail: Auth Log',c:'sudo tail -n 50 /var/log/auth.log',d:'Last 50 login attempts.',tag:'linux ssh'},
+{t:'LINUX 8 - Mount: List Disks',c:'lsblk',d:'List disks.',tag:'linux mount'},
+{t:'LINUX 8 - Mount: fstab',c:'cat /etc/fstab',d:'Check fstab.',tag:'linux mount'},
+{t:'LINUX 8 - Mount: Try Mount All',c:'sudo mount -a',d:'Try mount all.',tag:'linux mount'},
+{t:'LINUX 9 - High Load: Uptime',c:'uptime',d:'Show load.',tag:'linux load'},
+{t:'LINUX 9 - High Load: Disk I/O',c:'iostat -xz 1 5',d:'Check disk slow.',tag:'linux load'},
+{t:'Ping - Check Alive',c:'ping 192.168.1.1',d:'Check if device dey online.',tag:'general'},
 {t:'Check My Own IP',c:'ipconfig (Windows) / ifconfig (Linux)',d:'See your own IP.',tag:'general'}
 ];
 let TROUBLE=[
-{n:'1. Disk Full - No Space Left',sym:'Application stops working, "No space left", Cannot create files, System / DB stops',steps:'1. Check which partition is full (df -h) 2. Find large files/directories 3. Check deleted files with lsof 4. Clear logs / old files 5. Clear Docker images [if used]',cmds:'df -h | du -sh /var/log/* | sudo find / -type f -size +1G | sudo lsof +L1'},
-{n:'2. High CPU Usage',sym:'Server becomes slow, Response time high, High load average, Application not responding',steps:'1. Check system load (top / uptime) 2. Identify CPU/memory/disk using process 3. Find top resource process 4. Check disk I/O wait 5. Optimize / scale resources',cmds:'top | ps aux --sort=-%cpu | head | top -p <PID>'},
-{n:'3. High Memory Usage',sym:'Server slow, Processes killed, Out of memory error, High swap usage',steps:'1. Check RAM, Swap usage 2. Identify memory-hungry process 3. Check for memory leak 4. Tune application / restart 5. Add Swap or increase RAM',cmds:'free -h | ps aux --sort=-%mem | head | vmstat 1 5 | cat /proc/meminfo'},
-{n:'4. Server Not Reachable',sym:'Cannot ping server, Cannot SSH, SSH connection timeout, Intermittent connectivity',steps:'1. Ping server 2. Trace route 3. Check DNS 4. Check firewall 5. Check SSH service',cmds:'ping -c 4 <IP> | traceroute <IP> | nslookup example.com | dig example.com | sudo ufw status'},
-{n:'5. Service Is Down',sym:'Application / service not running, Service not starting, Application error, Restart not resolving, Auto-restart loops',steps:'1. Check service status 2. Check logs 3. Validate config 4. Restart and verify',cmds:'sudo systemctl status <service> | sudo journalctl -u <service> -n 100 | sudo systemctl restart <service>'},
-{n:'6. Port Not Working',sym:'Website not opening, Connection refused, Timeout error, Works locally, not externally',steps:'1. Check if port dey listen (ss) 2. Test locally with curl 3. Check firewall 4. Check service status',cmds:'sudo ss -tlnp | grep :8000 | curl http://localhost:8888 | sudo ufw status | sudo iptables -L -n -v'},
-{n:'7. SSH Login Failure',sym:'Unable to login via SSH, Permission denied, Connection refused, Timeout, Public key not accepted',steps:'1. Check SSH service status 2. Verify key permissions 3. Check SSHD configuration 4. Check firewall + port 22 5. Review authentication logs',cmds:'sudo systemctl status ssh | ls -l ~/.ssh/authorized_keys | sudo sshd -t | sudo tail -n 50 /var/log/auth.log'},
-{n:'8. Mount / Filesystem Issue',sym:'Disk not mounted or missing after reboot, Partition not mounted, fstab error on boot, Cannot access filesystem',steps:'1. List disks (lsblk) 2. Check mounted (df -h) 3. Check fstab 4. Try mount -a 5. Check disk errors (fsck)',cmds:'lsblk | df -h | cat /etc/fstab | sudo mount -a | sudo fsck /dev/sdx | dmesg | tail -n 50'},
-{n:'9. High Load Average',sym:'Server very slow, Loads high, High load average for long time',steps:'1. Check system load (uptime) 2. Identify CPU/memory/disk using 3. Find top resource process 4. Check disk I/O wait 5. Optimize / scale',cmds:'uptime | top | ps aux --sort=-%cpu | head | iostat -xz 1 5'},
-{n:'10. Disk / Service Slow - General Check',sym:'Everything slow, but no clear error',steps:'1. uptime 2. top 3. free -h 4. df -h 5. Check logs',cmds:'uptime | top | free -h | df -h | dmesg | tail -n 50'}
+{n:'1. Disk Full - No Space Left',sym:'Application stops, "No space left", Cannot create files, DB stops',steps:'1. Check which partition is full (df -h) 2. Find large files 3. Check deleted files with lsof 4. Clear logs / old files 5. Clear Docker images',cmds:'df -h | du -sh /var/log/* | sudo find / -type f -size +1G | sudo lsof +L1'},
+{n:'2. High CPU Usage',sym:'Server slow, Response time high, High load, App not responding',steps:'1. Check load (top) 2. Find top process 3. Check disk I/O wait 4. Optimize / scale',cmds:'top | ps aux --sort=-%cpu | head | top -p <PID>'},
+{n:'3. High Memory Usage',sym:'Server slow, Processes killed, Out of memory, High swap',steps:'1. Check RAM/Swap 2. Find memory-hungry process 3. Check leak 4. Tune app / Add RAM',cmds:'free -h | ps aux --sort=-%mem | head | vmstat 1 5 | cat /proc/meminfo'},
+{n:'4. Server Not Reachable',sym:'Cannot ping, Cannot SSH, Timeout, Intermittent',steps:'1. Ping 2. Trace route 3. Check DNS 4. Check firewall 5. Check SSH',cmds:'ping -c 4 <IP> | traceroute <IP> | nslookup example.com | sudo ufw status'},
+{n:'5. Service Is Down',sym:'Service not running, Not starting, App error, Restart loops',steps:'1. Check status 2. Check logs 3. Validate config 4. Restart + verify',cmds:'sudo systemctl status <service> | sudo journalctl -u <service> -n 100 | sudo systemctl restart <service>'},
+{n:'6. Port Not Working',sym:'Website not opening, Connection refused, Timeout, Works locally not externally',steps:'1. Check port dey listen (ss) 2. Test locally curl 3. Check firewall 4. Check service',cmds:'sudo ss -tlnp | grep :8000 | curl http://localhost:8888 | sudo ufw status | sudo iptables -L -n -v'},
+{n:'7. SSH Login Failure',sym:'Permission denied, Connection refused, Timeout, Public key not accepted',steps:'1. Check SSH service 2. Verify key permissions 3. Check SSHD config 4. Check firewall + port 22 5. Review auth logs',cmds:'sudo systemctl status ssh | ls -l ~/.ssh/authorized_keys | sudo sshd -t | sudo tail -n 50 /var/log/auth.log'},
+{n:'8. Mount / Filesystem Issue',sym:'Disk not mounted after reboot, fstab error, Cannot access',steps:'1. List disks (lsblk) 2. Check mounted (df -h) 3. Check fstab 4. Try mount -a 5. fsck',cmds:'lsblk | df -h | cat /etc/fstab | sudo mount -a | sudo fsck /dev/sdx'},
+{n:'9. High Load Average',sym:'Server very slow, Loads high',steps:'1. Check load (uptime) 2. Find top process 3. Check disk I/O 4. Optimize',cmds:'uptime | top | ps aux --sort=-%cpu | head | iostat -xz 1 5'},
+{n:'10. General Slow Check',sym:'Everything slow, no clear error',steps:'1. uptime 2. top 3. free -h 4. df -h 5. Check logs',cmds:'uptime | top | free -h | df -h | dmesg | tail -n 50'}
+];
+let SHARK=[
+{n:'1. Start Capture - How To Start',what:'Wireshark dey capture packets = small pieces of data wey dey fly for WiFi.',how:'1. Open Wireshark 2. Select your WiFi (wlan0 / Wi-Fi) 3. Click blue shark fin to Start 4. Open browser, visit site 5. Click red square to Stop',filter:'wireshark',tip:'⚠️ Only capture YOUR OWN WiFi! No capture school / neighbour WiFi without permission.'},
+{n:'2. Filter - Show Only HTTP Websites',what:'HTTP = websites wey no get lock (not secure). HTTPS = with lock.',how:'Type for filter bar at top, press Enter. E go hide all other packets.',filter:'http',tip:'HTTP go show you website names + sometimes passwords for old sites!'},
+{n:'3. Filter - Show Only DNS',what:'DNS = Phonebook. When you type google.com, your phone go ask DNS: "Wetin be IP for google.com?"',how:'Type dns for filter. You go see all websites person dey try visit, even if e no open!',filter:'dns',tip:'SOC analysts use DNS to see if person visit bad site!'},
+{n:'4. Filter - Show One Device Only',what:'If 10 phones dey for WiFi, you fit focus on ONE phone.',how:'Find IP for that phone (e.g. 192.168.1.5), type filter, press Enter.',filter:'ip.addr == 192.168.1.1',tip:'Replace 192.168.1.1 with the IP you want. == means EQUAL.'},
+{n:'5. Filter - Find Passwords / Logins (HTTP)',what:'Old websites wey use HTTP (no S) dey send password as plain text! Wireshark fit see am.',how:'Type POST filter. Look for packet, Right-click > Follow > HTTP Stream. You go see username + password if site na HTTP.',filter:'http.request.method == "POST"',tip:'⚠️ FOR LEARNING ONLY. Never steal another person password! Use your own test site.'},
+{n:'6. Follow Stream - See Full Chat',what:'Packets dey small-small, but Follow Stream go join them to show full message like WhatsApp chat.',how:'Right-click any packet > Follow > TCP Stream (for general) or HTTP Stream (for website).',filter:'Right-click > Follow > TCP Stream',tip:'Best way to understand wetin two computers dey talk!'},
+{n:'7. Find Slow Network - Retransmission',what:'If network slow, packets dey loss, computer go resend am. That na Retransmission.',how:'Type retransmission filter. If you see MANY, network get problem - WiFi weak or cable bad.',filter:'tcp.analysis.retransmission',tip:'SOC: Many retransmissions = network wahala, no be hacker.'},
+{n:'8. Filter - Show Only Ping (ICMP)',what:'Ping = "Are you there?" computer dey ask another computer.',how:'Type icmp for filter. You go see Request + Reply.',filter:'icmp',tip:'If no Reply, device off or firewall dey block ping.'},
+{n:'9. Filter - Show ARP - Who Get This IP?',what:'ARP = "Who get IP 192.168.1.5? Tell me your MAC address!"',how:'Type arp. You go see devices dey find each other.',filter:'arp',tip:'Too much ARP fit mean ARP Spoofing attack! Hacker dey pretend to be router.'},
+{n:'10. Export Files - Download Pictures From Capture',what:'If person download picture for HTTP site, Wireshark fit extract am!',how:'File > Export Objects > HTTP > Select file > Save. Open picture!',filter:'File > Export Objects > HTTP',tip:'Only work for HTTP, not HTTPS (HTTPS dey encrypted).'}
 ];
 let myCmds=JSON.parse(localStorage.getItem('roxy_cmds')||'[]');
 function allCmds(){return [...DEFAULT_CMDS.map(c=>({...c,mine:false})), ...myCmds.map((c,i)=>({...c,mine:true,idx:i}))];}
 window.onload=function(){updateHistCount();updateCmdCount();if(myName){showChat(true);}};
 function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN for '+myName+'! Try again.');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
 function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
-function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands + ${TROUBLE.length} Linux fixes saved. Tap 🐧 Linux Fix!`:`Hi ${myName}! Na me be ROXY v4.5 - Linux Troubleshooting Master! 🐧 I get your 10 Linux scenarios + Full Nmap switches from your book!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
+function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands + 10 Linux fixes + 10 Wireshark lessons! Tap 🦈 Wireshark!`:`Hi ${myName}! Na me be ROXY v4.6 - Wireshark Lab! 🦈 I get 10 Wireshark lessons + 10 Linux fixes + Nmap!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
 function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';b.className=voiceOn?'':'off';if(voiceOn)speak("Voice on!");}
 function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
 function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;window.speechSynthesis.speak(u);}
-function testVoice(){speak(`Hi ${myName}! I sabi Linux troubleshooting now.`);}
+function testVoice(){speak(`Hi ${myName}! I sabi Wireshark now.`);}
 function startMic(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert("Your browser no support mic. Type instead!");return;}let Rec=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=new Rec();rec.lang='en-US';rec.onresult=(e)=>{inp.value=e.results[0][0].transcript;send();};rec.start();}
 function quickAsk(t){inp.value=t;send();}
-function hideAll(){document.getElementById('scamBox').classList.add('hidden');document.getElementById('histBox').classList.add('hidden');document.getElementById('cmdBox').classList.add('hidden');document.getElementById('linuxBox').classList.add('hidden');}
+function hideAll(){document.getElementById('scamBox').classList.add('hidden');document.getElementById('histBox').classList.add('hidden');document.getElementById('cmdBox').classList.add('hidden');document.getElementById('linuxBox').classList.add('hidden');document.getElementById('sharkBox').classList.add('hidden');}
 function toggleScam(){let b=document.getElementById('scamBox');let was=b.classList.contains('hidden');hideAll();if(was)b.classList.remove('hidden');}
 function toggleHistory(){let b=document.getElementById('histBox');let was=b.classList.contains('hidden');hideAll();if(was){b.classList.remove('hidden');renderHistory();}}
 function toggleCmd(){let b=document.getElementById('cmdBox');let was=b.classList.contains('hidden');hideAll();if(was){b.classList.remove('hidden');renderCmds();}}
 function toggleLinux(){let b=document.getElementById('linuxBox');let was=b.classList.contains('hidden');hideAll();if(was){b.classList.remove('hidden');renderLinux();}}
+function toggleShark(){let b=document.getElementById('sharkBox');let was=b.classList.contains('hidden');hideAll();if(was){b.classList.remove('hidden');renderShark();}}
 function updateHistCount(){document.getElementById('histCount').innerText=history.length;}
 function updateCmdCount(){document.getElementById('cmdCount').innerText=allCmds().length;}
 function saveToHistory(msg,score){let label=score>=70?'🚨 SCAM':score>=40?'⚠️ SUSPICIOUS':'✅ SAFE';history.unshift({msg:msg.substring(0,120),score:score,label:label,date:new Date().toLocaleString()});if(history.length>50)history=history.slice(0,50);localStorage.setItem('roxy_history',JSON.stringify(history));updateHistCount();}
@@ -244,94 +269,4 @@ function renderCmds(){
   }).join('');
 }
 function renderLinux(){
-  let q=(document.getElementById('linuxSearch').value||'').toLowerCase();
-  let list=document.getElementById('linuxList');
-  let f=TROUBLE.filter(x=>(x.n+x.sym+x.steps+x.cmds).toLowerCase().includes(q));
-  list.innerHTML=f.map(x=>`<div class="linuxCard"><b>🐧 ${x.n}</b><br><b>Symptoms:</b> ${x.sym}<br><b>Steps:</b> ${x.steps}<br><b>Commands:</b><code>${x.cmds}</code><button class="copyBtn" style="background:#ff0055!important;" onclick="copyCmd('${x.cmds}')">📋 Copy All Commands</button></div>`).join('');
-}
-function copyCmd(txt){navigator.clipboard.writeText(txt).then(()=>alert('Copied: '+txt)).catch(()=>{let ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();alert('Copied: '+txt);});}
-function saveMyCmd(){
-  let t=document.getElementById('newCmdTitle').value.trim();
-  let c=document.getElementById('newCmdText').value.trim();
-  let d=document.getElementById('newCmdDesc').value.trim()||'My saved command';
-  if(!t||!c){alert('Type Title + Command first!');return;}
-  myCmds.unshift({t:t,c:c,d:d,tag:'mine'});
-  localStorage.setItem('roxy_cmds',JSON.stringify(myCmds));
-  document.getElementById('newCmdTitle').value='';document.getElementById('newCmdText').value='';document.getElementById('newCmdDesc').value='';
-  updateCmdCount();renderCmds();alert('Saved! ✅ ROXY go remember am forever.');
-}
-function deleteMyCmd(i){if(!confirm('Delete this command?'))return;myCmds.splice(i,1);localStorage.setItem('roxy_cmds',JSON.stringify(myCmds));updateCmdCount();renderCmds();}
-function checkScam(){
-  let txt=document.getElementById('scamInput').value.trim();
-  if(!txt){alert('Paste message first!');return;}
-  let res=scoreScam(txt);saveToHistory(txt,res.score);
-  let color=res.score>=70?'#ff0055':res.score>=40?'#ffaa00':'#00ff88';
-  let label=res.score>=70?'🚨 SCAM - DO NOT TRUST!':res.score>=40?'⚠️ SUSPICIOUS - BE CAREFUL!':'✅ SAFE - Looks Okay';
-  document.getElementById('scamResult').innerHTML=`<div style="margin-top:10px;"><b style="color:${color};font-size:18px;">Score: ${res.score}/100</b><br><b style="color:${color};">${label}</b><div class="scoreBar"><div class="scoreFill" style="width:${res.score}%;background:${color}"></div></div><div style="font-size:13px;">${res.reasons.map(r=>'• '+r).join('<br>')}</div><p style="font-size:12px;color:#00ff88;margin-top:6px;">✅ Saved to History! Total: ${history.length}</p></div>`;
-  speak(`Scam score is ${res.score} out of 100. ${label}`);
-}
-function scoreScam(text){
-  let t=text.toLowerCase();let score=5;let reasons=[];
-  let checks=[
-    ['urgent|immediately|act now|blocked|will be closed|24 hours',25,'Creates URGENCY / fear'],
-    ['verify your account|confirm your|update your account|login to|click here|click the link',25,'Asks you to CLICK LINK / VERIFY'],
-    ['send money|transfer|pay|bitcoin|crypto|gift card|otp|password|pin|bvn',25,'Asks for MONEY / OTP / PASSWORD / PIN / BVN'],
-    ['http|www\\.|\\.com|\\.ng|\\.xyz|\\.top|bit\\.ly|tinyurl',15,'Contains LINK - fit be fake'],
-    ['congratulations|you won|giveaway|free|lottery|prize|reward',20,'Promises FREE MONEY / PRIZE'],
-    ['bank|gtb|access|first bank|uba|zenith|opay|palmpay|moniepoint|instagram|whatsapp support',10,'Pretends to be BANK / APP SUPPORT'],
-    ['dear customer|dear user|account holder',8,'Generic greeting - "Dear Customer"']
-  ];
-  checks.forEach(c=>{if(new RegExp(c[0]).test(t)){score+=c[1];reasons.push(c[2]);}});
-  if(reasons.length===0)reasons.push('No common scam signs found');
-  if(score>100)score=100;return {score,reasons};
-}
-function addMsg(text,who){let d=document.createElement('div');d.className='msg '+who;let name=who==='me'?myName:'ROXY 🐩';let extra='';if(who==='roxy')extra=`<br><button class="speakBtn" onclick="speak(this.parentElement.innerText)">🔊 Hear Again</button>`;d.innerHTML=`<b>${name}:</b> ${text}${extra}<span class="time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
-function send(){let t=inp.value.trim();if(!t)return;addMsg(t,'me');inp.value='';let ty=document.createElement('div');ty.className='typing';ty.id='typing';ty.innerText='ROXY is thinking...';chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{document.getElementById('typing').remove();let ans=getReply(t);addMsg(ans,'roxy');speak(ans);},600);}
-const BRAIN = {
-"disk full":"<b>💾 DISK FULL - No Space Left</b><br><b>Symptoms:</b> App stops, 'No space left', Cannot create files, DB stops<br><b>Fix:</b> 1. df -h (check which partition full) 2. du -sh /var/log/* (find big files) 3. sudo find / -type f -size +1G 4. sudo lsof +L1 (deleted files) 5. Clear logs / Docker images<br><code>df -h</code><br>Tap 🐧 Linux Fix for full steps!",
-"high cpu":"<b>🔥 HIGH CPU</b><br><b>Symptoms:</b> Server slow, High load, App not responding<br><b>Fix:</b> top → ps aux --sort=-%cpu | head → top -p &lt;PID&gt;<br><code>ps aux --sort=-%cpu | head</code>",
-"high memory":"<b>🧠 HIGH MEMORY</b><br><b>Symptoms:</b> Server slow, Processes killed, Out of memory, High swap<br><b>Fix:</b> free -h → ps aux --sort=-%mem | head → vmstat 1 5 → cat /proc/meminfo<br><code>free -h</code>",
-"server not reachable":"<b>📡 SERVER NOT REACHABLE</b><br><b>Symptoms:</b> Cannot ping, Cannot SSH, Timeout<br><b>Fix:</b> ping -c 4 &lt;IP&gt; → traceroute → nslookup example.com → sudo ufw status<br><code>ping -c 4 192.168.1.1</code>",
-"service is down":"<b>⚙️ SERVICE IS DOWN</b><br><b>Fix:</b> sudo systemctl status &lt;service&gt; → sudo journalctl -u &lt;service&gt; -n 100 → sudo systemctl restart &lt;service&gt;<br><code>sudo systemctl status ssh</code>",
-"port not working":"<b>🔌 PORT NOT WORKING</b><br><b>Symptoms:</b> Website not opening, Connection refused, Works locally not externally<br><b>Fix:</b> sudo ss -tlnp | grep :8000 → curl http://localhost:8888 → sudo ufw status → sudo iptables -L -n -v",
-"ssh":"<b>🔑 SSH LOGIN FAILURE</b><br><b>Symptoms:</b> Permission denied, Connection refused, Timeout, Public key not accepted<br><b>Fix:</b> sudo systemctl status ssh → ls -l ~/.ssh/authorized_keys → sudo sshd -t → grep PasswordAuthentication /etc/ssh/sshd_config → sudo tail -n 50 /var/log/auth.log",
-"mount":"<b>💽 MOUNT / FILESYSTEM ISSUE</b><br><b>Symptoms:</b> Disk not mounted after reboot, fstab error, Cannot access<br><b>Fix:</b> lsblk → df -h → cat /etc/fstab → sudo mount -a → sudo fsck /dev/sdx",
-"high load":"<b>📈 HIGH LOAD AVERAGE</b><br><b>Fix:</b> uptime → top → ps aux --sort=-%cpu | head → iostat -xz 1 5<br><code>uptime</code>",
-"nmap":"<b>Nmap = Network Mapper 📟</b><br><b>From your book:</b><br>-sS SYN, -sT Connect, -sU UDP, -sN NULL, -sX XMAS, -sF FIN, -sA ACK<br>-p 22 single port, -p- all ports<br>-T0-T2 slow, -T3 normal, -T4-T5 fast<br>-O OS detection, -sV version detection<br>-oN save to file, --spoof-mac, -e interface, --script vuln (NSE)<br><br>Tap 📟 Commands to copy ALL!",
-"wireshark":"<b>Wireshark = Shark wey dey catch packets 🦈</b><br>Filters: http, dns, ip.addr == 192.168.1.1, http.request.method == POST<br>Tap 📟 Commands for ALL!",
-"phishing":"<b>Phishing = Fake Fishing 🎣</b><br>Scammer send fake link wey look like real bank to steal password. Rule: <b>Verify Before You Trust!</b>",
-"binary":"<b>Binary = 0 and 1 💻</b><br>Computer only understand 0 and 1. 0 = OFF, 1 = ON. Example: Letter A = 01000001.",
-"dns":"<b>DNS = Domain Name System 🌐</b><br>Na phonebook for internet. You type google.com, DNS translate am to IP.",
-"linux":"<b>Linux Troubleshooting 🐧</b><br>Tap 🐧 Linux Fix for top - I get 10 scenarios from your book: Disk Full, High CPU, High Memory, Server Not Reachable, Service Down, Port Not Working, SSH Fail, Mount Issue, High Load!",
-"soc":"<b>SOC = Security Operations Center 🛡️</b><br>Na room where security people dey watch network 24/7 for attacks. Na the job you wan do!"
-};
-function getReply(text){
-  let t=text.toLowerCase();
-  if(t.includes('check this scam')||t.includes('check scam')||t.includes('is this scam')){
-    let r=scoreScam(text);saveToHistory(text,r.score);
-    let label=r.score>=70?'🚨 SCAM!':r.score>=40?'⚠️ SUSPICIOUS':'✅ SAFE';
-    return `🛡️ <b>SCAM CHECK: ${r.score}/100 - ${label}</b><br>${r.reasons.map(x=>'• '+x).join('<br>')}<br>✅ Saved to History!`;
-  }
-  if(t.includes('disk')||t.includes('no space'))return BRAIN["disk full"];
-  if(t.includes('high cpu'))return BRAIN["high cpu"];
-  if(t.includes('high memory')||t.includes('memory usage'))return BRAIN["high memory"];
-  if(t.includes('not reachable')||t.includes('cannot ping')||t.includes('cannot ssh')&&!t.includes('login'))return BRAIN["server not reachable"];
-  if(t.includes('service')&&t.includes('down'))return BRAIN["service is down"];
-  if(t.includes('port'))return BRAIN["port not working"];
-  if(t.includes('ssh'))return BRAIN["ssh"];
-  if(t.includes('mount')||t.includes('filesystem')||t.includes('fstab'))return BRAIN["mount"];
-  if(t.includes('high load')||t.includes('load average'))return BRAIN["high load"];
-  if(t.includes('nmap'))return BRAIN["nmap"];
-  if(t.includes('wireshark'))return BRAIN["wireshark"];
-  if(t.includes('linux')||t.includes('troubleshoot'))return BRAIN["linux"];
-  for(let key in BRAIN){ if(t.includes(key)) return BRAIN[key]; }
-  if(t==="hi"||t==="hello"||t.startsWith("hi ")||t.startsWith("hello "))return `Hi ${myName}! Ask me: 'disk full', 'high cpu', 'ssh login failure', 'port not working', 'nmap', or tap 🐧 Linux Fix!`;
-  if(t.includes('how are you'))return `I dey fine, ${myName}, dey guard your network!`;
-  if(t.includes('thank'))return `You are welcome, ${myName}!`;
-  if(t.includes('bye')||t.includes('good night'))return `Good night, ${myName}! ROXY dey watch.`;
-  if(t.includes('roxy'))return `Na me be ROXY! I sabi Linux Troubleshooting, Nmap, Wireshark, Scam Checker!`;
-  return `Interesting, ${myName}! Ask me: 'disk full', 'high cpu', 'ssh', 'port not working', 'nmap', or tap 🐧 Linux Fix!`;
-}
-</script>
-</body>
-</html>
+ 
