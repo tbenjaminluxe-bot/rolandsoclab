@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY CHAT v4.3 - Scam History</title>
+<title>ROXY CHAT v4.4 - Command Vault</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
@@ -19,6 +19,7 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 .voiceBar button.off{background:#333;color:#fff}
 .voiceBar button.scamBtn{background:#ffaa00;color:#000}
 .voiceBar button.histBtn{background:#00aaff;color:#fff}
+.voiceBar button.cmdBtn{background:#aa00ff;color:#fff}
 .chat{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px}
 .msg{max-width:88%;padding:12px 14px;border-radius:15px;font-size:15px;line-height:1.45}
 .me{background:#00ff88;color:#000;align-self:flex-end;border-bottom-right-radius:5px}
@@ -36,19 +37,22 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 .logout{background:#ff0055!important;color:#fff!important}
 .scamBox{background:#1a1a1a;border:1px solid #ffaa00;border-radius:15px;padding:12px;margin:0 12px 8px}
 .scamBox h3{color:#ffaa00;font-size:15px;margin-bottom:6px}
-.scamBox textarea{width:100%;background:#000;color:#fff;border:1px solid #333;border-radius:10px;padding:10px;min-height:70px;outline:none;font-family:Arial;font-size:14px}
+.scamBox textarea,.scamBox input{width:100%;background:#000;color:#fff;border:1px solid #333;border-radius:10px;padding:10px;min-height:40px;outline:none;font-family:Arial;font-size:14px;margin-top:6px}
 .scamBox button{background:#ffaa00;color:#000;border:none;padding:10px;border-radius:10px;font-weight:bold;width:100%;margin-top:8px;cursor:pointer}
 .scoreBar{height:12px;background:#222;border-radius:10px;overflow:hidden;margin:8px 0}
 .scoreFill{height:100%;transition:width 0.5s}
 .histItem{background:#000;border:1px solid #333;border-radius:10px;padding:10px;margin-top:8px;font-size:13px;line-height:1.4}
-.histItem b{color:#fff}
 .clearBtn{background:#ff0055!important;color:#fff!important;margin-top:8px}
+.cmdCard{background:#000;border:1px solid #333;border-radius:10px;padding:10px;margin-top:8px;font-size:13px;line-height:1.4}
+.cmdCard code{background:#111;color:#00ff88;padding:6px 8px;border-radius:6px;display:block;margin:6px 0;word-break:break-all;font-size:13px}
+.copyBtn{background:#aa00ff!important;color:#fff!important;padding:6px!important;font-size:12px!important}
+.delBtn{background:#333!important;color:#fff!important;padding:6px!important;font-size:12px!important;margin-top:4px}
 </style>
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v4.3</span> 📜🛡️</h1>
-<p>Login + Voice + Scam Checker + History | Built by Roland 🇳🇬</p>
+<h1>ROXY <span>CHAT v4.4</span> 📟🛡️</h1>
+<p>Login + Voice + Scam + History + Command Vault | Built by Roland 🇳🇬</p>
 <p class="status" id="statusText">● Online</p>
 </div>
 <div class="login" id="loginScreen">
@@ -65,32 +69,43 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <button onclick="testVoice()">▶️ Test Voice</button>
 <button class="scamBtn" onclick="toggleScam()">🛡️ Check Scam</button>
 <button class="histBtn" onclick="toggleHistory()">📜 History (<span id="histCount">0</span>)</button>
+<button class="cmdBtn" onclick="toggleCmd()">📟 Commands (<span id="cmdCount">0</span>)</button>
 <button class="logout" onclick="doLogout()">Logout</button>
 </div>
 <div id="scamBox" class="scamBox hidden">
 <h3>🛡️ ROXY Scam Checker</h3>
-<p style="font-size:12px;color:#aaa;margin-bottom:6px;">Paste any suspicious message / link here. ROXY go score am 0-100 and save am for History.</p>
-<textarea id="scamInput" placeholder="Paste here e.g. Dear customer, your account will be blocked, click http://... to verify..."></textarea>
+<p style="font-size:12px;color:#aaa;">Paste any suspicious message. ROXY go score am 0-100 and save am.</p>
+<textarea id="scamInput" placeholder="Paste here e.g. Dear customer, your account will be blocked..."></textarea>
 <button onclick="checkScam()">🔍 CHECK NOW</button>
 <div id="scamResult"></div>
 </div>
 <div id="histBox" class="scamBox hidden" style="border-color:#00aaff;">
 <h3 style="color:#00aaff;">📜 Scam History</h3>
-<p style="font-size:12px;color:#aaa;">All scams you don check. Even if you close tab, e go still dey here!</p>
 <div id="histList"></div>
 <button class="clearBtn" onclick="clearHistory()">🗑️ Clear All History</button>
 </div>
+<div id="cmdBox" class="scamBox hidden" style="border-color:#aa00ff;">
+<h3 style="color:#c26bff;">📟 ROXY Command Vault - Nmap + Wireshark</h3>
+<p style="font-size:12px;color:#aaa;">Tap Copy to copy any command. Save your own command below, e go stay forever!</p>
+<input id="cmdSearch" placeholder="🔍 Search command e.g. nmap, wireshark, scan..." oninput="renderCmds()">
+<div id="cmdList"></div>
+<h3 style="color:#c26bff;margin-top:12px;">➕ Save My Own Command</h3>
+<input id="newCmdTitle" placeholder="Title e.g. Scan my home WiFi">
+<input id="newCmdText" placeholder="Command e.g. nmap -sn 192.168.1.0/24">
+<input id="newCmdDesc" placeholder="What e dey do? e.g. Find all devices for my WiFi">
+<button style="background:#aa00ff;color:#fff;" onclick="saveMyCmd()">💾 SAVE COMMAND</button>
+</div>
 <div class="quick">
-<button onclick="quickAsk('What is binary?')">0/1 Binary</button>
-<button onclick="quickAsk('What is DNS?')">🌐 DNS</button>
-<button onclick="quickAsk('How many operating systems?')">💻 OS</button>
+<button onclick="quickAsk('What is nmap?')">📟 Nmap</button>
+<button onclick="quickAsk('What is wireshark?')">🦈 Wireshark</button>
+<button onclick="quickAsk('nmap scan')">🔍 Nmap Scan</button>
 <button onclick="quickAsk('What is phishing?')">🎣 Phishing</button>
-<button onclick="quickAsk('Check this scam: Your account blocked, click link to verify, send money urgently')">🛡️ Try Scam Example</button>
+<button onclick="quickAsk('Check this scam: Your account blocked, click link to verify')">🛡️ Scam Example</button>
 </div>
 <div class="chat" id="chat"></div>
 <div class="inputBox">
 <button class="micBtn" onclick="startMic()">🎤</button>
-<input id="inp" placeholder="Ask ROXY anything..." onkeypress="if(event.key==='Enter')send()">
+<input id="inp" placeholder="Ask ROXY: nmap, wireshark, binary..." onkeypress="if(event.key==='Enter')send()">
 <button class="sendBtn" onclick="send()">➤</button>
 </div>
 </div>
@@ -99,131 +114,132 @@ let chat=document.getElementById('chat');let inp=document.getElementById('inp');
 let voiceOn=true;let myName=localStorage.getItem('roxy_name')||'';
 let savedPin=localStorage.getItem('roxy_pin')||'';
 let history=JSON.parse(localStorage.getItem('roxy_history')||'[]');
-window.onload=function(){updateHistCount();if(myName){showChat(true);}};
+let DEFAULT_CMDS=[
+{t:'Nmap - Scan One Device',c:'nmap 192.168.1.1',d:'Check which ports open for one device. Replace IP with your target.',tag:'nmap'},
+{t:'Nmap - Scan All Devices For WiFi',c:'nmap -sn 192.168.1.0/24',d:'Find ALL phones / laptops wey dey connect for your WiFi. Best for home!',tag:'nmap'},
+{t:'Nmap - Aggressive Scan',c:'nmap -A 192.168.1.1',d:'Deep scan: OS, version, ports. For learning only, use for your OWN network!',tag:'nmap'},
+{t:'Nmap - Scan Top 1000 Ports',c:'nmap -sV 192.168.1.1',d:'Check service + version wey dey run for each open port.',tag:'nmap'},
+{t:'Nmap - Fast Scan',c:'nmap -F 192.168.1.1',d:'Fast scan, only top 100 ports. Quick check.',tag:'nmap'},
+{t:'Nmap - Scan All Ports',c:'nmap -p- 192.168.1.1',d:'Scan ALL 65535 ports. E dey take time but e thorough.',tag:'nmap'},
+{t:'Nmap - Find OS',c:'nmap -O 192.168.1.1',d:'Try guess which Operating System target dey use (Windows / Linux).',tag:'nmap'},
+{t:'Nmap - Save Result To File',c:'nmap -oN result.txt 192.168.1.1',d:'Save scan result inside file so you fit read am later.',tag:'nmap'},
+{t:'Wireshark - Capture All Traffic',c:'wireshark',d:'Open Wireshark, select WiFi, click Start. E go show all packets.',tag:'wireshark'},
+{t:'Wireshark Filter - Show Only HTTP',c:'http',d:'Type for filter bar for Wireshark. E go show only websites (no HTTPS).',tag:'wireshark'},
+{t:'Wireshark Filter - Show One IP',c:'ip.addr == 192.168.1.1',d:'Show only traffic from that one device.',tag:'wireshark'},
+{t:'Wireshark Filter - Show DNS',c:'dns',d:'Show only DNS - which websites person dey try visit.',tag:'wireshark'},
+{t:'Wireshark Filter - Show Passwords (HTTP)',c:'http.request.method == "POST"',d:'Show login forms. For learning - never steal password!',tag:'wireshark'},
+{t:'Wireshark - Follow TCP Stream',c:'Right-click packet > Follow > TCP Stream',d:'See full conversation between two computers, like chat history.',tag:'wireshark'},
+{t:'Ping - Check If Device Dey Alive',c:'ping 192.168.1.1',d:'Check if device dey online. If e reply, e dey alive.',tag:'general'},
+{t:'Check My Own IP',c:'ipconfig (Windows) / ifconfig (Linux)',d:'See your own IP address for your phone / laptop.',tag:'general'}
+];
+let myCmds=JSON.parse(localStorage.getItem('roxy_cmds')||'[]');
+function allCmds(){return [...DEFAULT_CMDS.map(c=>({...c,mine:false})), ...myCmds.map((c,i)=>({...c,mine:true,idx:i}))];}
+window.onload=function(){updateHistCount();updateCmdCount();if(myName){showChat(true);}};
 function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN for '+myName+'! Try again.');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
 function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
-function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! I remember you! 😊 You don check ${history.length} scams before. Tap 📜 History to see them.`:`Hi ${myName}! Na me be ROXY v4.3 - Now I get HISTORY! 📜 Every scam you check, I go save am. Try am!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
+function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands saved + ${history.length} scams checked. Tap 📟 Commands to see Nmap + Wireshark!`:`Hi ${myName}! Na me be ROXY v4.4 - Now I get COMMAND VAULT! 📟 I sabi Nmap + Wireshark, and you fit save your own commands!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
 function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';b.className=voiceOn?'':'off';if(voiceOn)speak("Voice on!");}
 function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
 function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;window.speechSynthesis.speak(u);}
-function testVoice(){speak(`Hi ${myName}! Na me be Roxy! I fit check scam and save history for you.`);}
+function testVoice(){speak(`Hi ${myName}! I sabi Nmap and Wireshark commands now.`);}
 function startMic(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert("Your browser no support mic. Type instead!");return;}let Rec=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=new Rec();rec.lang='en-US';rec.onresult=(e)=>{inp.value=e.results[0][0].transcript;send();};rec.start();}
 function quickAsk(t){inp.value=t;send();}
-function toggleScam(){document.getElementById('scamBox').classList.toggle('hidden');document.getElementById('histBox').classList.add('hidden');}
-function toggleHistory(){let h=document.getElementById('histBox');h.classList.toggle('hidden');document.getElementById('scamBox').classList.add('hidden');renderHistory();}
+function hideAll(){document.getElementById('scamBox').classList.add('hidden');document.getElementById('histBox').classList.add('hidden');document.getElementById('cmdBox').classList.add('hidden');}
+function toggleScam(){let b=document.getElementById('scamBox');let was=b.classList.contains('hidden');hideAll();if(was)b.classList.remove('hidden');}
+function toggleHistory(){let b=document.getElementById('histBox');let was=b.classList.contains('hidden');hideAll();if(was){b.classList.remove('hidden');renderHistory();}}
+function toggleCmd(){let b=document.getElementById('cmdBox');let was=b.classList.contains('hidden');hideAll();if(was){b.classList.remove('hidden');renderCmds();}}
 function updateHistCount(){document.getElementById('histCount').innerText=history.length;}
-function saveToHistory(msg,score){
-  let label=score>=70?'🚨 SCAM':score>=40?'⚠️ SUSPICIOUS':'✅ SAFE';
-  history.unshift({msg:msg.substring(0,120),score:score,label:label,date:new Date().toLocaleString()});
-  if(history.length>50)history=history.slice(0,50);
-  localStorage.setItem('roxy_history',JSON.stringify(history));
-  updateHistCount();
-}
-function renderHistory(){
-  let list=document.getElementById('histList');
-  if(history.length===0){list.innerHTML='<p style="color:#888;font-size:13px;margin-top:8px;">No history yet. Check one scam first!</p>';return;}
-  let scamCount=history.filter(x=>x.score>=70).length;
-  let safeCount=history.filter(x=>x.score<40).length;
-  list.innerHTML=`<p style="font-size:13px;margin:8px 0;"><b>Total:</b> ${history.length} | <span style="color:#ff0055;">🚨 Scams: ${scamCount}</span> | <span style="color:#00ff88;">✅ Safe: ${safeCount}</span></p>`+history.map((h,i)=>{
-    let c=h.score>=70?'#ff0055':h.score>=40?'#ffaa00':'#00ff88';
-    return `<div class="histItem"><b style="color:${c};">${h.score}/100 - ${h.label}</b><br><span style="color:#aaa;">${h.date}</span><br>"${h.msg}"</div>`;
+function updateCmdCount(){document.getElementById('cmdCount').innerText=allCmds().length;}
+function saveToHistory(msg,score){let label=score>=70?'🚨 SCAM':score>=40?'⚠️ SUSPICIOUS':'✅ SAFE';history.unshift({msg:msg.substring(0,120),score:score,label:label,date:new Date().toLocaleString()});if(history.length>50)history=history.slice(0,50);localStorage.setItem('roxy_history',JSON.stringify(history));updateHistCount();}
+function renderHistory(){let list=document.getElementById('histList');if(history.length===0){list.innerHTML='<p style="color:#888;font-size:13px;margin-top:8px;">No history yet.</p>';return;}let sc=history.filter(x=>x.score>=70).length;let sf=history.filter(x=>x.score<40).length;list.innerHTML=`<p style="font-size:13px;margin:8px 0;"><b>Total:</b> ${history.length} | <span style="color:#ff0055;">🚨 Scams: ${sc}</span> | <span style="color:#00ff88;">✅ Safe: ${sf}</span></p>`+history.map(h=>{let c=h.score>=70?'#ff0055':h.score>=40?'#ffaa00':'#00ff88';return `<div class="histItem"><b style="color:${c};">${h.score}/100 - ${h.label}</b><br><span style="color:#aaa;">${h.date}</span><br>"${h.msg}"</div>`;}).join('');}
+function clearHistory(){if(!confirm('Delete all history?'))return;history=[];localStorage.removeItem('roxy_history');updateHistCount();renderHistory();}
+function renderCmds(){
+  let q=(document.getElementById('cmdSearch').value||'').toLowerCase();
+  let list=document.getElementById('cmdList');
+  let filtered=allCmds().filter(c=>(c.t+c.c+c.d+c.tag).toLowerCase().includes(q));
+  if(filtered.length===0){list.innerHTML='<p style="color:#888;font-size:13px;margin-top:8px;">No command found. Save your own below!</p>';return;}
+  list.innerHTML=filtered.map(c=>{
+    let del=c.mine?`<button class="delBtn" onclick="deleteMyCmd(${c.idx})">🗑️ Delete My Command</button>`:`<span style="color:#888;font-size:11px;">Built-in by ROXY</span>`;
+    return `<div class="cmdCard"><b>${c.t}</b> ${c.mine?'<span style="color:#c26bff;">• MY SAVED</span>':''}<code>${c.c}</code><span style="color:#aaa;">${c.d}</span><br><button class="copyBtn" onclick="copyCmd(\`${c.c.replace(/`/g,'')}\`)">📋 Copy Command</button><br>${del}</div>`;
   }).join('');
 }
-function clearHistory(){if(!confirm('Delete all history?'))return;history=[];localStorage.removeItem('roxy_history');updateHistCount();renderHistory();}
+function copyCmd(txt){navigator.clipboard.writeText(txt).then(()=>alert('Copied: '+txt)).catch(()=>{let ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();alert('Copied: '+txt);});}
+function saveMyCmd(){
+  let t=document.getElementById('newCmdTitle').value.trim();
+  let c=document.getElementById('newCmdText').value.trim();
+  let d=document.getElementById('newCmdDesc').value.trim()||'My saved command';
+  if(!t||!c){alert('Type Title + Command first!');return;}
+  myCmds.unshift({t:t,c:c,d:d,tag:'mine'});
+  localStorage.setItem('roxy_cmds',JSON.stringify(myCmds));
+  document.getElementById('newCmdTitle').value='';document.getElementById('newCmdText').value='';document.getElementById('newCmdDesc').value='';
+  updateCmdCount();renderCmds();alert('Saved! ✅ ROXY go remember am forever.');
+}
+function deleteMyCmd(i){if(!confirm('Delete this command?'))return;myCmds.splice(i,1);localStorage.setItem('roxy_cmds',JSON.stringify(myCmds));updateCmdCount();renderCmds();}
 function checkScam(){
   let txt=document.getElementById('scamInput').value.trim();
   if(!txt){alert('Paste message first!');return;}
-  let res=scoreScam(txt);
-  saveToHistory(txt,res.score);
+  let res=scoreScam(txt);saveToHistory(txt,res.score);
   let color=res.score>=70?'#ff0055':res.score>=40?'#ffaa00':'#00ff88';
   let label=res.score>=70?'🚨 SCAM - DO NOT TRUST!':res.score>=40?'⚠️ SUSPICIOUS - BE CAREFUL!':'✅ SAFE - Looks Okay';
-  let reasons=res.reasons.map(r=>`• ${r}`).join('<br>');
-  document.getElementById('scamResult').innerHTML=`<div style="margin-top:10px;"><b style="color:${color};font-size:18px;">Score: ${res.score}/100</b><br><b style="color:${color};">${label}</b><div class="scoreBar"><div class="scoreFill" style="width:${res.score}%;background:${color}"></div></div><div style="font-size:13px;line-height:1.5;">${reasons}</div><p style="font-size:12px;color:#aaa;margin-top:6px;"><b>ROXY Advice:</b> ${res.score>=70?'Block, Report, Delete. No click link, no send money!':res.score>=40?'No click link yet. Verify by calling official number.':'Still use rule: Verify Before You Trust!'}</p><p style="font-size:12px;color:#00ff88;margin-top:6px;">✅ Saved to History! Total checks: ${history.length}</p></div>`;
-  speak(`Scam score is ${res.score} out of 100. ${label} Saved to history.`);
+  document.getElementById('scamResult').innerHTML=`<div style="margin-top:10px;"><b style="color:${color};font-size:18px;">Score: ${res.score}/100</b><br><b style="color:${color};">${label}</b><div class="scoreBar"><div class="scoreFill" style="width:${res.score}%;background:${color}"></div></div><div style="font-size:13px;">${res.reasons.map(r=>'• '+r).join('<br>')}</div><p style="font-size:12px;color:#00ff88;margin-top:6px;">✅ Saved to History! Total: ${history.length}</p></div>`;
+  speak(`Scam score is ${res.score} out of 100. ${label}`);
 }
 function scoreScam(text){
   let t=text.toLowerCase();let score=5;let reasons=[];
   let checks=[
-    ['urgent|immediately|act now|blocked|will be closed|24 hours',25,'Creates URGENCY / fear - "blocked", "urgent", "act now"'],
-    ['verify your account|confirm your|update your account|login to|click here|click the link',25,'Asks you to CLICK LINK / VERIFY account'],
+    ['urgent|immediately|act now|blocked|will be closed|24 hours',25,'Creates URGENCY / fear'],
+    ['verify your account|confirm your|update your account|login to|click here|click the link',25,'Asks you to CLICK LINK / VERIFY'],
     ['send money|transfer|pay|bitcoin|crypto|gift card|otp|password|pin|bvn',25,'Asks for MONEY / OTP / PASSWORD / PIN / BVN'],
-    ['http|www\\.|\\.com|\\.ng|\\.xyz|\\.top|bit\\.ly|tinyurl',15,'Contains LINK - fit be fake link'],
-    ['congratulations|you won|giveaway|free|lottery|prize|reward',20,'Promises FREE MONEY / PRIZE / GIVEAWAY'],
+    ['http|www\\.|\\.com|\\.ng|\\.xyz|\\.top|bit\\.ly|tinyurl',15,'Contains LINK - fit be fake'],
+    ['congratulations|you won|giveaway|free|lottery|prize|reward',20,'Promises FREE MONEY / PRIZE'],
     ['bank|gtb|access|first bank|uba|zenith|opay|palmpay|moniepoint|instagram|whatsapp support',10,'Pretends to be BANK / APP SUPPORT'],
-    ['dear customer|dear user|account holder',8,'Generic greeting - "Dear Customer" - real bank dey call your name']
+    ['dear customer|dear user|account holder',8,'Generic greeting - "Dear Customer"']
   ];
   checks.forEach(c=>{if(new RegExp(c[0]).test(t)){score+=c[1];reasons.push(c[2]);}});
   if(reasons.length===0)reasons.push('No common scam signs found');
-  if(score>100)score=100;
-  return {score,reasons};
+  if(score>100)score=100;return {score,reasons};
 }
 function addMsg(text,who){let d=document.createElement('div');d.className='msg '+who;let name=who==='me'?myName:'ROXY 🐩';let extra='';if(who==='roxy')extra=`<br><button class="speakBtn" onclick="speak(this.parentElement.innerText)">🔊 Hear Again</button>`;d.innerHTML=`<b>${name}:</b> ${text}${extra}<span class="time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
 function send(){let t=inp.value.trim();if(!t)return;addMsg(t,'me');inp.value='';let ty=document.createElement('div');ty.className='typing';ty.id='typing';ty.innerText='ROXY is thinking...';chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{document.getElementById('typing').remove();let ans=getReply(t);addMsg(ans,'roxy');speak(ans);},600);}
 const BRAIN = {
-"binary":"<b>Binary = 0 and 1 💻</b><br>Computer no understand English, e only understand 0 and 1.<br>0 = OFF, 1 = ON.<br>Example: Letter A = 01000001, Number 5 = 0101.",
-"dns":"<b>DNS = Domain Name System 🌐</b><br>Na phonebook for internet.<br>You type google.com, DNS translate am to IP like 142.250.80.46 so phone fit find am.",
-"operating system":"<b>Operating System (OS) = Boss of Computer 💻</b><br>Na software wey dey control everything.<br><b>How many OS we get?</b> Windows, macOS, Linux, Android, iOS, ChromeOS = 6 main ones.<br>For hacking, Linux (Kali) na the best!",
-"os":"<b>Operating System (OS) = Boss of Computer 💻</b><br>Na software wey dey control everything.<br><b>How many OS we get?</b> Windows, macOS, Linux, Android, iOS, ChromeOS = 6 main ones.",
-"ip":"<b>IP = Internet Protocol Address 🌍</b><br>Na your phone address for internet, like house address.<br>Example: 45.3.32.156",
-"port":"<b>Port = Door for your computer 🔌</b><br>21=FTP, 22=SSH, 23=Telnet (very risky!), 80=HTTP, 443=HTTPS.",
-"scanning":"<b>Port Scanning = Knocking Doors 🔍</b><br>Hacker go knock all your doors to see which one open.<br>Example: Your Watchdog catch 45.3.32.156 scanning 10 ports.",
-"scan":"<b>Port Scanning = Knocking Doors 🔍</b><br>Hacker go knock all your doors to see which one open. Your Watchdog go catch am!",
-"firewall":"<b>Firewall = Security Gate 🔥</b><br>Na wall between your network and internet. E block bad traffic, allow good traffic.",
-"malware":"<b>Malware = Bad Software 🦠</b><br>Na any software wey dey harm phone: virus, spyware, ransomware.",
-"virus":"<b>Virus =</b> Malware wey dey copy itself and spoil files. Use antivirus, no click strange link!",
-"ransomware":"<b>Ransomware = Kidnap Software 💀</b><br>E go lock your files, then ask you pay money to unlock am. Never pay!",
-"phishing":"<b>Phishing = Fake Fishing 🎣</b><br>Scammer send fake link wey look like real bank / Instagram, to steal your password. Rule: <b>Verify Before You Trust!</b>",
-"social engineering":"<b>Social Engineering = Mind Trick 🧠</b><br>Hacker no hack computer, e hack HUMAN. E go lie, pretend to be bank manager.",
-"soc":"<b>SOC = Security Operations Center 🛡️</b><br>Na room where security people dey watch network 24/7 for attacks, like ROXY Watchdog. Na the job you wan do!",
-"vpn":"<b>VPN = Virtual Private Network</b><br>E dey hide your IP and encrypt your internet. Good for public WiFi.",
-"encryption":"<b>Encryption = Secret Code 🔒</b><br>Na to turn your message to nonsense so only person wey get key fit read am.",
-"password":"<b>Strong Password:</b><br>1. At least 12 characters<br>2. Mix CAPITAL + small + number + symbol<br>Example: <b>Roland@Lagos2026!</b>",
-"2fa":"<b>2FA = Two Factor Authentication</b><br>Na extra lock. Even if person get your password, dem still need code from your phone.",
-"wifi":"<b>Public WiFi:</b> No do bank transaction for public WiFi! Hacker fit steal your data.",
-"crypto":"<b>Crypto = Digital Money</b><br>Like Bitcoin. But 90% of crypto messages for WhatsApp na scam!",
-"hacker":"<b>Hacker =</b> Person wey dey try break into system. Good hacker (White Hat) = protect people like you.",
-"hacking":"<b>Hacking =</b> To find weakness for system. Good hacking na to protect, bad hacking na to steal.",
-"cloud":"<b>Cloud = Computer for Internet ☁️</b><br>Instead of saving file for your phone, you save am for big computer for internet.",
-"antivirus":"<b>Antivirus = Doctor for Phone 🩺</b><br>E dey scan your phone, find virus, kill am.",
-"dark web":"<b>Dark Web = Hidden Internet 🌑</b><br>Na part of internet wey Google no fit see. No go there!",
-"trojan":"<b>Trojan = Gift with Bomb 🎁💣</b><br>App wey look good, but inside e get virus.",
-"spyware":"<b>Spyware = Spy 👁️</b><br>Malware wey dey watch everything you dey type.",
-"ddos":"<b>DDoS = Plenty People Knocking Door 🚪</b><br>Hacker go send plenty fake traffic to website until website fall down.",
-"linux":"<b>Linux = Hacker OS 🐧</b><br>Na free OS. Kali Linux na version for cybersecurity.",
-"windows":"<b>Windows = Microsoft OS</b><br>Na OS for many computers.",
-"android":"<b>Android = Google OS for Phone 📱</b><br>Na OS for many phones including your own.",
-"ios":"<b>iOS = Apple OS for iPhone 🍎</b><br>Na OS for iPhone and iPad.",
+"binary":"<b>Binary = 0 and 1 💻</b><br>Computer only understand 0 and 1. 0 = OFF, 1 = ON. Example: Letter A = 01000001.",
+"dns":"<b>DNS = Domain Name System 🌐</b><br>Na phonebook for internet. You type google.com, DNS translate am to IP like 142.250.80.46.",
+"operating system":"<b>OS = Boss of Computer 💻</b><br>Windows, macOS, Linux, Android, iOS, ChromeOS = 6 main ones. For hacking, Linux (Kali) na best!",
+"os":"<b>OS = Boss of Computer 💻</b><br>Windows, macOS, Linux, Android, iOS, ChromeOS = 6 main ones.",
+"nmap":"<b>Nmap = Network Mapper 📟</b><br>Na tool wey dey scan network to find which devices dey online + which ports open.<br><br><b>Top 3 commands:</b><br>1. <code>nmap -sn 192.168.1.0/24</code> - Find all devices for WiFi<br>2. <code>nmap 192.168.1.1</code> - Scan one device<br>3. <code>nmap -A 192.168.1.1</code> - Deep scan<br><br>Tap 📟 Commands for top to see ALL + Copy them! ⚠️ Only scan YOUR OWN network!",
+"wireshark":"<b>Wireshark = Shark wey dey catch packets 🦈</b><br>Na tool wey dey capture everything wey dey pass for your WiFi.<br><br><b>Top 3 filters:</b><br>1. <code>http</code> - Show only websites<br>2. <code>dns</code> - Show which sites person dey visit<br>3. <code>ip.addr == 192.168.1.1</code> - Show one device only<br><br>Tap 📟 Commands for top to see ALL! ⚠️ Only capture YOUR OWN network!",
+"phishing":"<b>Phishing = Fake Fishing 🎣</b><br>Scammer send fake link wey look like real bank to steal password. Rule: <b>Verify Before You Trust!</b>",
+"scanning":"<b>Port Scanning = Knocking Doors 🔍</b><br>Hacker go knock all your doors to see which one open. Use Nmap for your own network to check!",
+"firewall":"<b>Firewall = Security Gate 🔥</b><br>Na wall between your network and internet. E block bad traffic.",
+"malware":"<b>Malware = Bad Software 🦠</b><br>Any software wey dey harm phone: virus, spyware, ransomware.",
+"password":"<b>Strong Password:</b> At least 12 characters, Mix CAPITAL + small + number + symbol. Example: <b>Roland@Lagos2026!</b>",
+"soc":"<b>SOC = Security Operations Center 🛡️</b><br>Na room where security people dey watch network 24/7 for attacks. Na the job you wan do!",
+"vpn":"<b>VPN = Virtual Private Network</b><br>E dey hide your IP and encrypt your internet.",
+"encryption":"<b>Encryption = Secret Code 🔒</b><br>Turn message to nonsense so only person wey get key fit read am.",
 "cybersecurity":"<b>Cybersecurity = Protection 🛡️</b><br>Na to protect computer, phone, network from hackers. Na the work you dey learn!",
-"internet":"<b>Internet = Big Network 🌍</b><br>Na connection of millions of computers for world.",
-"html":"<b>HTML = Skeleton for Website 🦴</b><br>Na language wey dey build structure for website.",
-"javascript":"<b>JavaScript = Brain for Website 🧠</b><br>Na language wey dey make website talk, like ROXY brain.",
-"python":"<b>Python = Language for Hacking 🐍</b><br>Na language wey dem use to build Watchdog, tools, AI.",
-"watchdog":"🐩 <b>Watchdog na my dog!</b> E dey watch your network 24/7. If person scan your ports, e go bark: 'SCAN DETECTED!' and block the IP. Last real alert na from 45.3.32.156!"
+"watchdog":"🐩 <b>Watchdog na my dog!</b> E dey watch your network 24/7. If person scan your ports, e go bark!"
 };
 function getReply(text){
   let t=text.toLowerCase();
+  if(t.includes('nmap scan')||t.includes('scan my')||t.includes('scan network')||t.includes('scan wifi'))return `<b>To scan your WiFi:</b><br><code>nmap -sn 192.168.1.0/24</code><br>E go list all devices for your WiFi.<br><br><b>To scan one device:</b><br><code>nmap 192.168.1.1</code><br><br>Tap 📟 Commands to copy am! ⚠️ Only your OWN network!`;
   if(t.includes('check this scam')||t.includes('check scam')||t.includes('is this scam')){
-    let r=scoreScam(text);
-    saveToHistory(text,r.score);
+    let r=scoreScam(text);saveToHistory(text,r.score);
     let label=r.score>=70?'🚨 SCAM!':r.score>=40?'⚠️ SUSPICIOUS':'✅ SAFE';
-    return `🛡️ <b>SCAM CHECK: ${r.score}/100 - ${label}</b><br><br>${r.reasons.map(x=>'• '+x).join('<br>')}<br><br><b>Advice:</b> ${r.score>=70?'Block, Report, Delete!':'Verify Before You Trust!'}<br><br>✅ Saved to History!`;
+    return `🛡️ <b>SCAM CHECK: ${r.score}/100 - ${label}</b><br>${r.reasons.map(x=>'• '+x).join('<br>')}<br>✅ Saved to History!`;
   }
-  if(t.includes('bank account')||t.includes('manager')||t.includes('handle my finances')||t.includes('urgent')||t.includes('verify your account')||t.includes('send money')||t.includes('giveaway'))return"🚨 <b>SCAM ALERT! Score: 95/100</b><br><br>This message get scam signs.<br><b>DO:</b> Block, Report, Delete.";
-  if(t.includes('http')||t.includes('www.')||t.includes('.com')){if(t.includes('free')||t.includes('verify')||t.includes('login')||t.includes('gift'))return"🚨 <b>That link look suspicious!</b> No click am.";return"That link look okay for now, but still be careful. Rule: Verify Before You Trust!";}
-  if(t.includes('your name')||t.includes('your own name')||t.includes('what are you called')||t.includes('who are you'))return `Na me be ROXY! Your Security Friend, ${myName}. I be your chatbot from Lagos! 🐩`;
-  if(t.includes('my name')||t.includes('who am i'))return `You be ${myName}! I remember you. I no go forget you.`;
+  if(t.includes('my command')||t.includes('saved command')||t.includes('show commands')||t.includes('command vault')){let n=allCmds().length;return `You get <b>${n} commands</b> saved! Tap 📟 Commands for top to see all Nmap + Wireshark + your own. Type for search box to find any one sharp sharp!`;}
+  if(t.includes('your name')||t.includes('who are you'))return `Na me be ROXY! Your Security Friend, ${myName}. I sabi Nmap, Wireshark, Scam Checker! 🐩`;
+  if(t.includes('my name')||t.includes('who am i'))return `You be ${myName}! I remember you.`;
   for(let key in BRAIN){ if(t.includes(key)) return BRAIN[key]; }
-  if(t.includes('how many')&&t.includes('operating'))return BRAIN["operating system"];
-  if(t==="hi"||t==="hello"||t.startsWith("hi ")||t.startsWith("hello ")||t.includes(" hi ")||t.includes(" hello "))return `Hi ${myName}! Good to see you 😊 Ask me anything - binary, DNS, OS, scanning, firewall...`;
-  if(t.includes('how are you')||t.includes('how far'))return `I dey fine, ${myName}, dey guard your network like watchdog! How you dey?`;
-  if(t.includes('who built')||t.includes('who made'))return"Roland from Lagos build me! 16-year-old SOC engineer. E build ROXY v9 and ROXY CHAT v4.3!";
-  if(t.includes('thank'))return `You are welcome, ${myName}! Anything else?`;
-  if(t.includes('bye')||t.includes('good night'))return `Good night, ${myName}! Lock your phone, no click strange link. ROXY dey watch.`;
+  if(t==="hi"||t==="hello"||t.startsWith("hi ")||t.startsWith("hello "))return `Hi ${myName}! Ask me: 'nmap', 'wireshark', 'scan my network', or tap 📟 Commands!`;
+  if(t.includes('how are you')||t.includes('how far'))return `I dey fine, ${myName}, dey guard your network! How you dey?`;
+  if(t.includes('who built')||t.includes('who made'))return"Roland from Lagos build me! 16-year-old SOC engineer!";
+  if(t.includes('thank'))return `You are welcome, ${myName}!`;
+  if(t.includes('bye')||t.includes('good night'))return `Good night, ${myName}! ROXY dey watch.`;
   if(t.includes('joke'))return"Why did the hacker break up with the internet? Because e get too many connections!";
-  if(t.includes('love')||t.includes('girlfriend'))return `Haha ${myName}, focus on building ROXY first, love go come later!`;
-  if(t.includes('lagos'))return"Lagos na the best! Na where Roland build ROXY. From Lagos to the world!";
-  if(t.includes('roxy'))return `Na me be ROXY! Your Security Friend, ${myName}. I sabi 40+ topics and I fit talk!`;
-  let d=[`Interesting, ${myName}! Ask me: 'What is binary?', 'How many OS?', 'What is DNS?'`,`I hear you, ${myName}! I sabi 40+ topics - binary, DNS, OS, scanning, firewall. Ask me one!`];return d[Math.floor(Math.random()*d.length)];
+  if(t.includes('lagos'))return"Lagos na the best! Na where Roland build ROXY!";
+  if(t.includes('roxy'))return `Na me be ROXY! I sabi Nmap, Wireshark, Scam Checker, History!`;
+  return `Interesting, ${myName}! Ask me: 'What is nmap?', 'What is wireshark?', 'Scan my network', or tap 📟 Commands!`;
 }
 </script>
 </body>
