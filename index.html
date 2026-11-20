@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY CHAT v4.4 - Command Vault</title>
+<title>ROXY v4.5 - Linux Troubleshooting Master</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
@@ -20,6 +20,7 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 .voiceBar button.scamBtn{background:#ffaa00;color:#000}
 .voiceBar button.histBtn{background:#00aaff;color:#fff}
 .voiceBar button.cmdBtn{background:#aa00ff;color:#fff}
+.voiceBar button.linuxBtn{background:#ff0055;color:#fff}
 .chat{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px}
 .msg{max-width:88%;padding:12px 14px;border-radius:15px;font-size:15px;line-height:1.45}
 .me{background:#00ff88;color:#000;align-self:flex-end;border-bottom-right-radius:5px}
@@ -47,12 +48,14 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 .cmdCard code{background:#111;color:#00ff88;padding:6px 8px;border-radius:6px;display:block;margin:6px 0;word-break:break-all;font-size:13px}
 .copyBtn{background:#aa00ff!important;color:#fff!important;padding:6px!important;font-size:12px!important}
 .delBtn{background:#333!important;color:#fff!important;padding:6px!important;font-size:12px!important;margin-top:4px}
+.linuxCard{background:#000;border:1px solid #ff0055;border-radius:12px;padding:12px;margin-top:10px;font-size:13px;line-height:1.5}
+.linuxCard b{color:#ffaaaa}.linuxCard code{background:#111;color:#00ff88;padding:4px 6px;border-radius:5px;display:block;margin:4px 0;word-break:break-all}
 </style>
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v4.4</span> 📟🛡️</h1>
-<p>Login + Voice + Scam + History + Command Vault | Built by Roland 🇳🇬</p>
+<h1>ROXY <span>CHAT v4.5</span> 🐧🛡️</h1>
+<p>Linux Troubleshooting + Nmap + Wireshark + Scam | By Roland 🇳🇬</p>
 <p class="status" id="statusText">● Online</p>
 </div>
 <div class="login" id="loginScreen">
@@ -66,15 +69,15 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <div id="chatScreen" class="hidden" style="display:flex;flex-direction:column;flex:1;">
 <div class="voiceBar">
 <button id="voiceBtn" onclick="toggleVoice()">🔊 Voice: ON</button>
-<button onclick="testVoice()">▶️ Test Voice</button>
-<button class="scamBtn" onclick="toggleScam()">🛡️ Check Scam</button>
+<button onclick="testVoice()">▶️ Test</button>
+<button class="scamBtn" onclick="toggleScam()">🛡️ Scam</button>
 <button class="histBtn" onclick="toggleHistory()">📜 History (<span id="histCount">0</span>)</button>
 <button class="cmdBtn" onclick="toggleCmd()">📟 Commands (<span id="cmdCount">0</span>)</button>
+<button class="linuxBtn" onclick="toggleLinux()">🐧 Linux Fix</button>
 <button class="logout" onclick="doLogout()">Logout</button>
 </div>
 <div id="scamBox" class="scamBox hidden">
 <h3>🛡️ ROXY Scam Checker</h3>
-<p style="font-size:12px;color:#aaa;">Paste any suspicious message. ROXY go score am 0-100 and save am.</p>
 <textarea id="scamInput" placeholder="Paste here e.g. Dear customer, your account will be blocked..."></textarea>
 <button onclick="checkScam()">🔍 CHECK NOW</button>
 <div id="scamResult"></div>
@@ -85,27 +88,34 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <button class="clearBtn" onclick="clearHistory()">🗑️ Clear All History</button>
 </div>
 <div id="cmdBox" class="scamBox hidden" style="border-color:#aa00ff;">
-<h3 style="color:#c26bff;">📟 ROXY Command Vault - Nmap + Wireshark</h3>
-<p style="font-size:12px;color:#aaa;">Tap Copy to copy any command. Save your own command below, e go stay forever!</p>
-<input id="cmdSearch" placeholder="🔍 Search command e.g. nmap, wireshark, scan..." oninput="renderCmds()">
+<h3 style="color:#c26bff;">📟 ROXY Command Vault - 52 Commands</h3>
+<p style="font-size:12px;color:#aaa;">Search: nmap, wireshark, disk, cpu, memory, ssh, port, service</p>
+<input id="cmdSearch" placeholder="🔍 Search command..." oninput="renderCmds()">
 <div id="cmdList"></div>
 <h3 style="color:#c26bff;margin-top:12px;">➕ Save My Own Command</h3>
 <input id="newCmdTitle" placeholder="Title e.g. Scan my home WiFi">
 <input id="newCmdText" placeholder="Command e.g. nmap -sn 192.168.1.0/24">
-<input id="newCmdDesc" placeholder="What e dey do? e.g. Find all devices for my WiFi">
+<input id="newCmdDesc" placeholder="What e dey do?">
 <button style="background:#aa00ff;color:#fff;" onclick="saveMyCmd()">💾 SAVE COMMAND</button>
 </div>
+<div id="linuxBox" class="scamBox hidden" style="border-color:#ff0055;">
+<h3 style="color:#ffaaaa;">🐧 TOP 10 Linux Troubleshooting - From Roland's Book</h3>
+<p style="font-size:12px;color:#aaa;">Tap any problem. ROXY go show Symptoms → Steps → Commands.</p>
+<input id="linuxSearch" placeholder="🔍 Search e.g. disk full, cpu, ssh, port..." oninput="renderLinux()">
+<div id="linuxList"></div>
+</div>
 <div class="quick">
-<button onclick="quickAsk('What is nmap?')">📟 Nmap</button>
-<button onclick="quickAsk('What is wireshark?')">🦈 Wireshark</button>
-<button onclick="quickAsk('nmap scan')">🔍 Nmap Scan</button>
-<button onclick="quickAsk('What is phishing?')">🎣 Phishing</button>
-<button onclick="quickAsk('Check this scam: Your account blocked, click link to verify')">🛡️ Scam Example</button>
+<button onclick="quickAsk('disk full')">💾 Disk Full</button>
+<button onclick="quickAsk('high cpu')">🔥 High CPU</button>
+<button onclick="quickAsk('ssh login failure')">🔑 SSH Fail</button>
+<button onclick="quickAsk('nmap')">📟 Nmap</button>
+<button onclick="quickAsk('wireshark')">🦈 Wireshark</button>
+<button onclick="quickAsk('port not working')">🔌 Port Not Working</button>
 </div>
 <div class="chat" id="chat"></div>
 <div class="inputBox">
 <button class="micBtn" onclick="startMic()">🎤</button>
-<input id="inp" placeholder="Ask ROXY: nmap, wireshark, binary..." onkeypress="if(event.key==='Enter')send()">
+<input id="inp" placeholder="Ask ROXY: disk full, high cpu, ssh, nmap..." onkeypress="if(event.key==='Enter')send()">
 <button class="sendBtn" onclick="send()">➤</button>
 </div>
 </div>
@@ -115,39 +125,109 @@ let voiceOn=true;let myName=localStorage.getItem('roxy_name')||'';
 let savedPin=localStorage.getItem('roxy_pin')||'';
 let history=JSON.parse(localStorage.getItem('roxy_history')||'[]');
 let DEFAULT_CMDS=[
-{t:'Nmap - Scan One Device',c:'nmap 192.168.1.1',d:'Check which ports open for one device. Replace IP with your target.',tag:'nmap'},
-{t:'Nmap - Scan All Devices For WiFi',c:'nmap -sn 192.168.1.0/24',d:'Find ALL phones / laptops wey dey connect for your WiFi. Best for home!',tag:'nmap'},
-{t:'Nmap - Aggressive Scan',c:'nmap -A 192.168.1.1',d:'Deep scan: OS, version, ports. For learning only, use for your OWN network!',tag:'nmap'},
-{t:'Nmap - Scan Top 1000 Ports',c:'nmap -sV 192.168.1.1',d:'Check service + version wey dey run for each open port.',tag:'nmap'},
-{t:'Nmap - Fast Scan',c:'nmap -F 192.168.1.1',d:'Fast scan, only top 100 ports. Quick check.',tag:'nmap'},
-{t:'Nmap - Scan All Ports',c:'nmap -p- 192.168.1.1',d:'Scan ALL 65535 ports. E dey take time but e thorough.',tag:'nmap'},
-{t:'Nmap - Find OS',c:'nmap -O 192.168.1.1',d:'Try guess which Operating System target dey use (Windows / Linux).',tag:'nmap'},
-{t:'Nmap - Save Result To File',c:'nmap -oN result.txt 192.168.1.1',d:'Save scan result inside file so you fit read am later.',tag:'nmap'},
-{t:'Wireshark - Capture All Traffic',c:'wireshark',d:'Open Wireshark, select WiFi, click Start. E go show all packets.',tag:'wireshark'},
-{t:'Wireshark Filter - Show Only HTTP',c:'http',d:'Type for filter bar for Wireshark. E go show only websites (no HTTPS).',tag:'wireshark'},
+// NMAP - From your book
+{t:'Nmap - Scan One Device',c:'nmap 192.168.1.1',d:'Check which ports open for one device.',tag:'nmap'},
+{t:'Nmap - Scan All Devices For WiFi',c:'nmap -sn 192.168.1.0/24',d:'Find ALL phones/laptops for your WiFi. -sn = Ping Scan, no port scan.',tag:'nmap'},
+{t:'Nmap - Aggressive Scan',c:'nmap -A 192.168.1.1',d:'Deep scan: OS, version, ports. -A = Aggressive.',tag:'nmap'},
+{t:'Nmap - Service Version Detection',c:'nmap -sV 192.168.1.1',d:'From your book: -sV = Service Version detection. See version of services.',tag:'nmap'},
+{t:'Nmap - OS Detection',c:'nmap -O 192.168.1.1',d:'From your book: -O = Operating System detection. Guess Windows/Linux.',tag:'nmap'},
+{t:'Nmap - Fast Scan',c:'nmap -F 192.168.1.1',d:'Fast scan, only top 100 ports.',tag:'nmap'},
+{t:'Nmap - Scan ALL Ports',c:'nmap -p- 192.168.1.1',d:'From your book: -p- = Scan ALL 65535 ports.',tag:'nmap'},
+{t:'Nmap - Scan Single Port 22',c:'nmap -p 22 192.168.1.1',d:'From your book: -p 22 = Scan a single port. 22 = SSH.',tag:'nmap'},
+{t:'Nmap - Scan Ports 80,443',c:'nmap -p 80,443 192.168.1.1',d:'Scan only web ports 80 (HTTP) and 443 (HTTPS).',tag:'nmap'},
+{t:'Nmap - SYN Stealth Scan',c:'nmap -sS 192.168.1.1',d:'From your book: -sS = SYN scan. Fast + stealthy. Most popular.',tag:'nmap'},
+{t:'Nmap - TCP Connect Scan',c:'nmap -sT 192.168.1.1',d:'From your book: -sT = Full TCP Connect. No need root.',tag:'nmap'},
+{t:'Nmap - UDP Scan',c:'nmap -sU 192.168.1.1',d:'From your book: -sU = UDP scan. Check UDP services like DNS.',tag:'nmap'},
+{t:'Nmap - NULL Scan',c:'nmap -sN 192.168.1.1',d:'From your book: -sN = NULL scan. Send packet with no flags.',tag:'nmap'},
+{t:'Nmap - XMAS Scan',c:'nmap -sX 192.168.1.1',d:'From your book: -sX = XMAS scan. FIN+PSH+URG flags like Christmas tree.',tag:'nmap'},
+{t:'Nmap - FIN Scan',c:'nmap -sF 192.168.1.1',d:'From your book: -sF = FIN scan. Send only FIN flag.',tag:'nmap'},
+{t:'Nmap - ACK Scan',c:'nmap -sA 192.168.1.1',d:'From your book: -sA = ACK scan. Check firewall rules.',tag:'nmap'},
+{t:'Nmap - Speed T0-T1-T2 Slow',c:'nmap -T0 192.168.1.1  |  nmap -T2 192.168.1.1',d:'From your book: T0,T1,T2 = Slower speed. Use to avoid detection.',tag:'nmap'},
+{t:'Nmap - Speed T3 Normal',c:'nmap -T3 192.168.1.1',d:'From your book: T3 = Normal speed. Default.',tag:'nmap'},
+{t:'Nmap - Speed T4-T5 Faster',c:'nmap -T4 192.168.1.1  |  nmap -T5 192.168.1.1',d:'From your book: T4,T5 = Faster speed. For your own fast network only.',tag:'nmap'},
+{t:'Nmap - Save Output To File',c:'nmap -oN result.txt 192.168.1.1',d:'From your book: -oN = Save output to file (Normal format).',tag:'nmap'},
+{t:'Nmap - Save Output XML',c:'nmap -oX result.xml 192.168.1.1',d:'Save as XML for tools to read.',tag:'nmap'},
+{t:'Nmap - Spoof MAC Address',c:'nmap --spoof-mac 00:11:22:33:44:55 192.168.1.1',d:'From your book: --spoof-mac = Fake your MAC address.',tag:'nmap'},
+{t:'Nmap - Use Specific Interface',c:'nmap -e eth0 192.168.1.1',d:'From your book: -e = Interface. eth0 = cable, wlan0 = WiFi.',tag:'nmap'},
+{t:'Nmap - NSE Script Scan',c:'nmap --script vuln 192.168.1.1',d:'From your book: NSE = Nmap Scripting Engine. --script vuln = check vulnerabilities.',tag:'nmap'},
+{t:'Nmap - Default Scripts',c:'nmap -sC 192.168.1.1',d:'Run default NSE scripts. -sC = Script scan.',tag:'nmap'},
+// WIRESHARK
+{t:'Wireshark - Capture All Traffic',c:'wireshark',d:'Open Wireshark, select WiFi, click Start.',tag:'wireshark'},
+{t:'Wireshark Filter - Show Only HTTP',c:'http',d:'Type for filter bar. Show only websites.',tag:'wireshark'},
 {t:'Wireshark Filter - Show One IP',c:'ip.addr == 192.168.1.1',d:'Show only traffic from that one device.',tag:'wireshark'},
 {t:'Wireshark Filter - Show DNS',c:'dns',d:'Show only DNS - which websites person dey try visit.',tag:'wireshark'},
-{t:'Wireshark Filter - Show Passwords (HTTP)',c:'http.request.method == "POST"',d:'Show login forms. For learning - never steal password!',tag:'wireshark'},
-{t:'Wireshark - Follow TCP Stream',c:'Right-click packet > Follow > TCP Stream',d:'See full conversation between two computers, like chat history.',tag:'wireshark'},
-{t:'Ping - Check If Device Dey Alive',c:'ping 192.168.1.1',d:'Check if device dey online. If e reply, e dey alive.',tag:'general'},
-{t:'Check My Own IP',c:'ipconfig (Windows) / ifconfig (Linux)',d:'See your own IP address for your phone / laptop.',tag:'general'}
+{t:'Wireshark Filter - Show POST (Logins)',c:'http.request.method == "POST"',d:'Show login forms. For learning - never steal password!',tag:'wireshark'},
+{t:'Wireshark - Follow TCP Stream',c:'Right-click packet > Follow > TCP Stream',d:'See full conversation between two computers.',tag:'wireshark'},
+// LINUX TROUBLESHOOTING - From your book
+{t:'LINUX 1 - Disk Full: Check Disk Space',c:'df -h',d:'1. DISK FULL: Check which partition is full. -h = human readable.',tag:'linux disk'},
+{t:'LINUX 1 - Disk Full: Find Big Files in Logs',c:'du -sh /var/log/*',d:'Find large files. du -sh = size of folder.',tag:'linux disk'},
+{t:'LINUX 1 - Disk Full: Find Files Over 1GB',c:'sudo find / -type f -size +1G',d:'From your book: Find files bigger than 1GB.',tag:'linux disk'},
+{t:'LINUX 1 - Disk Full: Check Deleted But Open Files',c:'sudo lsof +L1',d:'From your book: Check deleted files still using space.',tag:'linux disk'},
+{t:'LINUX 1 - Disk Full: Clear Docker Images',c:'sudo docker image prune -a',d:'From your book: Clear Docker images [if used] to free space.',tag:'linux disk'},
+{t:'LINUX 2 - High CPU: See Live CPU',c:'top',d:'2. HIGH CPU: See live CPU. Press q to quit, Shift+P to sort by CPU.',tag:'linux cpu'},
+{t:'LINUX 2 - High CPU: Top CPU Processes',c:'ps aux --sort=-%cpu | head',d:'From your book: List processes sorted by CPU, top first.',tag:'linux cpu'},
+{t:'LINUX 2 - High CPU: Check One Process',c:'top -p <PID>',d:'From your book: Watch one process. Replace <PID> with number.',tag:'linux cpu'},
+{t:'LINUX 3 - High Memory: Check RAM',c:'free -h',d:'3. HIGH MEMORY: Check RAM + Swap. -h = human.',tag:'linux memory'},
+{t:'LINUX 3 - High Memory: Top Memory Processes',c:'ps aux --sort=-%mem | head',d:'From your book: List processes sorted by Memory.',tag:'linux memory'},
+{t:'LINUX 3 - High Memory: Check Memory Details',c:'cat /proc/meminfo',d:'Show full memory info from system.',tag:'linux memory'},
+{t:'LINUX 3 - High Memory: Watch Memory Live',c:'vmstat 1 5',d:'From your book: vmstat 1 5 = check every 1 sec, 5 times.',tag:'linux memory'},
+{t:'LINUX 4 - Server Not Reachable: Ping',c:'ping -c 4 <IP>',d:'4. NOT REACHABLE: ping -c 4 = send 4 pings only.',tag:'linux network'},
+{t:'LINUX 4 - Server Not Reachable: Trace Route',c:'traceroute <IP>',d:'Show path packet dey follow to reach server.',tag:'linux network'},
+{t:'LINUX 4 - Server Not Reachable: DNS Check',c:'nslookup example.com',d:'Check if DNS dey work. Try dig example.com too.',tag:'linux network'},
+{t:'LINUX 5 - Service Down: Check Service',c:'sudo systemctl status <service>',d:'5. SERVICE DOWN: Replace <service> e.g. ssh, apache2, nginx.',tag:'linux service'},
+{t:'LINUX 5 - Service Down: Check Logs',c:'sudo journalctl -u <service> -n 100',d:'From your book: Show last 100 lines of logs for that service.',tag:'linux service'},
+{t:'LINUX 5 - Service Down: Restart Service',c:'sudo systemctl restart <service>',d:'Restart am, then check status again.',tag:'linux service'},
+{t:'LINUX 6 - Port Not Working: Check Port 8000',c:'sudo ss -tlnp | grep :8000',d:'6. PORT NOT WORKING: ss -tlnp = show listening ports. Replace 8000.',tag:'linux port'},
+{t:'LINUX 6 - Port Not Working: Check Port 8888',c:'sudo netstat -tlnp | grep :8888',d:'Old way to check port. Same as ss.',tag:'linux port'},
+{t:'LINUX 6 - Port Not Working: Test Locally',c:'curl http://localhost:8888',d:'From your book: Test if app dey work for inside server.',tag:'linux port'},
+{t:'LINUX 6 - Port Not Working: Check Firewall',c:'sudo ufw status',d:'Check if firewall dey block port. Also: sudo firewall-cmd --list-ports',tag:'linux port'},
+{t:'LINUX 6 - Port Not Working: Check Firewall Rules',c:'sudo iptables -L -n -v',d:'From your book: iptables -L -n -v = List all firewall rules.',tag:'linux port'},
+{t:'LINUX 7 - SSH Fail: Check SSH Service',c:'sudo systemctl status ssh',d:'7. SSH LOGIN FAILURE: Check if SSH dey running.',tag:'linux ssh'},
+{t:'LINUX 7 - SSH Fail: Check SSH Logs',c:'sudo journalctl -u ssh',d:'See why SSH fail.',tag:'linux ssh'},
+{t:'LINUX 7 - SSH Fail: Check Key Permissions',c:'ls -l ~/.ssh/authorized_keys',d:'From your book: Permissions must be correct, or SSH go reject key.',tag:'linux ssh'},
+{t:'LINUX 7 - SSH Fail: Test SSH Config',c:'sudo sshd -t',d:'From your book: Test sshd config. If no output, config OK.',tag:'linux ssh'},
+{t:'LINUX 7 - SSH Fail: Check SSH Config',c:'grep -E "PasswordAuthentication|PubkeyAuthentication" /etc/ssh/sshd_config',d:'From your book: Check if password / key login dey allowed.',tag:'linux ssh'},
+{t:'LINUX 7 - SSH Fail: Check Auth Log',c:'sudo tail -n 50 /var/log/auth.log',d:'From your book: Last 50 lines of login attempts.',tag:'linux ssh'},
+{t:'LINUX 8 - Mount Issue: List Disks',c:'lsblk',d:'8. MOUNT / FILESYSTEM: lsblk = list all disks + partitions.',tag:'linux mount'},
+{t:'LINUX 8 - Mount Issue: Check Mounted',c:'df -h',d:'See which disks dey mounted now.',tag:'linux mount'},
+{t:'LINUX 8 - Mount Issue: Check fstab',c:'cat /etc/fstab',d:'From your book: fstab = file wey tell Linux what to mount on boot.',tag:'linux mount'},
+{t:'LINUX 8 - Mount Issue: Try Mount All',c:'sudo mount -a',d:'From your book: Try mount everything for fstab.',tag:'linux mount'},
+{t:'LINUX 8 - Mount Issue: Check Disk Errors',c:'sudo fsck /dev/sdx',d:'From your book: fsck = check + fix filesystem. Replace sdx.',tag:'linux mount'},
+{t:'LINUX 9 - High Load: Check Load',c:'uptime',d:'9. HIGH LOAD AVERAGE: uptime = show load for 1,5,15 mins.',tag:'linux load'},
+{t:'LINUX 9 - High Load: Check Disk I/O',c:'iostat -xz 1 5',d:'From your book: Check if disk dey slow.',tag:'linux load'},
+// GENERAL
+{t:'Ping - Check If Device Dey Alive',c:'ping 192.168.1.1',d:'Check if device dey online.',tag:'general'},
+{t:'Check My Own IP',c:'ipconfig (Windows) / ifconfig (Linux)',d:'See your own IP.',tag:'general'}
+];
+let TROUBLE=[
+{n:'1. Disk Full - No Space Left',sym:'Application stops working, "No space left", Cannot create files, System / DB stops',steps:'1. Check which partition is full (df -h) 2. Find large files/directories 3. Check deleted files with lsof 4. Clear logs / old files 5. Clear Docker images [if used]',cmds:'df -h | du -sh /var/log/* | sudo find / -type f -size +1G | sudo lsof +L1'},
+{n:'2. High CPU Usage',sym:'Server becomes slow, Response time high, High load average, Application not responding',steps:'1. Check system load (top / uptime) 2. Identify CPU/memory/disk using process 3. Find top resource process 4. Check disk I/O wait 5. Optimize / scale resources',cmds:'top | ps aux --sort=-%cpu | head | top -p <PID>'},
+{n:'3. High Memory Usage',sym:'Server slow, Processes killed, Out of memory error, High swap usage',steps:'1. Check RAM, Swap usage 2. Identify memory-hungry process 3. Check for memory leak 4. Tune application / restart 5. Add Swap or increase RAM',cmds:'free -h | ps aux --sort=-%mem | head | vmstat 1 5 | cat /proc/meminfo'},
+{n:'4. Server Not Reachable',sym:'Cannot ping server, Cannot SSH, SSH connection timeout, Intermittent connectivity',steps:'1. Ping server 2. Trace route 3. Check DNS 4. Check firewall 5. Check SSH service',cmds:'ping -c 4 <IP> | traceroute <IP> | nslookup example.com | dig example.com | sudo ufw status'},
+{n:'5. Service Is Down',sym:'Application / service not running, Service not starting, Application error, Restart not resolving, Auto-restart loops',steps:'1. Check service status 2. Check logs 3. Validate config 4. Restart and verify',cmds:'sudo systemctl status <service> | sudo journalctl -u <service> -n 100 | sudo systemctl restart <service>'},
+{n:'6. Port Not Working',sym:'Website not opening, Connection refused, Timeout error, Works locally, not externally',steps:'1. Check if port dey listen (ss) 2. Test locally with curl 3. Check firewall 4. Check service status',cmds:'sudo ss -tlnp | grep :8000 | curl http://localhost:8888 | sudo ufw status | sudo iptables -L -n -v'},
+{n:'7. SSH Login Failure',sym:'Unable to login via SSH, Permission denied, Connection refused, Timeout, Public key not accepted',steps:'1. Check SSH service status 2. Verify key permissions 3. Check SSHD configuration 4. Check firewall + port 22 5. Review authentication logs',cmds:'sudo systemctl status ssh | ls -l ~/.ssh/authorized_keys | sudo sshd -t | sudo tail -n 50 /var/log/auth.log'},
+{n:'8. Mount / Filesystem Issue',sym:'Disk not mounted or missing after reboot, Partition not mounted, fstab error on boot, Cannot access filesystem',steps:'1. List disks (lsblk) 2. Check mounted (df -h) 3. Check fstab 4. Try mount -a 5. Check disk errors (fsck)',cmds:'lsblk | df -h | cat /etc/fstab | sudo mount -a | sudo fsck /dev/sdx | dmesg | tail -n 50'},
+{n:'9. High Load Average',sym:'Server very slow, Loads high, High load average for long time',steps:'1. Check system load (uptime) 2. Identify CPU/memory/disk using 3. Find top resource process 4. Check disk I/O wait 5. Optimize / scale',cmds:'uptime | top | ps aux --sort=-%cpu | head | iostat -xz 1 5'},
+{n:'10. Disk / Service Slow - General Check',sym:'Everything slow, but no clear error',steps:'1. uptime 2. top 3. free -h 4. df -h 5. Check logs',cmds:'uptime | top | free -h | df -h | dmesg | tail -n 50'}
 ];
 let myCmds=JSON.parse(localStorage.getItem('roxy_cmds')||'[]');
 function allCmds(){return [...DEFAULT_CMDS.map(c=>({...c,mine:false})), ...myCmds.map((c,i)=>({...c,mine:true,idx:i}))];}
 window.onload=function(){updateHistCount();updateCmdCount();if(myName){showChat(true);}};
 function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN for '+myName+'! Try again.');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
 function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
-function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands saved + ${history.length} scams checked. Tap 📟 Commands to see Nmap + Wireshark!`:`Hi ${myName}! Na me be ROXY v4.4 - Now I get COMMAND VAULT! 📟 I sabi Nmap + Wireshark, and you fit save your own commands!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
+function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands + ${TROUBLE.length} Linux fixes saved. Tap 🐧 Linux Fix!`:`Hi ${myName}! Na me be ROXY v4.5 - Linux Troubleshooting Master! 🐧 I get your 10 Linux scenarios + Full Nmap switches from your book!`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
 function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';b.className=voiceOn?'':'off';if(voiceOn)speak("Voice on!");}
 function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
 function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;window.speechSynthesis.speak(u);}
-function testVoice(){speak(`Hi ${myName}! I sabi Nmap and Wireshark commands now.`);}
+function testVoice(){speak(`Hi ${myName}! I sabi Linux troubleshooting now.`);}
 function startMic(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert("Your browser no support mic. Type instead!");return;}let Rec=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=new Rec();rec.lang='en-US';rec.onresult=(e)=>{inp.value=e.results[0][0].transcript;send();};rec.start();}
 function quickAsk(t){inp.value=t;send();}
-function hideAll(){document.getElementById('scamBox').classList.add('hidden');document.getElementById('histBox').classList.add('hidden');document.getElementById('cmdBox').classList.add('hidden');}
+function hideAll(){document.getElementById('scamBox').classList.add('hidden');document.getElementById('histBox').classList.add('hidden');document.getElementById('cmdBox').classList.add('hidden');document.getElementById('linuxBox').classList.add('hidden');}
 function toggleScam(){let b=document.getElementById('scamBox');let was=b.classList.contains('hidden');hideAll();if(was)b.classList.remove('hidden');}
 function toggleHistory(){let b=document.getElementById('histBox');let was=b.classList.contains('hidden');hideAll();if(was){b.classList.remove('hidden');renderHistory();}}
 function toggleCmd(){let b=document.getElementById('cmdBox');let was=b.classList.contains('hidden');hideAll();if(was){b.classList.remove('hidden');renderCmds();}}
+function toggleLinux(){let b=document.getElementById('linuxBox');let was=b.classList.contains('hidden');hideAll();if(was){b.classList.remove('hidden');renderLinux();}}
 function updateHistCount(){document.getElementById('histCount').innerText=history.length;}
 function updateCmdCount(){document.getElementById('cmdCount').innerText=allCmds().length;}
 function saveToHistory(msg,score){let label=score>=70?'🚨 SCAM':score>=40?'⚠️ SUSPICIOUS':'✅ SAFE';history.unshift({msg:msg.substring(0,120),score:score,label:label,date:new Date().toLocaleString()});if(history.length>50)history=history.slice(0,50);localStorage.setItem('roxy_history',JSON.stringify(history));updateHistCount();}
@@ -159,9 +239,15 @@ function renderCmds(){
   let filtered=allCmds().filter(c=>(c.t+c.c+c.d+c.tag).toLowerCase().includes(q));
   if(filtered.length===0){list.innerHTML='<p style="color:#888;font-size:13px;margin-top:8px;">No command found. Save your own below!</p>';return;}
   list.innerHTML=filtered.map(c=>{
-    let del=c.mine?`<button class="delBtn" onclick="deleteMyCmd(${c.idx})">🗑️ Delete My Command</button>`:`<span style="color:#888;font-size:11px;">Built-in by ROXY</span>`;
-    return `<div class="cmdCard"><b>${c.t}</b> ${c.mine?'<span style="color:#c26bff;">• MY SAVED</span>':''}<code>${c.c}</code><span style="color:#aaa;">${c.d}</span><br><button class="copyBtn" onclick="copyCmd(\`${c.c.replace(/`/g,'')}\`)">📋 Copy Command</button><br>${del}</div>`;
+    let del=c.mine?`<button class="delBtn" onclick="deleteMyCmd(${c.idx})">🗑️ Delete My Command</button>`:`<span style="color:#888;font-size:11px;">From Roland Book / ROXY</span>`;
+    return `<div class="cmdCard"><b>${c.t}</b> ${c.mine?'<span style="color:#c26bff;">• MY SAVED</span>':''}<code>${c.c}</code><span style="color:#aaa;">${c.d}</span><br><button class="copyBtn" onclick="copyCmd(\`${c.c.replace(/`/g,'').replace(/'/g,"")}\`)">📋 Copy Command</button><br>${del}</div>`;
   }).join('');
+}
+function renderLinux(){
+  let q=(document.getElementById('linuxSearch').value||'').toLowerCase();
+  let list=document.getElementById('linuxList');
+  let f=TROUBLE.filter(x=>(x.n+x.sym+x.steps+x.cmds).toLowerCase().includes(q));
+  list.innerHTML=f.map(x=>`<div class="linuxCard"><b>🐧 ${x.n}</b><br><b>Symptoms:</b> ${x.sym}<br><b>Steps:</b> ${x.steps}<br><b>Commands:</b><code>${x.cmds}</code><button class="copyBtn" style="background:#ff0055!important;" onclick="copyCmd('${x.cmds}')">📋 Copy All Commands</button></div>`).join('');
 }
 function copyCmd(txt){navigator.clipboard.writeText(txt).then(()=>alert('Copied: '+txt)).catch(()=>{let ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();alert('Copied: '+txt);});}
 function saveMyCmd(){
@@ -202,44 +288,49 @@ function scoreScam(text){
 function addMsg(text,who){let d=document.createElement('div');d.className='msg '+who;let name=who==='me'?myName:'ROXY 🐩';let extra='';if(who==='roxy')extra=`<br><button class="speakBtn" onclick="speak(this.parentElement.innerText)">🔊 Hear Again</button>`;d.innerHTML=`<b>${name}:</b> ${text}${extra}<span class="time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
 function send(){let t=inp.value.trim();if(!t)return;addMsg(t,'me');inp.value='';let ty=document.createElement('div');ty.className='typing';ty.id='typing';ty.innerText='ROXY is thinking...';chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{document.getElementById('typing').remove();let ans=getReply(t);addMsg(ans,'roxy');speak(ans);},600);}
 const BRAIN = {
-"binary":"<b>Binary = 0 and 1 💻</b><br>Computer only understand 0 and 1. 0 = OFF, 1 = ON. Example: Letter A = 01000001.",
-"dns":"<b>DNS = Domain Name System 🌐</b><br>Na phonebook for internet. You type google.com, DNS translate am to IP like 142.250.80.46.",
-"operating system":"<b>OS = Boss of Computer 💻</b><br>Windows, macOS, Linux, Android, iOS, ChromeOS = 6 main ones. For hacking, Linux (Kali) na best!",
-"os":"<b>OS = Boss of Computer 💻</b><br>Windows, macOS, Linux, Android, iOS, ChromeOS = 6 main ones.",
-"nmap":"<b>Nmap = Network Mapper 📟</b><br>Na tool wey dey scan network to find which devices dey online + which ports open.<br><br><b>Top 3 commands:</b><br>1. <code>nmap -sn 192.168.1.0/24</code> - Find all devices for WiFi<br>2. <code>nmap 192.168.1.1</code> - Scan one device<br>3. <code>nmap -A 192.168.1.1</code> - Deep scan<br><br>Tap 📟 Commands for top to see ALL + Copy them! ⚠️ Only scan YOUR OWN network!",
-"wireshark":"<b>Wireshark = Shark wey dey catch packets 🦈</b><br>Na tool wey dey capture everything wey dey pass for your WiFi.<br><br><b>Top 3 filters:</b><br>1. <code>http</code> - Show only websites<br>2. <code>dns</code> - Show which sites person dey visit<br>3. <code>ip.addr == 192.168.1.1</code> - Show one device only<br><br>Tap 📟 Commands for top to see ALL! ⚠️ Only capture YOUR OWN network!",
+"disk full":"<b>💾 DISK FULL - No Space Left</b><br><b>Symptoms:</b> App stops, 'No space left', Cannot create files, DB stops<br><b>Fix:</b> 1. df -h (check which partition full) 2. du -sh /var/log/* (find big files) 3. sudo find / -type f -size +1G 4. sudo lsof +L1 (deleted files) 5. Clear logs / Docker images<br><code>df -h</code><br>Tap 🐧 Linux Fix for full steps!",
+"high cpu":"<b>🔥 HIGH CPU</b><br><b>Symptoms:</b> Server slow, High load, App not responding<br><b>Fix:</b> top → ps aux --sort=-%cpu | head → top -p &lt;PID&gt;<br><code>ps aux --sort=-%cpu | head</code>",
+"high memory":"<b>🧠 HIGH MEMORY</b><br><b>Symptoms:</b> Server slow, Processes killed, Out of memory, High swap<br><b>Fix:</b> free -h → ps aux --sort=-%mem | head → vmstat 1 5 → cat /proc/meminfo<br><code>free -h</code>",
+"server not reachable":"<b>📡 SERVER NOT REACHABLE</b><br><b>Symptoms:</b> Cannot ping, Cannot SSH, Timeout<br><b>Fix:</b> ping -c 4 &lt;IP&gt; → traceroute → nslookup example.com → sudo ufw status<br><code>ping -c 4 192.168.1.1</code>",
+"service is down":"<b>⚙️ SERVICE IS DOWN</b><br><b>Fix:</b> sudo systemctl status &lt;service&gt; → sudo journalctl -u &lt;service&gt; -n 100 → sudo systemctl restart &lt;service&gt;<br><code>sudo systemctl status ssh</code>",
+"port not working":"<b>🔌 PORT NOT WORKING</b><br><b>Symptoms:</b> Website not opening, Connection refused, Works locally not externally<br><b>Fix:</b> sudo ss -tlnp | grep :8000 → curl http://localhost:8888 → sudo ufw status → sudo iptables -L -n -v",
+"ssh":"<b>🔑 SSH LOGIN FAILURE</b><br><b>Symptoms:</b> Permission denied, Connection refused, Timeout, Public key not accepted<br><b>Fix:</b> sudo systemctl status ssh → ls -l ~/.ssh/authorized_keys → sudo sshd -t → grep PasswordAuthentication /etc/ssh/sshd_config → sudo tail -n 50 /var/log/auth.log",
+"mount":"<b>💽 MOUNT / FILESYSTEM ISSUE</b><br><b>Symptoms:</b> Disk not mounted after reboot, fstab error, Cannot access<br><b>Fix:</b> lsblk → df -h → cat /etc/fstab → sudo mount -a → sudo fsck /dev/sdx",
+"high load":"<b>📈 HIGH LOAD AVERAGE</b><br><b>Fix:</b> uptime → top → ps aux --sort=-%cpu | head → iostat -xz 1 5<br><code>uptime</code>",
+"nmap":"<b>Nmap = Network Mapper 📟</b><br><b>From your book:</b><br>-sS SYN, -sT Connect, -sU UDP, -sN NULL, -sX XMAS, -sF FIN, -sA ACK<br>-p 22 single port, -p- all ports<br>-T0-T2 slow, -T3 normal, -T4-T5 fast<br>-O OS detection, -sV version detection<br>-oN save to file, --spoof-mac, -e interface, --script vuln (NSE)<br><br>Tap 📟 Commands to copy ALL!",
+"wireshark":"<b>Wireshark = Shark wey dey catch packets 🦈</b><br>Filters: http, dns, ip.addr == 192.168.1.1, http.request.method == POST<br>Tap 📟 Commands for ALL!",
 "phishing":"<b>Phishing = Fake Fishing 🎣</b><br>Scammer send fake link wey look like real bank to steal password. Rule: <b>Verify Before You Trust!</b>",
-"scanning":"<b>Port Scanning = Knocking Doors 🔍</b><br>Hacker go knock all your doors to see which one open. Use Nmap for your own network to check!",
-"firewall":"<b>Firewall = Security Gate 🔥</b><br>Na wall between your network and internet. E block bad traffic.",
-"malware":"<b>Malware = Bad Software 🦠</b><br>Any software wey dey harm phone: virus, spyware, ransomware.",
-"password":"<b>Strong Password:</b> At least 12 characters, Mix CAPITAL + small + number + symbol. Example: <b>Roland@Lagos2026!</b>",
-"soc":"<b>SOC = Security Operations Center 🛡️</b><br>Na room where security people dey watch network 24/7 for attacks. Na the job you wan do!",
-"vpn":"<b>VPN = Virtual Private Network</b><br>E dey hide your IP and encrypt your internet.",
-"encryption":"<b>Encryption = Secret Code 🔒</b><br>Turn message to nonsense so only person wey get key fit read am.",
-"cybersecurity":"<b>Cybersecurity = Protection 🛡️</b><br>Na to protect computer, phone, network from hackers. Na the work you dey learn!",
-"watchdog":"🐩 <b>Watchdog na my dog!</b> E dey watch your network 24/7. If person scan your ports, e go bark!"
+"binary":"<b>Binary = 0 and 1 💻</b><br>Computer only understand 0 and 1. 0 = OFF, 1 = ON. Example: Letter A = 01000001.",
+"dns":"<b>DNS = Domain Name System 🌐</b><br>Na phonebook for internet. You type google.com, DNS translate am to IP.",
+"linux":"<b>Linux Troubleshooting 🐧</b><br>Tap 🐧 Linux Fix for top - I get 10 scenarios from your book: Disk Full, High CPU, High Memory, Server Not Reachable, Service Down, Port Not Working, SSH Fail, Mount Issue, High Load!",
+"soc":"<b>SOC = Security Operations Center 🛡️</b><br>Na room where security people dey watch network 24/7 for attacks. Na the job you wan do!"
 };
 function getReply(text){
   let t=text.toLowerCase();
-  if(t.includes('nmap scan')||t.includes('scan my')||t.includes('scan network')||t.includes('scan wifi'))return `<b>To scan your WiFi:</b><br><code>nmap -sn 192.168.1.0/24</code><br>E go list all devices for your WiFi.<br><br><b>To scan one device:</b><br><code>nmap 192.168.1.1</code><br><br>Tap 📟 Commands to copy am! ⚠️ Only your OWN network!`;
   if(t.includes('check this scam')||t.includes('check scam')||t.includes('is this scam')){
     let r=scoreScam(text);saveToHistory(text,r.score);
     let label=r.score>=70?'🚨 SCAM!':r.score>=40?'⚠️ SUSPICIOUS':'✅ SAFE';
     return `🛡️ <b>SCAM CHECK: ${r.score}/100 - ${label}</b><br>${r.reasons.map(x=>'• '+x).join('<br>')}<br>✅ Saved to History!`;
   }
-  if(t.includes('my command')||t.includes('saved command')||t.includes('show commands')||t.includes('command vault')){let n=allCmds().length;return `You get <b>${n} commands</b> saved! Tap 📟 Commands for top to see all Nmap + Wireshark + your own. Type for search box to find any one sharp sharp!`;}
-  if(t.includes('your name')||t.includes('who are you'))return `Na me be ROXY! Your Security Friend, ${myName}. I sabi Nmap, Wireshark, Scam Checker! 🐩`;
-  if(t.includes('my name')||t.includes('who am i'))return `You be ${myName}! I remember you.`;
+  if(t.includes('disk')||t.includes('no space'))return BRAIN["disk full"];
+  if(t.includes('high cpu'))return BRAIN["high cpu"];
+  if(t.includes('high memory')||t.includes('memory usage'))return BRAIN["high memory"];
+  if(t.includes('not reachable')||t.includes('cannot ping')||t.includes('cannot ssh')&&!t.includes('login'))return BRAIN["server not reachable"];
+  if(t.includes('service')&&t.includes('down'))return BRAIN["service is down"];
+  if(t.includes('port'))return BRAIN["port not working"];
+  if(t.includes('ssh'))return BRAIN["ssh"];
+  if(t.includes('mount')||t.includes('filesystem')||t.includes('fstab'))return BRAIN["mount"];
+  if(t.includes('high load')||t.includes('load average'))return BRAIN["high load"];
+  if(t.includes('nmap'))return BRAIN["nmap"];
+  if(t.includes('wireshark'))return BRAIN["wireshark"];
+  if(t.includes('linux')||t.includes('troubleshoot'))return BRAIN["linux"];
   for(let key in BRAIN){ if(t.includes(key)) return BRAIN[key]; }
-  if(t==="hi"||t==="hello"||t.startsWith("hi ")||t.startsWith("hello "))return `Hi ${myName}! Ask me: 'nmap', 'wireshark', 'scan my network', or tap 📟 Commands!`;
-  if(t.includes('how are you')||t.includes('how far'))return `I dey fine, ${myName}, dey guard your network! How you dey?`;
-  if(t.includes('who built')||t.includes('who made'))return"Roland from Lagos build me! 16-year-old SOC engineer!";
+  if(t==="hi"||t==="hello"||t.startsWith("hi ")||t.startsWith("hello "))return `Hi ${myName}! Ask me: 'disk full', 'high cpu', 'ssh login failure', 'port not working', 'nmap', or tap 🐧 Linux Fix!`;
+  if(t.includes('how are you'))return `I dey fine, ${myName}, dey guard your network!`;
   if(t.includes('thank'))return `You are welcome, ${myName}!`;
   if(t.includes('bye')||t.includes('good night'))return `Good night, ${myName}! ROXY dey watch.`;
-  if(t.includes('joke'))return"Why did the hacker break up with the internet? Because e get too many connections!";
-  if(t.includes('lagos'))return"Lagos na the best! Na where Roland build ROXY!";
-  if(t.includes('roxy'))return `Na me be ROXY! I sabi Nmap, Wireshark, Scam Checker, History!`;
-  return `Interesting, ${myName}! Ask me: 'What is nmap?', 'What is wireshark?', 'Scan my network', or tap 📟 Commands!`;
+  if(t.includes('roxy'))return `Na me be ROXY! I sabi Linux Troubleshooting, Nmap, Wireshark, Scam Checker!`;
+  return `Interesting, ${myName}! Ask me: 'disk full', 'high cpu', 'ssh', 'port not working', 'nmap', or tap 🐧 Linux Fix!`;
 }
 </script>
 </body>
