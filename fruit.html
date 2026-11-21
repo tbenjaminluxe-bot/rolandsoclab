@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>ROXY FRUIT NINJA</title>
+<style>
+* { box-sizing:border-box; }
+html, body { margin:0; padding:0; width:100%; height:100%; background:#0d2a6b; font-family:Arial; overflow:hidden; touch-action:none; }
+#game { width:100vw; height:100dvh; display:flex; flex-direction:column; background:linear-gradient(#87CEEB, #FFF9C4); position:relative; overflow:hidden; }
+.fruit { position:absolute; font-size:64px; user-select:none; pointer-events:none; line-height:1; text-shadow:0 4px 8px rgba(0,0,0,0.3); }
+.half { position:absolute; font-size:48px; pointer-events:none; }
+#knife { position:absolute; width:70px; height:70px; font-size:60px; pointer-events:none; z-index:99; display:none; transform:translate(-50%,-50%) rotate(45deg); }
+#trail { position:absolute; width:100%; height:100%; pointer-events:none; z-index:98; }
+.splash { position:absolute; font-size:36px; pointer-events:none; animation:pop 0.6s forwards; }
+@keyframes pop { 0%{ transform:scale(0.5); opacity:1; } 100%{ transform:scale(1.5); opacity:0; } }
+</style>
+</head>
+<body>
+
+<div id="game">
+<!-- TOP -->
+<div style="padding:10px; text-align:center; background:#0d2a6b; flex-shrink:0; z-index:100;">
+<h2 style="color:white; font-size:20px; margin:2px;">🍉 ROXY FRUIT NINJA 🔪</h2>
+<div style="display:flex; gap:8px; margin:8px 0;">
+<div style="background:white; flex:1; padding:8px; border-radius:12px; font-size:16px; font-weight:bold;">⭐ SCORE<br><span id="score" style="font-size:24px;">0</span></div>
+<div style="background:#ffcc00; flex:1; padding:8px; border-radius:12px; font-size:16px; font-weight:bold;">⏰ TIME<br><span id="time" style="font-size:24px;">60</span></div>
+<div style="background:#ff4444; color:white; flex:1; padding:8px; border-radius:12px; font-size:16px; font-weight:bold;">❤️ LIVES<br><span id="lives" style="font-size:24px;">3</span></div>
+</div>
+<p id="msg" style="color:yellow; font-size:15px; font-weight:bold; margin:3px;">Swipe your finger like knife to cut!</p>
+</div>
+
+<!-- PLAY AREA -->
+<div id="area" style="flex:1; position:relative; overflow:hidden;">
+<canvas id="trail" style="position:absolute; inset:0; width:100%; height:100%;"></canvas>
+<div id="knife">🔪</div>
+<p style="text-align:center; color:#888; font-size:16px; margin-top:15px;">👆 Swipe fast! Fruits go jump up!</p>
+</div>
+
+<!-- BOTTOM -->
+<div style="padding:10px; background:#0d2a6b; flex-shrink:0; text-align:center; z-index:100;">
+<button onclick="startGame()" id="startBtn" style="background:#ffcc00; color:black; padding:15px; width:100%; border-radius:12px; font-weight:bold; font-size:20px; border:3px solid white;">▶️ START GAME</button>
+<p id="win" style="color:yellow; font-size:20px; font-weight:bold; margin:6px;"></p>
+</div>
+</div>
+
+<script>
+let score=0, lives=3, timeLeft=60, playing=false, timer=null;
+let fruits=["🍉","🍎","🍊","🍋","🍓","🍇","🍌","🍑","🍍","🥝","🍒"];
+let halves={ "🍉":"🍉", "🍎":"🍏", "🍊":"🍊", "🍋":"🍋", "🍓":"🍓", "🍇":"🍇", "🍌":"🍌", "🍑":"🍑", "🍍":"🍍", "🥝":"🥝", "🍒":"🍒" };
+let area=document.getElementById('area');
+let knife=document.getElementById('knife');
+let canvas=document.getElementById('trail');
+let ctx=canvas.getContext('2d');
+let trail=[];
+let activeFruits=[];
+
+function resize(){ canvas.width=area.clientWidth; canvas.height=area.clientHeight; }
+window.addEventListener('resize', resize); resize();
+
+function startGame(){
+  score=0; lives=3; timeLeft=60; playing=true;
+  document.getElementById('score').innerText=score;
+  document.getElementById('lives').innerText=lives;
+  document.getElementById('time').innerText=timeLeft;
+  document.getElementById('win').innerText="";
+  document.getElementById('msg').innerText="GO! SWIPE TO CUT! 🔪🍉";
+  document.getElementById('startBtn').innerText="🔥 PLAYING...";
+  document.querySelectorAll('.fruit,.half,.splash').forEach(e=>e.remove());
+  activeFruits=[];
+  clearInterval(timer);
+  timer=setInterval(()=>{
+    timeLeft--; document.getElementById('time').innerText=timeLeft;
+    if(timeLeft<=0) endGame("⏰ TIME UP! Score: "+score+" 🎉");
+  },1000);
+  spawnLoop();
+}
+
+// MANY FRUITS - 2 to 4 AT ONCE!
+function spawnLoop(){
+  if(!playing) return;
+  let count = 2 + Math.floor(Math.random()*3); // 2,3,4 fruits
+  for(let i=0;i<count;i++){ setTimeout(()=>spawnFruit(), i*180); }
+  setTimeout(spawnLoop, 1200 + Math.random()*800);
+}
+
+function spawnFruit(){
+  if(!playing) return;
+  let isBomb = Math.random()<0.12;
+  let el=document.createElement('div');
+  el.innerText = isBomb ? "💣" : fruits[Math.floor(Math.random()*fruits.length)];
+  el.className="fruit";
+  let startX = 10 + Math.random()*75;
+  let x = startX;
+  let y = 110;
+  let vx = (Math.random()-0.5)*1.2;
+  let vy = -(11 + Math.random()*4); // JUMP UP FAST
+  el.style.left=x+"%";
+  el.style.top=y+"%";
+  area.appendChild(el);
+  let f={el, x, y, vx, vy, isBomb, cut:false};
+  activeFruits.push(f);
+
+  function move(){
+    if(f.cut) return;
+    f.vy += 0.35; // GRAVITY - come down
+    f.y += f.vy;
+    f.x += f.vx;
+    f.el.style.top=f.y+"%";
+    f.el.style.left=f.x+"%";
+    f.el.style.transform="rotate("+(f.y*3)+"deg)";
+    if(f.y>110){
+      // Fall down, remove
+      f.el.remove();
+      activeFruits=activeFruits.filter(a=>a!==f);
+      if(!f.isBomb && playing){
+        // Miss fruit - no life loss, just miss
+      }
+      return;
+    }
+    requestAnimationFrame(move);
+  }
+  move();
+}
+
+// KNIFE FOLLOW FINGER
+let lastX=0, lastY=0;
+function moveKnife(clientX, clientY){
+  let r=area.getBoundingClientRect();
+  let x=clientX-r.left, y=clientY-r.top;
+  knife.style.display="block";
+  knife.style.left=x+"px";
+  knife.style.top=y+"px";
+  // Trail
+  trail.push({x,y});
+  if(trail.length>12) trail.shift();
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.strokeStyle="white"; ctx.lineWidth=5; ctx.lineCap="round";
+  ctx.beginPath();
+  trail.forEach((p,i)=>{ if(i==0) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y); });
+  ctx.stroke();
+  // Check cut
+  activeFruits.forEach(f=>{
+    if(f.cut) return;
+    let fr=f.el.getBoundingClientRect();
+    let cx=fr.left+fr.width/2, cy=fr.top+fr.height/2;
+    let dist=Math.hypot(clientX-cx, clientY-cy);
+    if(dist<65) cutFruit(f, clientX, clientY);
+  });
+  lastX=x; lastY=y;
+}
+
+function cutFruit(f, cx, cy){
+  f.cut=true;
+  let r=area.getBoundingClientRect();
+  let x=cx-r.left, y=cy-r.top;
+  if(f.isBomb){
+    lives--; document.getElementById('lives').innerText=lives;
+    document.getElementById('msg').innerText="💥 BOOM! BOMB! Lives: "+lives;
+    let s=document.createElement('div'); s.className="splash"; s.innerText="💥💥"; s.style.left=(x-20)+"px"; s.style.top=(y-20)+"px"; area.appendChild(s); setTimeout(()=>s.remove(),600);
+    f.el.remove();
+    if(lives<=0) endGame("💥 GAME OVER! Bomb! Score: "+score);
+    return;
+  }
+  score+=10; document.getElementById('score').innerText=score;
+  document.getElementById('msg').innerText="Nice cut! +10! 🍉";
+  // Splash
+  let s=document.createElement('div'); s.className="splash"; s.innerText="💦🍉💦"; s.style.left=(x-30)+"px"; s.style.top=(y-20)+"px"; area.appendChild(s); setTimeout(()=>s.remove(),600);
+  // Two halves fly apart
+  let h1=document.createElement('div'); h1.className="half"; h1.innerText=f.el.innerText; h1.style.left=x+"px"; h1.style.top=y+"px"; area.appendChild(h1);
+  let h2=document.createElement('div'); h2.className="half"; h2.innerText=f.el.innerText; h2.style.left=x+"px"; h2.style.top=y+"px"; area.appendChild(h2);
+  let a1=-4, a2=4, hy=y;
+  let fall=setInterval(()=>{
+    hy+=6; h1.style.left=(parseFloat(h1.style.left)+a1)+"px"; h2.style.left=(parseFloat(h2.style.left)+a2)+"px"; h1.style.top=hy+"px"; h2.style.top=hy+"px"; h1.style.opacity-=0.05; h2.style.opacity-=0.05;
+    if(hy>r.height){ clearInterval(fall); h1.remove(); h2.remove(); }
+  },30);
+  f.el.remove();
+  activeFruits=activeFruits.filter(a=>a!==f);
+}
+
+area.addEventListener('touchmove', e=>{ e.preventDefault(); let t=e.touches[0]; moveKnife(t.clientX, t.clientY); }, {passive:false});
+area.addEventListener('touchstart', e=>{ let t=e.touches[0]; moveKnife(t.clientX, t.clientY); });
+area.addEventListener('touchend', ()=>{ knife.style.display="none"; trail=[]; ctx.clearRect(0,0,canvas.width,canvas.height); });
+area.addEventListener('mousemove', e=>{ if(e.buttons==1) moveKnife(e.clientX, e.clientY); });
+
+function endGame(text){
+  playing=false; clearInterval(timer);
+  document.getElementById('win').innerText=text;
+  document.getElementById('startBtn').innerText="▶️ PLAY AGAIN";
+  document.getElementById('msg').innerText="Tap PLAY AGAIN!";
+}
+</script>
+</body>
+</html>
