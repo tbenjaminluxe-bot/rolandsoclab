@@ -1,95 +1,43 @@
-<!-- STEP 3: 2 PLAYERS - YOU VS COMPUTER -->
-<div style="background:#0d2a6b; padding:15px; border-radius:15px; border:3px solid gold; margin:15px;">
+<!-- STEP 4: MAKE GAME BIG LIKE HOME -->
+<style>
+.big-game { background:#0d2a6b; padding:0; margin:0; min-height:100vh; }
+.big-game h2 { font-size:28px; padding:15px 0 5px; }
+.turn-big { background:yellow; color:black; padding:16px; border-radius:12px; font-weight:bold; font-size:20px; margin:12px; }
+.players-big { display:flex; gap:12px; margin:12px; }
+.players-big div { flex:1; padding:18px 10px; border-radius:15px; font-size:19px; }
+.players-big b { font-size:22px; }
+.board-big { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; background:white; padding:12px; margin:12px; border-radius:15px; }
+.board-big div { padding:22px 0 !important; font-size:26px !important; border-radius:10px !important; }
+.dice-big { font-size:80px !important; margin:15px !important; }
+.btn-big { background:#ffcc00; padding:20px !important; width:94% !important; border-radius:15px !important; font-size:22px !important; border:4px solid #fff !important; margin:8px; }
+.btn-restart { background:white; padding:14px; width:94%; border-radius:12px; margin:5px; font-size:17px; font-weight:bold; }
+.msg-big { font-size:19px; padding:10px; }
+</style>
+
+<!-- Replace your game div with this BIG one -->
+<div class="big-game">
 
 <h2 style="color:white">ROXY LUDO KING - Classic</h2>
-<p style="color:white; margin:8px">🔴 YOU vs 🔵 COMPUTER</p>
+<p style="color:white; font-size:18px">🔴 YOU vs 🔵 COMPUTER</p>
 
-<!-- TURN SHOW -->
-<p id="turnShow" style="background:yellow; color:black; padding:10px; border-radius:10px; font-weight:bold; font-size:18px">👉 YOUR TURN - Tap ROLL!</p>
+<p id="turnShow" class="turn-big">👉 YOUR TURN - Tap ROLL!</p>
 
-<!-- SCORE BOARD -->
-<div style="display:flex; justify-content:space-between; gap:10px; margin:10px 0;">
-<div style="background:#ff0000; padding:10px; border-radius:10px; flex:1; color:white">
+<div class="players-big">
+<div style="background:#ff0000; color:white">
 <b>🔴 YOU</b><br><span id="youPos">Home 🏠</span><br><span id="youScore">Score: 0</span>
 </div>
-<div style="background:#0066ff; padding:10px; border-radius:10px; flex:1; color:white">
+<div style="background:#0066ff; color:white">
 <b>🔵 COMPUTER</b><br><span id="compPos">Home 🏠</span><br><span id="compScore">Score: 0</span>
 </div>
 </div>
 
-<!-- BOARD 30 BOXES - 2 TOKENS -->
-<div id="board2" style="display:grid; grid-template-columns:repeat(6,1fr); gap:4px; background:white; padding:10px; border-radius:10px; color:black;"></div>
+<div id="board2" class="board-big"></div>
 
-<p id="dice2" style="font-size:55px; margin:10px">🎲</p>
-<p id="msg2" style="color:white">You start first!</p>
+<p id="dice2" class="dice-big">🎲</p>
+<p id="msg2" class="msg-big" style="color:white">You start first!</p>
 
-<button onclick="playTurn()" style="background:#ffcc00; padding:15px; width:95%; border-radius:12px; font-weight:bold; font-size:19px; border:3px solid #fff">🎲 ROLL DICE - YOUR TURN</button>
-<button onclick="reset2()" style="background:white; padding:10px; width:95%; border-radius:10px; margin-top:8px; font-weight:bold">🔄 Restart Game</button>
+<button onclick="playTurn()" class="btn-big">🎲 ROLL DICE - YOUR TURN</button><br>
+<button onclick="reset2()" class="btn-restart">🔄 Restart Game</button>
 
-<p id="win2" style="color:yellow; font-size:22px; font-weight:bold; margin-top:10px"></p>
+<p id="win2" style="color:yellow; font-size:26px; font-weight:bold; padding:15px"></p>
 </div>
-
-<script>
-let you = 0, comp = 0, myTurn = true;
-let board2 = document.getElementById('board2');
-
-function draw2(){
-  board2.innerHTML = "";
-  for(let i=0;i<30;i++){
-    let d = document.createElement('div');
-    d.style.cssText = "background:#eee; padding:14px 0; border-radius:6px; font-size:18px; text-align:center";
-    if(i==you && i==comp && i!=0) d.innerText = "🔴🔵";
-    else if(i==you && you!=0) d.innerText = "🔴";
-    else if(i==comp && comp!=0) d.innerText = "🔵";
-    else if(i==0) d.innerText = "🏁";
-    else d.innerText = i;
-    if(i==you && you!=0) d.style.background = "#ffcccc";
-    if(i==comp && comp!=0) d.style.background = "#cce5ff";
-    board2.appendChild(d);
-  }
-  document.getElementById('youPos').innerText = you==0 ? "Home 🏠" : "Pos: "+you+" / 30";
-  document.getElementById('compPos').innerText = comp==0 ? "Home 🏠" : "Pos: "+comp+" / 30";
-  document.getElementById('youScore').innerText = "Score: "+you;
-  document.getElementById('compScore').innerText = "Score: "+comp;
-}
-draw2();
-
-function playTurn(){
-  if(!myTurn) return;
-  let dice = Math.floor(Math.random()*6)+1;
-  document.getElementById('dice2').innerText = "🎲 "+dice;
-  you = you + dice; if(you>30) you=30;
-  document.getElementById('msg2').innerText = "You roll "+dice+"! You go to "+you;
-  draw2();
-  if(you>=30){
-    document.getElementById('win2').innerText = "🎉🏆 YOU WIN! YOU BEAT COMPUTER! 🏆🎉";
-    return;
-  }
-  // Computer turn after 1 sec
-  myTurn = false;
-  document.getElementById('turnShow').innerText = "🤖 COMPUTER TURN... Wait...";
-  document.getElementById('turnShow').style.background = "#00aaff";
-  setTimeout(()=>{
-    let cdice = Math.floor(Math.random()*6)+1;
-    comp = comp + cdice; if(comp>30) comp=30;
-    document.getElementById('dice2').innerText = "🎲 "+cdice+" (Computer)";
-    document.getElementById('msg2').innerText = "Computer roll "+cdice+"! Computer go to "+comp;
-    draw2();
-    if(comp>=30){
-      document.getElementById('win2').innerText = "🤖 COMPUTER WIN! Try Again!";
-      return;
-    }
-    myTurn = true;
-    document.getElementById('turnShow').innerText = "👉 YOUR TURN - Tap ROLL!";
-    document.getElementById('turnShow').style.background = "yellow";
-  }, 1200);
-}
-
-function reset2(){
-  you=0; comp=0; myTurn=true;
-  document.getElementById('win2').innerText="";
-  document.getElementById('msg2').innerText="New game! You start first!";
-  document.getElementById('turnShow').innerText="👉 YOUR TURN - Tap ROLL!";
-  draw2();
-}
-</script>
