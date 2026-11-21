@@ -1,69 +1,94 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>ROXY APP - By Roland</title>
+<title>ROXY LUDO KING - By Roland</title>
 <style>
-body { font-family: Arial; text-align: center; background: #111; color: white; }
-button { padding: 15px 25px; font-size: 20px; border-radius: 15px; margin: 10px; }
-.box { background: #222; padding: 20px; margin: 15px; border-radius: 20px; }
+body { background: #1a4aa0; color: white; text-align: center; font-family: Arial; margin: 0; }
+.top { background: #0d2a6b; padding: 10px; font-size: 22px; font-weight: bold; }
+h1 { font-size: 38px; margin: 5px; } h1 span { color: yellow; }
+.btn { background: #ffcc00; color: #000; padding: 15px; margin: 8px; border-radius: 15px; border: 3px solid #fff; font-size: 18px; font-weight: bold; width: 42%; }
+.box { background: #0d2a6b; border: 3px solid gold; margin: 15px; padding: 15px; border-radius: 15px; }
+.colorBtn { width: 55px; height: 55px; border-radius: 50%; border: 3px solid white; font-size: 25px; margin: 5px; }
+.board { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; background: white; padding: 10px; margin: 10px; border-radius: 10px; color: black; }
+.cell { background: #eee; padding: 12px 0; border-radius: 5px; font-size: 20px; }
 </style>
 </head>
 <body>
+<div class="top">👑 ROXY LUDO KING 👑 &nbsp; 00 🪙 &nbsp; 00 💎</div>
 
-<h1>👑 ROXY APP 👑</h1>
+<div id="home">
+<h1>L<span>U</span>D<span>O</span> KING</h1>
 <p>By Roland - CEO</p>
-
-<!-- 1. LUDO -->
-<div class="box">
-<h2>🎲 ROXY LUDO</h2>
-<p id="ludoPos">Position: 0 / 20 - Reach HOME to Win!</p>
-<p id="ludoDice">Dice: -</p>
-<button onclick="rollLudo()">🎲 Roll Dice</button>
-<p id="ludoWin"></p>
+<button class="btn" onclick="show('mode')">🌍 PLAY ONLINE</button>
+<button class="btn" onclick="show('mode')">❤️ PLAY WITH FRIENDS</button><br>
+<button class="btn" onclick="show('mode')">🤖 VS COMPUTER</button>
+<button class="btn" onclick="show('mode')">👥 PASS N PLAY</button><br>
+<button class="btn" onclick="show('mode')" style="width:88%">🏆 TOURNAMENT</button>
 </div>
 
-<!-- 2. FRUIT CUT -->
-<div class="box">
-<h2>🍉 ROXY FRUIT CUT</h2>
-<p id="fruitShow" style="font-size:60px">🍉</p>
-<p id="fruitScore">Score: 0</p>
-<button onclick="cutFruit()">🔪 CUT FRUIT!</button>
+<div id="mode" class="box" style="display:none">
+<h2>SELECT GAME</h2>
+<button class="btn" onclick="selectGame('Classic')">🎲 Classic ✓</button>
+<button class="btn" onclick="selectGame('Rush Mode')">⚡ Rush Mode</button><br>
+<button class="btn" onclick="show('color')" style="width:80%">Next ➡️</button>
 </div>
 
-<!-- 3. MUSIC -->
-<div class="box">
-<h2>🎵 ROXY MUSIC</h2>
-<p>Play your favourite song!</p>
-<audio id="roxyMusic" controls>
-<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
-</audio>
-<p>Press Play ▶️</p>
+<div id="color" class="box" style="display:none">
+<h2>SELECT YOUR COLOR</h2>
+<button class="colorBtn" style="background:blue" onclick="selectColor('🔵','Blue')">🔵</button>
+<button class="colorBtn" style="background:red" onclick="selectColor('🔴','Red')">🔴</button>
+<button class="colorBtn" style="background:green" onclick="selectColor('🟢','Green')">🟢</button>
+<button class="colorBtn" style="background:yellow" onclick="selectColor('🟡','Yellow')">🟡</button>
+<p id="myColor">You pick: -</p>
+<h2>SELECT PLAYERS</h2>
+<button class="btn" onclick="selectPlayers(2)">2 PLAYERS</button>
+<button class="btn" onclick="selectPlayers(4)">4 PLAYERS ✓</button><br>
+<button class="btn" onclick="startGame()" style="width:80%">▶️ Play</button>
+</div>
+
+<div id="game" class="box" style="display:none">
+<h2 id="gameTitle">LUDO BOARD</h2>
+<p id="gameInfo">Your Color: - | Players: -</p>
+<div class="board" id="board"></div>
+<p id="diceShow" style="font-size:50px">🎲</p>
+<p id="posShow">Position: 0 / 30</p>
+<button class="btn" onclick="roll()" style="width:80%">🎲 ROLL DICE</button>
+<p id="winMsg"></p>
 </div>
 
 <script>
-// --- LUDO ---
-let pos = 0;
-function rollLudo(){
-  let dice = Math.floor(Math.random()*6)+1;
-  document.getElementById("ludoDice").innerText = "Dice: " + dice;
-  pos = pos + dice;
-  document.getElementById("ludoPos").innerText = "Position: " + pos + " / 20";
-  if(pos >= 20){
-    document.getElementById("ludoWin").innerText = "🎉 YOU WIN! YOU ENTER YOUR HOME! 🏠";
-    pos = 0;
-  }
+let myColor="🔴", myColorName="Red", players=4, gameMode="Classic", pos=0;
+function show(id){ document.getElementById('home').style.display='none'; document.getElementById('mode').style.display='none'; document.getElementById('color').style.display='none'; document.getElementById(id).style.display='block'; }
+function selectGame(m){ gameMode=m; alert("You select "+m); }
+function selectColor(e,n){ myColor=e; myColorName=n; document.getElementById('myColor').innerText="You pick: "+e+" "+n; }
+function selectPlayers(n){ players=n; alert(n+" Players!"); }
+function startGame(){
+  document.getElementById('color').style.display='none';
+  document.getElementById('game').style.display='block';
+  document.getElementById('gameTitle').innerText = "ROXY LUDO KING - "+gameMode;
+  document.getElementById('gameInfo').innerText = "You: "+myColor+" "+myColorName+" | Players: "+players+" | You VS Computer";
+  drawBoard();
 }
+function drawBoard(){
+  let b=document.getElementById('board'); b.innerHTML="";
+  for(let i=0;i<30;i++){ let c=document.createElement('div'); c.className='cell'; c.innerText = i==pos ? myColor : i==0 ? "🏁" : i; b.appendChild(c); }
+}
+function roll(){
+  let d=Math.floor(Math.random()*6)+1;
+  document.getElementById('diceShow').innerText = "🎲 "+d;
+  pos=pos+d; if(pos>30) pos=30;
+  document.getElementById('posShow').innerText = "Position: "+pos+" / 30";
+  drawBoard();
+  if(pos>=30){ document.getElementById('winMsg').innerText="🎉🏆 YOU WIN! YOU ARE LUDO KING! 🏆🎉"; pos=0; }
+}
+</script>
 
-// --- FRUIT CUT ---
-let score = 0;
-let fruits = ["🍉","🍌","🥭","🍊","🍍","🍎","🍇","🥝","🍓","🍑"];
-function cutFruit(){
-  let f = fruits[Math.floor(Math.random()*fruits.length)];
-  document.getElementById("fruitShow").innerText = f;
-  score = score + 1;
-  document.getElementById("fruitScore").innerText = "Score: " + score;
-  alert("GBAM! You cut " + f);
-}
+<!-- FRUIT + MUSIC still dey below -->
+<div class="box"><h2>🍉 ROXY FRUIT CUT</h2><p id="f" style="font-size:60px">🍉</p><p id="s">Score: 0</p><button class="btn" onclick="cut()">🔪 CUT!</button></div>
+<div class="box"><h2>🎵 ROXY MUSIC</h2><audio controls><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio></div>
+<script>
+let sc=0, fruits=["🍉","🍌","🥭","🍊","🍍","🍎","🍇","🥝"];
+function cut(){ let x=fruits[Math.floor(Math.random()*fruits.length)]; document.getElementById('f').innerText=x; sc++; document.getElementById('s').innerText="Score: "+sc; }
 </script>
 </body>
 </html>
