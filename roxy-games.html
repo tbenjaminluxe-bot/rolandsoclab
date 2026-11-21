@@ -1,30 +1,28 @@
-<!-- MAMA BIG MODE - EVERYTHING BIG! -->
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, user-scalable=yes">
+<!-- PERFECT SIZE - MAMA FIT SEE ALL GAME FOR ONE SCREEN -->
+<div style="background:#0d2a6b; padding:10px; text-align:center; font-family:Arial; max-width:500px; margin:0 auto; box-sizing:border-box; overflow:hidden;">
 
-<div style="background:#0d2a6b; min-height:100vh; padding:8px; text-align:center; font-family:Arial;">
+<h2 style="color:white; font-size:22px; margin:5px;">ROXY LUDO KING - Classic</h2>
+<p style="color:white; font-size:17px; margin:3px;">🔴 YOU vs 🔵 COMPUTER</p>
 
-<h2 style="color:white; font-size:34px; padding:12px;">ROXY LUDO KING - Classic</h2>
-<p style="color:white; font-size:24px; font-weight:bold;">🔴 YOU vs 🔵 COMPUTER</p>
+<p id="turnShow" style="background:yellow; color:black; padding:10px; border-radius:10px; font-weight:bold; font-size:17px; margin:8px 0;">👉 YOUR TURN - Tap ROLL!</p>
 
-<p id="turnShow" style="background:yellow; color:black; padding:22px; border-radius:15px; font-weight:bold; font-size:26px; margin:14px 0;">👉 YOUR TURN - Tap ROLL!</p>
-
-<div style="display:flex; gap:12px; margin:12px 0;">
-<div style="background:#ff0000; color:white; flex:1; padding:22px; border-radius:18px; font-size:24px; text-align:left;"><b style="font-size:28px;">🔴 YOU</b><br><span id="youPos">Home 🏠</span><br><span id="youScore">Score: 0</span></div>
-<div style="background:#0066ff; color:white; flex:1; padding:22px; border-radius:18px; font-size:24px; text-align:left;"><b style="font-size:28px;">🔵 COMPUTER</b><br><span id="compPos">Home 🏠</span><br><span id="compScore">Score: 0</span></div>
+<div style="display:flex; gap:8px; margin:8px 0;">
+<div style="background:#ff0000; color:white; flex:1; padding:10px; border-radius:12px; font-size:16px; text-align:left;"><b>🔴 YOU</b><br><span id="youPos">Home 🏠</span><br><span id="youScore">Score: 0</span></div>
+<div style="background:#0066ff; color:white; flex:1; padding:10px; border-radius:12px; font-size:16px; text-align:left;"><b>🔵 COMPUTER</b><br><span id="compPos">Home 🏠</span><br><span id="compScore">Score: 0</span></div>
 </div>
 
-<!-- BOARD - MAMA BIG! 10 x 10 but BIG BOXES -->
-<div id="board2" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; background:white; padding:14px; border-radius:18px;"></div>
+<!-- BOARD - 10 COLUMNS, MEDIUM SIZE, FIT SCREEN -->
+<div id="board2" style="display:grid; grid-template-columns:repeat(10, 1fr); gap:3px; background:white; padding:8px; border-radius:12px; width:100%; box-sizing:border-box;"></div>
 
-<p style="color:white; font-size:20px; margin:8px;">👆 Scroll down to see 1 to 100 👆</p>
+<!-- DICE - FIXED, NO BREAK -->
+<p id="dice2" style="font-size:50px; margin:8px 0 0; line-height:1;">🎲</p>
+<p id="diceNum" style="font-size:28px; font-weight:bold; color:white; margin:0;">Tap ROLL</p>
+<p id="msg2" style="color:white; font-size:16px; margin:5px;">You start first! First to 100 wins! 🏆</p>
 
-<p id="dice2" style="font-size:110px; margin:12px;">🎲</p>
-<p id="msg2" style="color:white; font-size:26px; font-weight:bold;">You start first! First to 100 wins! 🏆</p>
+<button onclick="playTurn()" style="background:#ffcc00; color:black; padding:15px; width:100%; border-radius:12px; font-weight:bold; font-size:19px; border:3px solid white; box-sizing:border-box;">🎲 ROLL DICE</button>
+<button onclick="reset2()" style="background:white; padding:10px; width:100%; border-radius:10px; margin-top:8px; font-weight:bold; font-size:15px;">🔄 Restart Game</button>
 
-<button onclick="playTurn()" style="background:#ffcc00; color:black; padding:28px; width:100%; border-radius:18px; font-weight:bold; font-size:30px; border:5px solid white; margin-top:12px;">🎲 ROLL DICE - YOUR TURN</button>
-<button onclick="reset2()" style="background:white; padding:20px; width:100%; border-radius:15px; margin-top:12px; font-weight:bold; font-size:22px;">🔄 Restart Game</button>
-
-<p id="win2" style="color:yellow; font-size:34px; font-weight:bold; padding:18px;"></p>
+<p id="win2" style="color:yellow; font-size:20px; font-weight:bold; padding:10px;"></p>
 </div>
 
 <script>
@@ -34,13 +32,13 @@ function draw2(){
   b.innerHTML = "";
   for(let i=0;i<=100;i++){
     let d = document.createElement('div');
-    // MAMA BIG - 5 columns = box BIG BIG, font BIG!
-    d.style.cssText = "background:#eee; padding:26px 0; border-radius:12px; font-size:30px; font-weight:bold; text-align:center; border:2px solid #ccc;";
-    if(i==0) { d.innerText="🏁 START"; d.style.background="#fff2cc"; d.style.fontSize="24px"; }
-    else if(i==you && i==comp && you!=0) { d.innerText="🔴🔵"; d.style.background="#ffcccc"; d.style.fontSize="36px"; }
-    else if(i==you && you!=0) { d.innerText="🔴 "+i; d.style.background="#ffcccc"; }
-    else if(i==comp && comp!=0) { d.innerText="🔵 "+i; d.style.background="#cce5ff"; }
-    else if(i==100) { d.innerText="🏆 100"; d.style.background="gold"; d.style.fontSize="28px"; }
+    // MEDIUM - Mama fit see, but e fit screen!
+    d.style.cssText = "background:#eee; padding:8px 0; border-radius:5px; font-size:16px; font-weight:bold; text-align:center;";
+    if(i==0) { d.innerText="🏁"; d.style.background="#fff2cc"; }
+    else if(i==you && i==comp && you!=0) { d.innerText="🔴🔵"; d.style.background="#ffcccc"; d.style.fontSize="12px"; }
+    else if(i==you && you!=0) { d.innerText="🔴"; d.style.background="#ffcccc"; }
+    else if(i==comp && comp!=0) { d.innerText="🔵"; d.style.background="#cce5ff"; }
+    else if(i==100) { d.innerText="🏆"; d.style.background="gold"; }
     else { d.innerText=i; }
     b.appendChild(d);
   }
@@ -54,7 +52,8 @@ draw2();
 function playTurn(){
   if(!myTurn) return;
   let dice = Math.floor(Math.random()*6)+1;
-  document.getElementById('dice2').innerText = "🎲 "+dice;
+  document.getElementById('dice2').innerText = "🎲";
+  document.getElementById('diceNum').innerText = "You: "+dice;
   you = you + dice; if(you>100) you=100;
   document.getElementById('msg2').innerText = "You roll "+dice+"! You go to "+you+" / 100";
   draw2();
@@ -66,7 +65,8 @@ function playTurn(){
   setTimeout(()=>{
     let cdice = Math.floor(Math.random()*6)+1;
     comp = comp + cdice; if(comp>100) comp=100;
-    document.getElementById('dice2').innerText = "🎲 "+cdice+" (Computer)";
+    document.getElementById('dice2').innerText = "🎲";
+    document.getElementById('diceNum').innerText = "Computer: "+cdice;
     document.getElementById('msg2').innerText = "Computer roll "+cdice+"! Computer go to "+comp+" / 100";
     draw2();
     if(comp>=100){ document.getElementById('win2').innerText="🤖 COMPUTER WIN! Try Again!"; return; }
@@ -80,6 +80,7 @@ function reset2(){
   you=0; comp=0; myTurn=true;
   document.getElementById('win2').innerText="";
   document.getElementById('msg2').innerText="New game! First to 100 wins!";
+  document.getElementById('diceNum').innerText="Tap ROLL";
   document.getElementById('turnShow').innerText="👉 YOUR TURN - Tap ROLL!";
   document.getElementById('turnShow').style.background="yellow";
   document.getElementById('turnShow').style.color="black";
