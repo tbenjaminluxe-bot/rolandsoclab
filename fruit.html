@@ -2,15 +2,15 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>ROXY FRUIT NINJA - 0.50</title>
+<title>ROXY FRUIT NINJA - MANY</title>
 <style>
 * { box-sizing:border-box; }
 html, body { margin:0; padding:0; width:100%; height:100%; background:#0d2a6b; font-family:Arial; overflow:hidden; touch-action:none; }
 #game { width:100vw; height:100dvh; display:flex; flex-direction:column; background:linear-gradient(#87CEEB, #FFF9C4); position:relative; overflow:hidden; }
-.fruit { position:absolute; font-size:90px; user-select:none; pointer-events:none; line-height:1; text-shadow:0 4px 8px rgba(0,0,0,0.3); }
-.half { position:absolute; font-size:65px; pointer-events:none; }
+.fruit { position:absolute; font-size:70px; user-select:none; pointer-events:none; line-height:1; text-shadow:0 4px 8px rgba(0,0,0,0.3); }
+.half { position:absolute; font-size:50px; pointer-events:none; }
 #knife { position:absolute; width:80px; height:80px; font-size:70px; pointer-events:none; z-index:99; display:none; transform:translate(-50%,-50%) rotate(45deg); }
-.splash { position:absolute; font-size:40px; pointer-events:none; animation:pop 1.2s forwards; }
+.splash { position:absolute; font-size:36px; pointer-events:none; animation:pop 1.2s forwards; }
 @keyframes pop { 0%{ transform:scale(0.5); opacity:1; } 100%{ transform:scale(1.5); opacity:0; } }
 </style>
 </head>
@@ -18,18 +18,18 @@ html, body { margin:0; padding:0; width:100%; height:100%; background:#0d2a6b; f
 <div id="game">
 <div style="padding:10px; text-align:center; background:#0d2a6b; flex-shrink:0; z-index:100;">
 <h2 style="color:white; font-size:20px; margin:2px;">🍉 ROXY FRUIT NINJA 🔪</h2>
-<p style="color:#ffcc00; font-size:14px; margin:0;">🐌 SPEED 0.50 - JUST RIGHT</p>
+<p style="color:#ffcc00; font-size:14px; margin:0;">🍉🍉 4-5-6 FRUITS! SPEED 0.50</p>
 <div style="display:flex; gap:8px; margin:8px 0;">
 <div style="background:white; flex:1; padding:8px; border-radius:12px; font-size:16px; font-weight:bold;">⭐ SCORE<br><span id="score" style="font-size:24px;">0</span></div>
 <div style="background:#ffcc00; flex:1; padding:8px; border-radius:12px; font-size:16px; font-weight:bold;">⏰ TIME<br><span id="time" style="font-size:24px;">120</span></div>
 <div style="background:#ff4444; color:white; flex:1; padding:8px; border-radius:12px; font-size:16px; font-weight:bold;">❤️ LIVES<br><span id="lives" style="font-size:24px;">10</span></div>
 </div>
-<p id="msg" style="color:yellow; font-size:15px; font-weight:bold; margin:3px;">Fruit go show quick, float slow!</p>
+<p id="msg" style="color:yellow; font-size:15px; font-weight:bold; margin:3px;">Many fruits! Cut them all!</p>
 </div>
 <div id="area" style="flex:1; position:relative; overflow:hidden;">
 <canvas id="trail" style="position:absolute; inset:0; width:100%; height:100%;"></canvas>
 <div id="knife">🔪</div>
-<p style="text-align:center; color:#888; font-size:16px; margin-top:15px;">👆 Cut am!</p>
+<p style="text-align:center; color:#888; font-size:16px; margin-top:15px;">👆 Swipe! 4-5-6 fruits go come!</p>
 </div>
 <div style="padding:10px; background:#0d2a6b; flex-shrink:0; text-align:center; z-index:100;">
 <button onclick="startGame()" id="startBtn" style="background:#ffcc00; color:black; padding:15px; width:100%; border-radius:12px; font-weight:bold; font-size:20px; border:3px solid white;">▶️ START GAME</button>
@@ -54,7 +54,7 @@ function startGame(){
   document.getElementById('lives').innerText=lives;
   document.getElementById('time').innerText=timeLeft;
   document.getElementById('win').innerText="";
-  document.getElementById('msg').innerText="GO! SPEED 0.50! 🔪🍉";
+  document.getElementById('msg').innerText="GO! 4-5-6 FRUITS! 🔪🍉";
   document.getElementById('startBtn').innerText="🔥 PLAYING...";
   document.querySelectorAll('.fruit,.half,.splash').forEach(e=>e.remove());
   activeFruits=[];
@@ -64,8 +64,9 @@ function startGame(){
 }
 function spawnLoop(){
   if(!playing) return;
-  spawnFruit();
-  setTimeout(spawnLoop, 2500);
+  let count = 4 + Math.floor(Math.random()*3); // 4, 5, 6 FRUITS!
+  for(let i=0;i<count;i++){ setTimeout(()=>spawnFruit(), i*300); }
+  setTimeout(spawnLoop, 3000);
 }
 function spawnFruit(){
   if(!playing) return;
@@ -73,7 +74,7 @@ function spawnFruit(){
   let el=document.createElement('div');
   el.innerText = isBomb ? "💣" : fruits[Math.floor(Math.random()*fruits.length)];
   el.className="fruit";
-  let x = 20 + Math.random()*60;
+  let x = 5 + Math.random()*80;
   let y = 105;
   let vx = (Math.random()-0.5)*0.5;
   let vy = -(10 + Math.random()*2) * SPEED;
