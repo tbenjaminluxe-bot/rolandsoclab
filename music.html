@@ -181,14 +181,16 @@ function setFilter(cat, btn){
   renderRecent(cat);
 }
 function playSong(i){
-  current = i;
-  let s = songs[i];
+  current = i; let s = songs[i];
   document.getElementById('miniTitle').innerText = s.title;
   document.getElementById('miniArtist').innerText = s.artist;
   document.getElementById('miniCover').src = s.img;
-  document.getElementById('miniPlay').innerText = "⏸️";
+  // OPEN REAL SONG ON YOUTUBE
+  let query = encodeURIComponent(s.artist + " " + s.title);
+  window.open("https://www.youtube.com/results?search_query=" + query, "_blank");
+  // Still play the preview inside app
   audio.src = s.src; audio.play();
-  renderLiked(); renderRecent();
+  renderRecent();
 }
 function togglePlay(){
   if(audio.paused){ audio.play(); document.getElementById('miniPlay').innerText="⏸️"; }
