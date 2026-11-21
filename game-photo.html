@@ -9,7 +9,7 @@ body { margin:0; font-family:Arial; background:#000; color:white; }
 #app { width:100vw; height:100dvh; display:flex; flex-direction:column; background:#121212; }
 .page { display:none; flex:1; overflow-y:auto; padding:12px; padding-bottom:90px; }
 .page.active { display:block; }
-.nav { display:flex; background:#000; border-top:1px solid #222; position:fixed; bottom:0; left:0; right:0; }
+.nav { display:flex; background:#000; border-top:1px solid #222; position:fixed; bottom:0; left:0; right:0; z-index:10; }
 .nav button { flex:1; background:none; border:none; color:#888; padding:12px 0; font-size:12px; }
 .nav button.active { color:#1ed760; }
 #gameBox { background:linear-gradient(135deg,#ff0055,#ffcc00); height:280px; border-radius:16px; position:relative; overflow:hidden; margin-top:10px; }
@@ -18,6 +18,10 @@ body { margin:0; font-family:Arial; background:#000; color:white; }
 .photo-grid img { width:100%; height:160px; object-fit:cover; border-radius:12px; }
 .filter-btn { padding:8px 12px; border-radius:20px; background:#333; color:white; border:none; margin-right:6px; margin-bottom:6px; }
 .filter-btn.active { background:#1ed760; color:black; font-weight:bold; }
+/* FULL SCREEN VIEWER */
+#viewer { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:black; z-index:999; flex-direction:column; }
+#viewer.open { display:flex; }
+#viewer img { flex:1; width:100%; object-fit:contain; }
 </style>
 </head>
 <body>
@@ -27,7 +31,6 @@ body { margin:0; font-family:Arial; background:#000; color:white; }
 <b style="flex:1;">Roxy Game + Photo</b><span>🔥</span>
 </div>
 
-<!-- GAME PAGE -->
 <div id="page-game" class="page active">
 <h2>🎮 Tap The Emoji Game!</h2>
 <p>Tap the emoji as fast as you fit! You get 30 seconds.</p>
@@ -39,13 +42,11 @@ body { margin:0; font-family:Arial; background:#000; color:white; }
 <button id="startBtn" onclick="startGame()" style="width:100%; background:#1ed760; color:black; padding:15px; border:none; border-radius:25px; font-weight:bold; font-size:16px; margin-top:12px;">▶️ START GAME</button>
 <div id="gameBox"><div id="target" onclick="hit()" style="display:none;">🍉</div></div>
 <p id="gameMsg" style="text-align:center; font-weight:bold;"></p>
-<h3>🏆 How to play:</h3>
-<p>1. Tap START<br>2. Tap the 🍉 / 😂 / 🔥 as e dey move<br>3. Beat your best score!</p>
 </div>
 
-<!-- PHOTO PAGE -->
 <div id="page-photo" class="page">
 <h2>📸 Roxy Photos</h2>
+<p style="color:#aaa; font-size:13px;">👉 Tap any photo to open am FULL SCREEN!</p>
 <label style="display:block; background:#1ed760; color:black; text-align:center; padding:15px; border-radius:25px; font-weight:bold;">
 📷 ADD YOUR PHOTO
 <input type="file" accept="image/*" onchange="addPhoto(event)" style="display:none;">
@@ -57,12 +58,11 @@ body { margin:0; font-family:Arial; background:#000; color:white; }
 <button class="filter-btn" onclick="setFilter('saturate(200%)',this)">Colour Pop</button>
 </div>
 <div id="photoGrid" class="photo-grid">
-<img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400">
-<img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400">
-<img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400">
-<img src="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=400">
+<img onclick="openFull(this.src)" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=800">
+<img onclick="openFull(this.src)" src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=800">
+<img onclick="openFull(this.src)" src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800">
+<img onclick="openFull(this.src)" src="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=800">
 </div>
-<p style="text-align:center; color:#888; font-size:12px;">Tap ADD YOUR PHOTO to add you + Mama photos!</p>
 </div>
 
 <div class="nav">
@@ -70,6 +70,17 @@ body { margin:0; font-family:Arial; background:#000; color:white; }
 <button id="nav-photo" onclick="showPage('photo')">📸<br>Photos</button>
 </div>
 </div>
+
+<!-- FULL SCREEN VIEWER -->
+<div id="viewer">
+<div style="display:flex; justify-content:space-between; padding:15px; align-items:center;">
+<b>Roxy Photo</b>
+<button onclick="closeFull()" style="background:#1ed760; color:black; border:none; padding:10px 18px; border-radius:20px; font-weight:bold;">✕ CLOSE</button>
+</div>
+<img id="viewerImg" src="">
+<p style="text-align:center; color:#888; font-size:12px; padding:10px;">Tap CLOSE to go back • Pinch to zoom</p>
+</div>
+
 <script>
 let score=0, timeLeft=30, timer=null, best=0;
 let emojis=["🍉","😂","🔥","🍕","⭐","💎","🎮"];
@@ -94,7 +105,7 @@ function startGame(){
       clearInterval(timer);
       document.getElementById('target').style.display="none";
       document.getElementById('startBtn').innerText="▶️ PLAY AGAIN";
-      if(score>best){ best=score; document.getElementById('best').innerText=best; document.getElementById('gameMsg').innerText="🔥 NEW BEST! "+score+" points! You be PRO!"; }
+      if(score>best){ best=score; document.getElementById('best').innerText=best; document.getElementById('gameMsg').innerText="🔥 NEW BEST! "+score+" points!"; }
       else { document.getElementById('gameMsg').innerText="Done! Score: "+score; }
     }
   },1000);
@@ -106,11 +117,7 @@ function moveTarget(){
   t.style.left=Math.random()*75+"%";
   t.style.top=Math.random()*70+"%";
 }
-function hit(){
-  score++;
-  document.getElementById('score').innerText=score;
-  moveTarget();
-}
+function hit(){ score++; document.getElementById('score').innerText=score; moveTarget(); }
 let currentFilter='none';
 function setFilter(f,btn){
   currentFilter=f;
@@ -124,7 +131,17 @@ function addPhoto(e){
   let url=URL.createObjectURL(file);
   let img=document.createElement('img');
   img.src=url; img.style.filter=currentFilter;
+  img.onclick=function(){ openFull(url); };
   document.getElementById('photoGrid').prepend(img);
+}
+// FULL SCREEN FUNCTIONS
+function openFull(src){
+  document.getElementById('viewerImg').src=src;
+  document.getElementById('viewerImg').style.filter=currentFilter;
+  document.getElementById('viewer').classList.add('open');
+}
+function closeFull(){
+  document.getElementById('viewer').classList.remove('open');
 }
 </script>
 </body>
