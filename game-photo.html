@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>ROXY GAME + PHOTO</title>
+<style>
+* { box-sizing:border-box; }
+body { margin:0; font-family:Arial; background:#000; color:white; }
+#app { width:100vw; height:100dvh; display:flex; flex-direction:column; background:#121212; }
+.page { display:none; flex:1; overflow-y:auto; padding:12px; padding-bottom:90px; }
+.page.active { display:block; }
+.nav { display:flex; background:#000; border-top:1px solid #222; position:fixed; bottom:0; left:0; right:0; }
+.nav button { flex:1; background:none; border:none; color:#888; padding:12px 0; font-size:12px; }
+.nav button.active { color:#1ed760; }
+#gameBox { background:linear-gradient(135deg,#ff0055,#ffcc00); height:280px; border-radius:16px; position:relative; overflow:hidden; margin-top:10px; }
+#target { position:absolute; width:70px; height:70px; background:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:35px; cursor:pointer; box-shadow:0 0 20px white; }
+.photo-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; }
+.photo-grid img { width:100%; height:160px; object-fit:cover; border-radius:12px; }
+.filter-btn { padding:8px 12px; border-radius:20px; background:#333; color:white; border:none; margin-right:6px; margin-bottom:6px; }
+.filter-btn.active { background:#1ed760; color:black; font-weight:bold; }
+</style>
+</head>
+<body>
+<div id="app">
+<div style="display:flex; align-items:center; gap:10px; padding:12px;">
+<img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" style="width:38px; height:38px; border-radius:50%; object-fit:cover;">
+<b style="flex:1;">Roxy Game + Photo</b><span>🔥</span>
+</div>
+
+<!-- GAME PAGE -->
+<div id="page-game" class="page active">
+<h2>🎮 Tap The Emoji Game!</h2>
+<p>Tap the emoji as fast as you fit! You get 30 seconds.</p>
+<div style="display:flex; gap:10px; align-items:center;">
+<div style="background:#1e1e1e; padding:12px 16px; border-radius:12px; flex:1; text-align:center;"><small>SCORE</small><br><b id="score" style="font-size:24px; color:#1ed760;">0</b></div>
+<div style="background:#1e1e1e; padding:12px 16px; border-radius:12px; flex:1; text-align:center;"><small>TIME</small><br><b id="time" style="font-size:24px; color:#ffcc00;">30</b></div>
+<div style="background:#1e1e1e; padding:12px 16px; border-radius:12px; flex:1; text-align:center;"><small>BEST</small><br><b id="best" style="font-size:24px; color:#ff0055;">0</b></div>
+</div>
+<button id="startBtn" onclick="startGame()" style="width:100%; background:#1ed760; color:black; padding:15px; border:none; border-radius:25px; font-weight:bold; font-size:16px; margin-top:12px;">▶️ START GAME</button>
+<div id="gameBox"><div id="target" onclick="hit()" style="display:none;">🍉</div></div>
+<p id="gameMsg" style="text-align:center; font-weight:bold;"></p>
+<h3>🏆 How to play:</h3>
+<p>1. Tap START<br>2. Tap the 🍉 / 😂 / 🔥 as e dey move<br>3. Beat your best score!</p>
+</div>
+
+<!-- PHOTO PAGE -->
+<div id="page-photo" class="page">
+<h2>📸 Roxy Photos</h2>
+<label style="display:block; background:#1ed760; color:black; text-align:center; padding:15px; border-radius:25px; font-weight:bold;">
+📷 ADD YOUR PHOTO
+<input type="file" accept="image/*" onchange="addPhoto(event)" style="display:none;">
+</label>
+<div style="margin-top:12px;">
+<button class="filter-btn active" onclick="setFilter('none',this)">Normal</button>
+<button class="filter-btn" onclick="setFilter('grayscale(100%)',this)">Black & White</button>
+<button class="filter-btn" onclick="setFilter('sepia(100%)',this)">Old School</button>
+<button class="filter-btn" onclick="setFilter('saturate(200%)',this)">Colour Pop</button>
+</div>
+<div id="photoGrid" class="photo-grid">
+<img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400">
+<img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=400">
+<img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400">
+<img src="https://images.unsplash.com/photo-1507692049790-de58290a4334?w=400">
+</div>
+<p style="text-align:center; color:#888; font-size:12px;">Tap ADD YOUR PHOTO to add you + Mama photos!</p>
+</div>
+
+<div class="nav">
+<button id="nav-game" class="active" onclick="showPage('game')">🎮<br>Game</button>
+<button id="nav-photo" onclick="showPage('photo')">📸<br>Photos</button>
+</div>
+</div>
+<script>
+let score=0, timeLeft=30, timer=null, best=0;
+let emojis=["🍉","😂","🔥","🍕","⭐","💎","🎮"];
+function showPage(p){
+  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nav-'+p).classList.add('active');
+}
+function startGame(){
+  score=0; timeLeft=30;
+  document.getElementById('score').innerText=0;
+  document.getElementById('time').innerText=30;
+  document.getElementById('gameMsg').innerText="";
+  document.getElementById('startBtn').innerText="GAME DEY GO...";
+  moveTarget();
+  clearInterval(timer);
+  timer=setInterval(()=>{
+    timeLeft--;
+    document.getElementById('time').innerText=timeLeft;
+    if(timeLeft<=0){
+      clearInterval(timer);
+      document.getElementById('target').style.display="none";
+      document.getElementById('startBtn').innerText="▶️ PLAY AGAIN";
+      if(score>best){ best=score; document.getElementById('best').innerText=best; document.getElementById('gameMsg').innerText="🔥 NEW BEST! "+score+" points! You be PRO!"; }
+      else { document.getElementById('gameMsg').innerText="Done! Score: "+score; }
+    }
+  },1000);
+}
+function moveTarget(){
+  let t=document.getElementById('target');
+  t.style.display="flex";
+  t.innerText=emojis[Math.floor(Math.random()*emojis.length)];
+  t.style.left=Math.random()*75+"%";
+  t.style.top=Math.random()*70+"%";
+}
+function hit(){
+  score++;
+  document.getElementById('score').innerText=score;
+  moveTarget();
+}
+let currentFilter='none';
+function setFilter(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#photoGrid img').forEach(img=>img.style.filter=f);
+}
+function addPhoto(e){
+  let file=e.target.files[0];
+  if(!file) return;
+  let url=URL.createObjectURL(file);
+  let img=document.createElement('img');
+  img.src=url; img.style.filter=currentFilter;
+  document.getElementById('photoGrid').prepend(img);
+}
+</script>
+</body>
+</html>
