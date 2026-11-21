@@ -2,15 +2,15 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>ROXY FRUIT NINJA - SNAIL</title>
+<title>ROXY FRUIT NINJA - 0.10</title>
 <style>
 * { box-sizing:border-box; }
 html, body { margin:0; padding:0; width:100%; height:100%; background:#0d2a6b; font-family:Arial; overflow:hidden; touch-action:none; }
 #game { width:100vw; height:100dvh; display:flex; flex-direction:column; background:linear-gradient(#87CEEB, #FFF9C4); position:relative; overflow:hidden; }
-.fruit { position:absolute; font-size:85px; user-select:none; pointer-events:none; line-height:1; text-shadow:0 4px 8px rgba(0,0,0,0.3); }
-.half { position:absolute; font-size:60px; pointer-events:none; }
+.fruit { position:absolute; font-size:90px; user-select:none; pointer-events:none; line-height:1; text-shadow:0 4px 8px rgba(0,0,0,0.3); }
+.half { position:absolute; font-size:65px; pointer-events:none; }
 #knife { position:absolute; width:80px; height:80px; font-size:70px; pointer-events:none; z-index:99; display:none; transform:translate(-50%,-50%) rotate(45deg); }
-.splash { position:absolute; font-size:40px; pointer-events:none; animation:pop 1s forwards; }
+.splash { position:absolute; font-size:40px; pointer-events:none; animation:pop 1.2s forwards; }
 @keyframes pop { 0%{ transform:scale(0.5); opacity:1; } 100%{ transform:scale(1.5); opacity:0; } }
 </style>
 </head>
@@ -19,19 +19,19 @@ html, body { margin:0; padding:0; width:100%; height:100%; background:#0d2a6b; f
 <div id="game">
 <div style="padding:10px; text-align:center; background:#0d2a6b; flex-shrink:0; z-index:100;">
 <h2 style="color:white; font-size:20px; margin:2px;">🍉 ROXY FRUIT NINJA 🔪</h2>
-<p style="color:#ffcc00; font-size:14px; margin:0;">🐌 SNAIL MODE - VERY SLOW</p>
+<p style="color:#ffcc00; font-size:14px; margin:0;">🐌 SPEED 0.10 - SUPER SLOW</p>
 <div style="display:flex; gap:8px; margin:8px 0;">
 <div style="background:white; flex:1; padding:8px; border-radius:12px; font-size:16px; font-weight:bold;">⭐ SCORE<br><span id="score" style="font-size:24px;">0</span></div>
-<div style="background:#ffcc00; flex:1; padding:8px; border-radius:12px; font-size:16px; font-weight:bold;">⏰ TIME<br><span id="time" style="font-size:24px;">120</span></div>
+<div style="background:#ffcc00; flex:1; padding:8px; border-radius:12px; font-size:16px; font-weight:bold;">⏰ TIME<br><span id="time" style="font-size:24px;">180</span></div>
 <div style="background:#ff4444; color:white; flex:1; padding:8px; border-radius:12px; font-size:16px; font-weight:bold;">❤️ LIVES<br><span id="lives" style="font-size:24px;">10</span></div>
 </div>
-<p id="msg" style="color:yellow; font-size:15px; font-weight:bold; margin:3px;">Take your time, cut slow slow!</p>
+<p id="msg" style="color:yellow; font-size:15px; font-weight:bold; margin:3px;">Super slow, take your time!</p>
 </div>
 
 <div id="area" style="flex:1; position:relative; overflow:hidden;">
 <canvas id="trail" style="position:absolute; inset:0; width:100%; height:100%;"></canvas>
 <div id="knife">🔪</div>
-<p style="text-align:center; color:#888; font-size:16px; margin-top:15px;">👆 Swipe slow! Fruit go stay long!</p>
+<p style="text-align:center; color:#888; font-size:16px; margin-top:15px;">👆 Fruit go waka slow slow - cut am!</p>
 </div>
 
 <div style="padding:10px; background:#0d2a6b; flex-shrink:0; text-align:center; z-index:100;">
@@ -41,8 +41,9 @@ html, body { margin:0; padding:0; width:100%; height:100%; background:#0d2a6b; f
 </div>
 
 <script>
-let score=0, lives=10, timeLeft=120, playing=false, timer=null;
+let score=0, lives=10, timeLeft=180, playing=false, timer=null;
 let fruits=["🍉","🍎","🍊","🍋","🍓","🍇","🍌","🍑","🍍","🥝","🍒"];
+let SPEED = 0.10; // <-- 0.10 SPEED HERE!
 let area=document.getElementById('area');
 let knife=document.getElementById('knife');
 let canvas=document.getElementById('trail');
@@ -54,12 +55,12 @@ function resize(){ canvas.width=area.clientWidth; canvas.height=area.clientHeigh
 window.addEventListener('resize', resize); resize();
 
 function startGame(){
-  score=0; lives=10; timeLeft=120; playing=true;
+  score=0; lives=10; timeLeft=180; playing=true;
   document.getElementById('score').innerText=score;
   document.getElementById('lives').innerText=lives;
   document.getElementById('time').innerText=timeLeft;
   document.getElementById('win').innerText="";
-  document.getElementById('msg').innerText="GO! TAKE YOUR TIME! 🔪🍉";
+  document.getElementById('msg').innerText="GO! SUPER SLOW 0.10! 🔪🍉";
   document.getElementById('startBtn').innerText="🔥 PLAYING...";
   document.querySelectorAll('.fruit,.half,.splash').forEach(e=>e.remove());
   activeFruits=[];
@@ -71,23 +72,24 @@ function startGame(){
   spawnLoop();
 }
 
-// VERY SLOW - 1 FRUIT ONLY!
+// 0.10 SPEED - 1 fruit, long wait
 function spawnLoop(){
   if(!playing) return;
-  spawnFruit(); // Only 1!
-  setTimeout(spawnLoop, 3200); // Wait 3.2 seconds!
+  spawnFruit();
+  setTimeout(spawnLoop, 4000); // Wait 4 seconds!
 }
 
 function spawnFruit(){
   if(!playing) return;
-  let isBomb = Math.random()<0.08;
+  let isBomb = Math.random()<0.05; // Almost no bomb
   let el=document.createElement('div');
   el.innerText = isBomb ? "💣" : fruits[Math.floor(Math.random()*fruits.length)];
   el.className="fruit";
   let x = 20 + Math.random()*60;
   let y = 110;
-  let vx = (Math.random()-0.5)*0.3; // Almost no side move
-  let vy = -(3.5 + Math.random()*1); // VERY SLOW UP - was 6, now 3.5!
+  let vx = (Math.random()-0.5)*0.2;
+  // 0.10 SPEED: vy small, times SPEED
+  let vy = -(10 + Math.random()*2) * SPEED; // = -1.0 to -1.2 only!
   el.style.left=x+"%";
   el.style.top=y+"%";
   area.appendChild(el);
@@ -95,9 +97,9 @@ function spawnFruit(){
   activeFruits.push(f);
   function move(){
     if(f.cut) return;
-    f.vy += 0.07; // VERY SLOW GRAVITY - was 0.15, now 0.07!
+    f.vy += 0.35 * SPEED; // Gravity 0.035 - super slow!
     f.y += f.vy;
-    f.x += f.vx;
+    f.x += f.vx * SPEED * 2;
     f.el.style.top=f.y+"%";
     f.el.style.left=f.x+"%";
     if(f.y>110){ f.el.remove(); activeFruits=activeFruits.filter(a=>a!==f); return; }
@@ -124,7 +126,7 @@ function moveKnife(clientX, clientY){
     let fr=f.el.getBoundingClientRect();
     let cx=fr.left+fr.width/2, cy=fr.top+fr.height/2;
     let dist=Math.hypot(clientX-cx, clientY-cy);
-    if(dist<90) cutFruit(f, clientX, clientY); // Very easy to cut!
+    if(dist<100) cutFruit(f, clientX, clientY);
   });
 }
 
@@ -135,19 +137,19 @@ function cutFruit(f, cx, cy){
   if(f.isBomb){
     lives--; document.getElementById('lives').innerText=lives;
     document.getElementById('msg').innerText="💥 BOOM! Lives: "+lives;
-    let s=document.createElement('div'); s.className="splash"; s.innerText="💥💥"; s.style.left=(x-20)+"px"; s.style.top=(y-20)+"px"; area.appendChild(s); setTimeout(()=>s.remove(),1000);
+    let s=document.createElement('div'); s.className="splash"; s.innerText="💥💥"; s.style.left=(x-20)+"px"; s.style.top=(y-20)+"px"; area.appendChild(s); setTimeout(()=>s.remove(),1200);
     f.el.remove();
     if(lives<=0) endGame("💥 GAME OVER! Score: "+score);
     return;
   }
   score+=10; document.getElementById('score').innerText=score;
   document.getElementById('msg').innerText="Nice cut! +10! 🍉";
-  let s=document.createElement('div'); s.className="splash"; s.innerText="💦🍉💦"; s.style.left=(x-30)+"px"; s.style.top=(y-20)+"px"; area.appendChild(s); setTimeout(()=>s.remove(),1000);
+  let s=document.createElement('div'); s.className="splash"; s.innerText="💦🍉💦"; s.style.left=(x-30)+"px"; s.style.top=(y-20)+"px"; area.appendChild(s); setTimeout(()=>s.remove(),1200);
   let h1=document.createElement('div'); h1.className="half"; h1.innerText=f.el.innerText; h1.style.left=x+"px"; h1.style.top=y+"px"; area.appendChild(h1);
   let h2=document.createElement('div'); h2.className="half"; h2.innerText=f.el.innerText; h2.style.left=x+"px"; h2.style.top=y+"px"; area.appendChild(h2);
-  let a1=-2, a2=2, hy=y;
+  let a1=-1, a2=1, hy=y;
   let fall=setInterval(()=>{
-    hy+=3; h1.style.left=(parseFloat(h1.style.left)+a1)+"px"; h2.style.left=(parseFloat(h2.style.left)+a2)+"px"; h1.style.top=hy+"px"; h2.style.top=hy+"px"; h1.style.opacity-=0.03; h2.style.opacity-=0.03;
+    hy+=2; h1.style.left=(parseFloat(h1.style.left)+a1)+"px"; h2.style.left=(parseFloat(h2.style.left)+a2)+"px"; h1.style.top=hy+"px"; h2.style.top=hy+"px"; h1.style.opacity-=0.02; h2.style.opacity-=0.02;
     if(hy>r.height){ clearInterval(fall); h1.remove(); h2.remove(); }
   },30);
   f.el.remove();
