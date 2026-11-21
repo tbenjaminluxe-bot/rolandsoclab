@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ROXY APP - By Roland</title>
+<style>
+body { font-family: Arial; text-align: center; background: #111; color: white; }
+button { padding: 15px 25px; font-size: 20px; border-radius: 15px; margin: 10px; }
+.box { background: #222; padding: 20px; margin: 15px; border-radius: 20px; }
+</style>
+</head>
+<body>
+
+<h1>👑 ROXY APP 👑</h1>
+<p>By Roland - CEO</p>
+
+<!-- 1. LUDO -->
+<div class="box">
+<h2>🎲 ROXY LUDO</h2>
+<p id="ludoPos">Position: 0 / 20 - Reach HOME to Win!</p>
+<p id="ludoDice">Dice: -</p>
+<button onclick="rollLudo()">🎲 Roll Dice</button>
+<p id="ludoWin"></p>
+</div>
+
+<!-- 2. FRUIT CUT -->
+<div class="box">
+<h2>🍉 ROXY FRUIT CUT</h2>
+<p id="fruitShow" style="font-size:60px">🍉</p>
+<p id="fruitScore">Score: 0</p>
+<button onclick="cutFruit()">🔪 CUT FRUIT!</button>
+</div>
+
+<!-- 3. MUSIC -->
+<div class="box">
+<h2>🎵 ROXY MUSIC</h2>
+<p>Play your favourite song!</p>
+<audio id="roxyMusic" controls>
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">
+</audio>
+<p>Press Play ▶️</p>
+</div>
+
+<script>
+// --- LUDO ---
+let pos = 0;
+function rollLudo(){
+  let dice = Math.floor(Math.random()*6)+1;
+  document.getElementById("ludoDice").innerText = "Dice: " + dice;
+  pos = pos + dice;
+  document.getElementById("ludoPos").innerText = "Position: " + pos + " / 20";
+  if(pos >= 20){
+    document.getElementById("ludoWin").innerText = "🎉 YOU WIN! YOU ENTER YOUR HOME! 🏠";
+    pos = 0;
+  }
+}
+
+// --- FRUIT CUT ---
+let score = 0;
+let fruits = ["🍉","🍌","🥭","🍊","🍍","🍎","🍇","🥝","🍓","🍑"];
+function cutFruit(){
+  let f = fruits[Math.floor(Math.random()*fruits.length)];
+  document.getElementById("fruitShow").innerText = f;
+  score = score + 1;
+  document.getElementById("fruitScore").innerText = "Score: " + score;
+  alert("GBAM! You cut " + f);
+}
+</script>
+</body>
+</html>
