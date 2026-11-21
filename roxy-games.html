@@ -2,105 +2,44 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ROXY LUDO KING - By Roland</title>
+<title>ROXY LUDO KING</title>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; font-family: Arial; }
+* { margin:0; padding:0; box-sizing:border-box; font-family:Arial; }
 body { background:#1a4aa0; color:white; text-align:center; }
-.topbar { background:#0d2a6b; display:flex; justify-content:space-between; padding:10px 15px; font-size:18px; font-weight:bold; align-items:center; }
+.topbar { background:#0d2a6b; display:flex; justify-content:space-between; padding:12px 15px; font-weight:bold; }
 .topbar span { background:#ffb800; color:black; padding:4px 10px; border-radius:20px; }
-.logo { padding:20px 0 5px; }
-.logo h1 { font-size:52px; line-height:1; text-shadow:3px 3px 0 #000; }
+.logo { padding:25px 0 5px; }
+.logo h1 { font-size:52px; text-shadow:3px 3px 0 #000; }
 .logo h1 .y { color:#ffcc00; } .logo h1 .r { color:#ff3333; } .logo h1 .g { color:#00cc44; } .logo h1 .b { color:#00aaff; }
-.logo p { color:#ffcc00; font-size:20px; font-weight:bold; letter-spacing:2px; }
-.dice-row { font-size:45px; margin:10px 0; }
+.logo p { color:#ffcc00; font-size:20px; font-weight:bold; }
+.dice-row { font-size:45px; margin:12px 0; }
 .grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:15px; }
-.card { background:#ffcc00; color:#000; border:3px solid #fff; border-radius:15px; padding:18px 5px; font-weight:bold; font-size:17px; box-shadow:0 4px 0 #b88600; }
-.card small { display:block; font-weight:normal; font-size:13px; margin-top:3px; }
-.tournament { background:#ffcc00; color:#000; margin:0 15px 15px; padding:16px; border-radius:15px; border:3px solid #fff; font-size:19px; font-weight:bold; }
-.box { background:#0d2a6b; margin:15px; padding:15px; border-radius:15px; border:3px solid #ffcc00; }
-.btn { background:#ffcc00; color:#000; padding:14px; margin:6px; border-radius:12px; border:3px solid #fff; font-weight:bold; font-size:16px; width:45%; }
-.colorBtn { width:60px; height:60px; border-radius:50%; border:4px solid #fff; font-size:28px; margin:6px; }
-.board { display:grid; grid-template-columns:repeat(6,1fr); gap:4px; background:white; padding:10px; border-radius:10px; color:#000; margin-top:10px; }
-.cell { background:#eee; padding:14px 0; border-radius:6px; font-size:20px; }
-.bottom { background:#0d2a6b; padding:12px; display:flex; justify-content:space-around; font-size:14px; margin-top:10px; }
+.card { background:#ffcc00; color:#000; border:3px solid #fff; border-radius:15px; padding:20px 5px; font-weight:bold; font-size:17px; }
+.card small { display:block; font-weight:normal; font-size:13px; }
+.tournament { background:#ffcc00; color:#000; margin:0 15px 15px; padding:16px; border-radius:15px; border:3px solid #fff; font-weight:bold; font-size:19px; }
+.bottom { background:#0d2a6b; padding:12px; display:flex; justify-content:space-around; margin-top:10px; }
 </style>
 </head>
 <body>
 
-<!-- TOP LIKE YOUR PICTURE -->
-<div class="topbar">
-<span>👑 ROXY</span>
-<span>🪙 00 &nbsp; 💎 00</span>
-</div>
+<div class="topbar"><span>👑 ROXY</span><span>🪙 00 💎 00</span></div>
 
-<div id="home">
 <div class="logo">
 <h1><span class="y">L</span><span class="r">U</span><span class="g">D</span><span class="b">O</span> <span class="y">K</span><span class="r">I</span><span class="g">N</span><span class="b">G</span></h1>
 <p>★ ROXY EDITION ★<br>By Roland - CEO</p>
 </div>
+
 <div class="dice-row">🎲 🔴 🟡 🟢 🔵 🎲</div>
 
-<!-- 4 BUTTONS LIKE PICTURE -->
 <div class="grid">
-<div class="card" onclick="show('mode')">🌍<br>PLAY ONLINE<small>Play with world</small></div>
-<div class="card" onclick="show('mode')">❤️<br>PLAY WITH FRIENDS<small>Play with friends</small></div>
-<div class="card" onclick="show('mode')">🤖<br>VS COMPUTER<small>Play with computer</small></div>
-<div class="card" onclick="show('mode')">👥<br>PASS N PLAY<small>Play offline</small></div>
-</div>
-<div class="tournament" onclick="show('mode')">🏆 TOURNAMENT</div>
+<div class="card">🌍<br>PLAY ONLINE<small>Play with world</small></div>
+<div class="card">❤️<br>PLAY WITH FRIENDS<small>Play with friends</small></div>
+<div class="card">🤖<br>VS COMPUTER<small>Play with computer</small></div>
+<div class="card">👥<br>PASS N PLAY<small>Play offline</small></div>
 </div>
 
-<!-- SELECT GAME -->
-<div id="mode" class="box" style="display:none">
-<h2>SELECT GAME</h2><br>
-<button class="btn" onclick="selectGame('Classic')">🎲 Classic ✓</button>
-<button class="btn" onclick="selectGame('Rush Mode')">⚡ Rush Mode</button><br>
-<button class="btn" style="width:90%" onclick="show2('color')">Next ➡️</button>
-</div>
-
-<!-- SELECT COLOR + PLAYERS -->
-<div id="color" class="box" style="display:none">
-<h2>SELECT YOUR COLOR</h2><br>
-<button class="colorBtn" style="background:#0066ff" onclick="selectColor('🔵','Blue')">🔵</button>
-<button class="colorBtn" style="background:#ff0000" onclick="selectColor('🔴','Red')">🔴</button>
-<button class="colorBtn" style="background:#00aa00" onclick="selectColor('🟢','Green')">🟢</button>
-<button class="colorBtn" style="background:#ffcc00" onclick="selectColor('🟡','Yellow')">🟡</button>
-<p id="myColor" style="margin:10px">You pick: 🔴 Red</p>
-<h2>SELECT PLAYERS</h2><br>
-<button class="btn" onclick="selectPlayers(2)">2 PLAYERS</button>
-<button class="btn" onclick="selectPlayers(4)">4 PLAYERS ✓</button><br>
-<button class="btn" style="width:90%; background:#00cc44; color:white" onclick="startGame()">▶️ Play</button>
-</div>
-
-<!-- BOARD LIKE PICTURE -->
-<div id="game" class="box" style="display:none">
-<h2 id="gameTitle">LUDO BOARD</h2>
-<p id="gameInfo" style="margin:8px"></p>
-<div class="board" id="board"></div>
-<p id="diceShow" style="font-size:55px; margin:10px">🎲</p>
-<p id="posShow">Position: 0 / 30</p>
-<button class="btn" style="width:90%" onclick="roll()">🎲 ROLL DICE</button>
-<p id="winMsg" style="font-size:20px; color:yellow; margin-top:10px"></p>
-</div>
-
-<!-- FRUIT + MUSIC -->
-<div class="box"><h2>🍉 ROXY FRUIT CUT</h2><p id="f" style="font-size:65px">🍉</p><p id="s">Score: 0</p><button class="btn" onclick="cut()">🔪 CUT FRUIT!</button></div>
-<div class="box"><h2>🎵 ROXY MUSIC</h2><br><audio controls style="width:100%"><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio></div>
-
+<div class="tournament">🏆 TOURNAMENT</div>
 <div class="bottom"><span>🏠 Home</span><span>🏆 Tournament</span><span>👤 Profile</span></div>
 
-<script>
-let myColor="🔴", myColorName="Red", players=4, gameMode="Classic", pos=0;
-function show(id){ document.getElementById('home').style.display='none'; document.getElementById(id).style.display='block'; }
-function show2(id){ document.getElementById('mode').style.display='none'; document.getElementById(id).style.display='block'; }
-function selectGame(m){ gameMode=m; alert("You select "+m); }
-function selectColor(e,n){ myColor=e; myColorName=n; document.getElementById('myColor').innerText="You pick: "+e+" "+n; }
-function selectPlayers(n){ players=n; alert(n+" Players!"); }
-function startGame(){ document.getElementById('color').style.display='none'; document.getElementById('game').style.display='block'; document.getElementById('gameTitle').innerText="ROXY LUDO KING - "+gameMode; document.getElementById('gameInfo').innerText="You: "+myColor+" "+myColorName+" | Players: "+players+" | You VS Computer"; drawBoard(); }
-function drawBoard(){ let b=document.getElementById('board'); b.innerHTML=""; for(let i=0;i<30;i++){ let c=document.createElement('div'); c.className='cell'; c.innerText = i==pos ? myColor : i==0 ? "🏁" : i; b.appendChild(c); } }
-function roll(){ let d=Math.floor(Math.random()*6)+1; document.getElementById('diceShow').innerText="🎲 "+d; pos=pos+d; if(pos>30) pos=30; document.getElementById('posShow').innerText="Position: "+pos+" / 30"; drawBoard(); if(pos>=30){ document.getElementById('winMsg').innerText="🎉🏆 YOU WIN! YOU ARE LUDO KING! 🏆🎉"; pos=0; } }
-let sc=0, fruits=["🍉","🍌","🥭","🍊","🍍","🍎","🍇","🥝"];
-function cut(){ let x=fruits[Math.floor(Math.random()*fruits.length)]; document.getElementById('f').innerText=x; sc++; document.getElementById('s').innerText="Score: "+sc; }
-</script>
 </body>
 </html>
