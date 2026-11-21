@@ -1,4 +1,4 @@
-<!-- FIXED: BIG BOARD - 100% WORKING -->
+<!-- 1 TO 100 - BIG SMALL BOARD -->
 <div style="background:#0d2a6b; min-height:100vh; padding:12px; text-align:center; font-family:Arial;">
 
 <h2 style="color:white; font-size:26px; padding:10px;">ROXY LUDO KING - Classic</h2>
@@ -11,11 +11,11 @@
 <div style="background:#0066ff; color:white; flex:1; padding:16px; border-radius:15px; font-size:18px; text-align:left;"><b style="font-size:21px;">🔵 COMPUTER</b><br><span id="compPos">Home 🏠</span><br><span id="compScore">Score: 0</span></div>
 </div>
 
-<!-- BOARD - THIS ONE GO SHOW! -->
-<div id="board2" style="display:grid; grid-template-columns:repeat(6, 1fr); gap:6px; background:white; padding:12px; border-radius:15px; min-height:340px;"></div>
+<!-- 100 BOARD - 10 x 10 - SMALL BOXES BUT BIG BOARD -->
+<div id="board2" style="display:grid; grid-template-columns:repeat(10, 1fr); gap:4px; background:white; padding:10px; border-radius:15px;"></div>
 
 <p id="dice2" style="font-size:80px; margin:12px;">🎲</p>
-<p id="msg2" style="color:white; font-size:19px;">You start first!</p>
+<p id="msg2" style="color:white; font-size:19px;">You start first! First to 100 wins! 🏆</p>
 
 <button onclick="playTurn()" style="background:#ffcc00; color:black; padding:20px; width:100%; border-radius:15px; font-weight:bold; font-size:22px; border:4px solid white; margin-top:10px;">🎲 ROLL DICE - YOUR TURN</button>
 <button onclick="reset2()" style="background:white; padding:14px; width:100%; border-radius:12px; margin-top:10px; font-weight:bold; font-size:17px;">🔄 Restart Game</button>
@@ -28,18 +28,20 @@ let you = 0, comp = 0, myTurn = true;
 function draw2(){
   let b = document.getElementById('board2');
   b.innerHTML = "";
-  for(let i=0;i<30;i++){
+  for(let i=0;i<=100;i++){
     let d = document.createElement('div');
-    d.style.cssText = "background:#eee; padding:22px 0; border-radius:10px; font-size:24px; font-weight:bold; text-align:center;";
-    if(i==0) { d.innerText="🏁"; d.style.background="#fff2cc"; }
+    // BIG SMALL - small box, but clear number
+    d.style.cssText = "background:#eee; padding:10px 0; border-radius:6px; font-size:15px; font-weight:bold; text-align:center;";
+    if(i==0) { d.innerText="🏁"; d.style.background="#fff2cc"; d.style.fontSize="16px"; }
     else if(i==you && i==comp && you!=0) { d.innerText="🔴🔵"; d.style.background="#ffcccc"; }
     else if(i==you && you!=0) { d.innerText="🔴"; d.style.background="#ffcccc"; }
     else if(i==comp && comp!=0) { d.innerText="🔵"; d.style.background="#cce5ff"; }
+    else if(i==100) { d.innerText="🏆 100"; d.style.background="gold"; }
     else { d.innerText=i; }
     b.appendChild(d);
   }
-  document.getElementById('youPos').innerText = you==0 ? "Home 🏠" : "Pos: "+you+" / 30";
-  document.getElementById('compPos').innerText = comp==0 ? "Home 🏠" : "Pos: "+comp+" / 30";
+  document.getElementById('youPos').innerText = you==0 ? "Home 🏠" : "Pos: "+you+" / 100";
+  document.getElementById('compPos').innerText = comp==0 ? "Home 🏠" : "Pos: "+comp+" / 100";
   document.getElementById('youScore').innerText = "Score: "+you;
   document.getElementById('compScore').innerText = "Score: "+comp;
 }
@@ -49,21 +51,21 @@ function playTurn(){
   if(!myTurn) return;
   let dice = Math.floor(Math.random()*6)+1;
   document.getElementById('dice2').innerText = "🎲 "+dice;
-  you = you + dice; if(you>30) you=30;
-  document.getElementById('msg2').innerText = "You roll "+dice+"! You go to "+you;
+  you = you + dice; if(you>100) you=100;
+  document.getElementById('msg2').innerText = "You roll "+dice+"! You go to "+you+" / 100";
   draw2();
-  if(you>=30){ document.getElementById('win2').innerText="🎉🏆 YOU WIN! YOU BEAT COMPUTER! 🏆🎉"; return; }
+  if(you>=100){ document.getElementById('win2').innerText="🎉🏆 YOU WIN! YOU BEAT COMPUTER! YOU ARE LUDO KING! 🏆🎉"; return; }
   myTurn=false;
   document.getElementById('turnShow').innerText="🤖 COMPUTER TURN... Wait...";
   document.getElementById('turnShow').style.background="#00aaff";
   document.getElementById('turnShow').style.color="white";
   setTimeout(()=>{
     let cdice = Math.floor(Math.random()*6)+1;
-    comp = comp + cdice; if(comp>30) comp=30;
+    comp = comp + cdice; if(comp>100) comp=100;
     document.getElementById('dice2').innerText = "🎲 "+cdice+" (Computer)";
-    document.getElementById('msg2').innerText = "Computer roll "+cdice+"! Computer go to "+comp;
+    document.getElementById('msg2').innerText = "Computer roll "+cdice+"! Computer go to "+comp+" / 100";
     draw2();
-    if(comp>=30){ document.getElementById('win2').innerText="🤖 COMPUTER WIN! Try Again!"; return; }
+    if(comp>=100){ document.getElementById('win2').innerText="🤖 COMPUTER WIN! Try Again!"; return; }
     myTurn=true;
     document.getElementById('turnShow').innerText="👉 YOUR TURN - Tap ROLL!";
     document.getElementById('turnShow').style.background="yellow";
@@ -73,7 +75,7 @@ function playTurn(){
 function reset2(){
   you=0; comp=0; myTurn=true;
   document.getElementById('win2').innerText="";
-  document.getElementById('msg2').innerText="New game! You start first!";
+  document.getElementById('msg2').innerText="New game! First to 100 wins!";
   document.getElementById('turnShow').innerText="👉 YOUR TURN - Tap ROLL!";
   document.getElementById('turnShow').style.background="yellow";
   document.getElementById('turnShow').style.color="black";
