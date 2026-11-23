@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>ROXY SHOP - PRO</title>
+<style>
+* { box-sizing:border-box; }
+body { margin:0; font-family:Arial; background:#f2f2f2; color:#111; }
+.top { background:#000; color:white; padding:14px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:10; }
+.top b { flex:1; font-size:18px; }
+.top span { background:#1ed760; color:black; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:bold; }
+.search { padding:12px; }
+.search input { width:100%; padding:14px; border-radius:25px; border:1px solid #ddd; font-size:15px; background:white; }
+.addBox { background:white; margin:12px; padding:16px; border-radius:16px; box-shadow:0 2px 10px rgba(0,0,0,0.08); }
+.addBox h3 { margin:0 0 12px 0; }
+.addBox input { width:100%; padding:13px; border-radius:10px; border:1px solid #ddd; margin-bottom:10px; font-size:15px; }
+.photoBtn { display:block; text-align:center; background:#f2f2f2; border:2px dashed #bbb; padding:20px; border-radius:12px; margin-bottom:10px; cursor:pointer; font-weight:bold; color:#555; }
+.photoBtn img { width:100%; max-height:220px; object-fit:cover; border-radius:10px; display:none; }
+.publish { width:100%; background:#000; color:white; padding:15px; border:none; border-radius:25px; font-weight:bold; font-size:16px; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:12px; padding-bottom:30px; }
+.card { background:white; border-radius:16px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.08); }
+.card img { width:100%; height:160px; object-fit:cover; background:#eee; }
+.cardBody { padding:10px; }
+.price { color:#e60023; font-weight:bold; font-size:17px; }
+.oldPrice { color:#888; text-decoration:line-through; font-size:12px; }
+.orderBtn { width:100%; background:#25D366; color:white; border:none; padding:11px; border-radius:20px; font-weight:bold; margin-top:8px; }
+.delBtn { width:100%; background:none; border:none; color:#999; padding:6px; font-size:12px; }
+</style>
+</head>
+<body>
+<div class="top"><b>🛒 ROXY SHOP</b><span>PRO SELLER</span></div>
+
+<div class="search"><input id="searchInput" oninput="doSearch()" placeholder="🔍 Search sneakers, cap, phone..."></div>
+
+<div class="addBox">
+<h3>➕ Sell New Item</h3>
+<label class="photoBtn" id="photoLabel">
+<span id="photoText">📸 TAP TO ADD PHOTO OF YOUR GOODS</span>
+<img id="photoPreview">
+<input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="previewPhoto(event)">
+</label>
+<input id="pName" placeholder="Product name e.g. Nike Air Force 1">
+<input id="pPrice" placeholder="Price e.g. 45000" type="number">
+<input id="pOldPrice" placeholder="Old price (optional) e.g. 60000" type="number">
+<input id="pDesc" placeholder="Small description e.g. Size 42, Brand new">
+<input id="pPhone" placeholder="Your WhatsApp number e.g. 2348031234567">
+<button class="publish" onclick="addProduct()">PUBLISH PRODUCT 🚀</button>
+<p style="font-size:12px; color:#888; text-align:center;">Your products go save for this phone only. Photo no go show for other phone unless you use same phone.</p>
+</div>
+
+<div style="padding:0 12px; display:flex; justify-content:space-between; align-items:center;"><h3 style="margin:0;">🔥 Hot Products</h3><small id="countLabel">4 items</small></div>
+<div class="grid" id="grid"></div>
+
+<script>
+let products = [
+  { name:"Roxy Cap - Black", price:"15000", old:"20000", desc:"One size, Brand new", img:"https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=500" },
+  { name:"Roxy Sneakers", price:"45000", old:"60000", desc:"Size 42, Brand new", img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" },
+  { name:"Roxy Hoodie", price:"28000", old:"35000", desc:"Size L, Soft & warm", img:"https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500" },
+  { name:"Roxy Watch", price:"32000", old:"45000", desc:"Waterproof, New", img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+];
+let tempPhoto = "";
+
+function previewPhoto(e){
+  let file = e.target.files[0];
+  if(!file) return;
+  let reader = new FileReader();
+  reader.onload = function(ev){
+    tempPhoto = ev.target.result;
+    let img = document.getElementById('photoPreview');
+    img.src = tempPhoto; img.style.display="block";
+    document.getElementById('photoText').innerText="✅ Photo added! Tap to change";
+  };
+  reader.readAsDataURL(file);
+}
+
+function render(list){
+  let grid = document.getElementById('grid');
+  document.getElementById('countLabel').innerText = list.length + " items";
+  if(list.length==0){ grid.innerHTML="<p style='grid-column:1/3; text-align:center; color:#888;'>No product found. Add one!</p>"; return; }
+  grid.innerHTML = list.map((p,i)=>{
+    let realIndex = products.indexOf(p);
+    return `<div class="card">
+      <img src="${p.img}">
+      <div class="cardBody">
+        <b style="font-size:14px;">${p.name}</b><br>
+        <small style="color:#888;">${p.desc}</small><br>
+        <span class="price">₦${Number(p.price).toLocaleString()}</span> <span class="oldPrice">₦${Number(p.oldPrice||0).toLocaleString()}</span><br>
+        <button class="orderBtn" onclick="orderMe('${p.name}','${p.price}')">Order on WhatsApp 💬</button>
+        <button class="delBtn" onclick="delProduct(${realIndex})">Remove</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addProduct(){
+  let name=document.getElementById('pName').value;
+  let price=document.getElementById('pPrice').value;
+  let old=document.getElementById('pOldPrice').value;
+  let desc=document.getElementById('pDesc').value || "Good quality";
+  if(!name || !price){ alert("Put name + price first!"); return; }
+  if(!tempPhoto){ alert("Add photo first! Tap the photo box!"); return; }
+  products.unshift({ name:name, price:price, old:old||price, desc:desc, img:tempPhoto });
+  render(products);
+  document.getElementById('pName').value=""; document.getElementById('pPrice').value=""; document.getElementById('pOldPrice').value=""; document.getElementById('pDesc').value="";
+  tempPhoto=""; document.getElementById('photoPreview').style.display="none"; document.getElementById('photoText').innerText="📸 TAP TO ADD PHOTO OF YOUR GOODS";
+  alert("✅ Published! Your product don show for shop!");
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+function delProduct(i){ if(confirm("Remove this product?")){ products.splice(i,1); render(products); } }
+
+function orderMe(name,price){
+  let phone=document.getElementById('pPhone').value;
+  if(!phone){ alert("Put your WhatsApp number for the box on top first! e.g. 2348031234567"); return; }
+  let msg=encodeURIComponent("Hi Roxy! I want to buy "+name+" for ₦"+price);
+  window.open("https://wa.me/"+phone+"?text="+msg,"_blank");
+}
+
+function doSearch(){
+  let q=document.getElementById('searchInput').value.toLowerCase();
+  let found=products.filter(p=>(p.name+p.desc).toLowerCase().includes(q));
+  render(found);
+}
+render(products);
+</script>
+</body>
+</html>
