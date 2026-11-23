@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>ROXY SUPER PRO</title>
+<title>ROXY SUPER SAVE</title>
 <style>
 * { box-sizing:border-box; }
 body { margin:0; font-family:Arial; background:#f2f2f2; color:#111; }
@@ -32,30 +32,25 @@ input, textarea { width:100%; padding:13px; border-radius:10px; border:1px solid
 </style>
 </head>
 <body>
-<div class="top"><b>👑 ROXY SUPER PRO</b><span>SELLER</span></div>
+<div class="top"><b>👑 ROXY SUPER SAVE</b><span>✅ SAVES</span></div>
 
-<!-- SHOP -->
 <div id="page-shop" class="page active">
 <input id="searchInput" oninput="doSearch()" placeholder="🔍 Search your products..." style="background:white; border-radius:25px;">
 <div class="cardBox">
 <h3 style="margin:0 0 12px 0;">➕ Sell New Item</h3>
-<label class="photoBtn" id="photoLabel">
-<span id="photoText">📸 TAP TO ADD PHOTO OF YOUR GOODS</span>
-<img id="photoPreview">
-<input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="previewPhoto(event)">
-</label>
-<input id="pName" placeholder="Product name e.g. Nike Shoe">
-<input id="pPrice" placeholder="Price e.g. 45000" type="number">
-<input id="pDesc" placeholder="Description e.g. Size 42, Brand new">
+<label class="photoBtn"><span id="photoText">📸 TAP TO ADD PHOTO OF YOUR GOODS</span><img id="photoPreview"><input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="previewPhoto(event)"></label>
+<input id="pName" placeholder="Product name e.g. M5stack">
+<input id="pPrice" placeholder="Price e.g. 1200 (number only, no $)" type="number">
+<input id="pDesc" placeholder="Description e.g. New and improved">
 <input id="pPhone" placeholder="Your WhatsApp number e.g. 2348031234567">
 <button class="publish" onclick="addProduct()">PUBLISH PRODUCT 🚀</button>
+<p style="font-size:12px; color:#1ed760; text-align:center;">✅ This version SAVES! Close app, open again, product go still dey!</p>
 </div>
 <h3>🔥 My Products <small id="countLabel" style="font-weight:normal; color:#888;">(0)</small></h3>
 <div class="grid" id="grid"></div>
-<div id="emptyShop" class="empty">📦 No product yet.<br><br>Add your first product on top!<br>Photo + Name + Price = Done!</div>
+<div id="emptyShop" class="empty">📦 No product yet.<br><br>Add your first product on top!</div>
 </div>
 
-<!-- MONEY -->
 <div id="page-money" class="page">
 <div class="moneyTop"><small>YOUR BALANCE</small><br><b id="balance" style="font-size:34px;">₦0</b><br><small id="moneyMsg">Add money to start!</small></div>
 <div style="display:flex; gap:10px; margin:12px 0;">
@@ -63,7 +58,7 @@ input, textarea { width:100%; padding:13px; border-radius:10px; border:1px solid
 <div style="flex:1; background:white; padding:12px; border-radius:12px; text-align:center;"><small style="color:#e60023;">OUT ⬇️</small><br><b id="totalOut">₦0</b></div>
 </div>
 <div class="cardBox">
-<input id="moneyDesc" placeholder="What for? e.g. Sold shoe, Bought food">
+<input id="moneyDesc" placeholder="What for? e.g. Sold M5stack">
 <input id="moneyAmt" placeholder="Amount e.g. 5000" type="number">
 <div style="display:flex; gap:10px;">
 <button onclick="addMoney('in')" style="flex:1; background:#1ed760; border:none; padding:14px; border-radius:25px; font-weight:bold;">+ MONEY IN</button>
@@ -71,19 +66,16 @@ input, textarea { width:100%; padding:13px; border-radius:10px; border:1px solid
 </div>
 </div>
 <div id="moneyList"></div>
-<div id="emptyMoney" class="empty">💰 No money record yet.<br>Add your first money IN or OUT on top.</div>
 </div>
 
-<!-- STORY -->
 <div id="page-story" class="page">
 <div class="cardBox">
 <h3 style="margin:0 0 12px 0;">📖 Write Your Story</h3>
-<input id="storyTitle" placeholder="Story Title e.g. My Journey">
+<input id="storyTitle" placeholder="Story Title">
 <textarea id="storyText" placeholder="Once upon a time..." rows="5"></textarea>
 <button class="publish" onclick="addStory()">📝 PUBLISH STORY</button>
 </div>
 <div id="storyList"></div>
-<div id="emptyStory" class="empty">📖 No story yet.<br>Write your first story on top!<br>You be author!</div>
 </div>
 
 <div class="nav">
@@ -99,9 +91,23 @@ function showPage(p){
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById('nav-'+p).classList.add('active');
 }
-// SHOP - START EMPTY, NO FAKE PRODUCTS
-let products = [];
+// --- SAVE SYSTEM ---
+let products = JSON.parse(localStorage.getItem('roxy_products') || '[]');
+let moneyData = JSON.parse(localStorage.getItem('roxy_money') || '{"bal":0,"in":0,"out":0,"list":[]}');
+let stories = JSON.parse(localStorage.getItem('roxy_stories') || '[]');
 let tempPhoto = "";
+
+function saveAll(){
+  localStorage.setItem('roxy_products', JSON.stringify(products));
+  localStorage.setItem('roxy_money', JSON.stringify(moneyData));
+  localStorage.setItem('roxy_stories', JSON.stringify(stories));
+  // also save phone
+  localStorage.setItem('roxy_phone', document.getElementById('pPhone').value);
+}
+// load phone
+let savedPhone = localStorage.getItem('roxy_phone');
+if(savedPhone) document.getElementById('pPhone').value = savedPhone;
+
 function previewPhoto(e){
   let file=e.target.files[0]; if(!file) return;
   let reader=new FileReader();
@@ -117,29 +123,30 @@ function render(list){
   let grid=document.getElementById('grid');
   document.getElementById('countLabel').innerText="("+products.length+")";
   document.getElementById('emptyShop').style.display = products.length==0 ? "block" : "none";
-  if(list.length==0 && products.length>0){ grid.innerHTML="<p style='grid-column:1/3; text-align:center; color:#888;'>No product found.</p>"; return; }
   if(products.length==0){ grid.innerHTML=""; return; }
+  if(list.length==0){ grid.innerHTML="<p style='grid-column:1/3; text-align:center; color:#888;'>No product found.</p>"; return; }
   grid.innerHTML=list.map((p,i)=>{
     let realIndex=products.indexOf(p);
     return `<div class="pCard"><img src="${p.img}"><div class="pBody"><b style="font-size:14px;">${p.name}</b><br><small style="color:#888;">${p.desc}</small><br><span class="price">₦${Number(p.price).toLocaleString()}</span><br><button class="orderBtn" onclick="orderMe('${p.name}','${p.price}')">Order on WhatsApp 💬</button><button class="delBtn" onclick="delProduct(${realIndex})">Remove</button></div></div>`;
   }).join('');
 }
 function addProduct(){
-  let name=document.getElementById('pName').value;
-  let price=document.getElementById('pPrice').value;
+  let name=document.getElementById('pName').value.trim();
+  let price=document.getElementById('pPrice').value.replace(/[^0-9]/g,'');
   let desc=document.getElementById('pDesc').value || "Good quality";
-  if(!name||!price){ alert("Put name + price first!"); return; }
+  if(!name||!price){ alert("Put name + price first! Price na number only e.g. 1200"); return; }
   if(!tempPhoto){ alert("Add photo first! Tap the photo box!"); return; }
   products.unshift({name:name, price:price, desc:desc, img:tempPhoto});
-  render(products);
+  saveAll(); render(products);
   document.getElementById('pName').value=""; document.getElementById('pPrice').value=""; document.getElementById('pDesc').value="";
   tempPhoto=""; document.getElementById('photoPreview').style.display="none"; document.getElementById('photoText').innerText="📸 TAP TO ADD PHOTO OF YOUR GOODS";
-  alert("✅ Published! Your product don show!");
+  alert("✅ SAVED! Even if you close app, e go still dey!");
 }
-function delProduct(i){ if(confirm("Remove this product?")){ products.splice(i,1); render(products); } }
+function delProduct(i){ if(confirm("Remove this product?")){ products.splice(i,1); saveAll(); render(products); } }
 function orderMe(name,price){
   let phone=document.getElementById('pPhone').value;
-  if(!phone){ alert("Put your WhatsApp number for the box on top first! e.g. 2348031234567"); return; }
+  if(!phone){ alert("Put your WhatsApp number first!"); return; }
+  saveAll();
   let msg=encodeURIComponent("Hi Roxy! I want to buy "+name+" for ₦"+price);
   window.open("https://wa.me/"+phone+"?text="+msg,"_blank");
 }
@@ -148,34 +155,34 @@ function doSearch(){
   render(products.filter(p=>(p.name+p.desc).toLowerCase().includes(q)));
 }
 // MONEY
-let bal=0, tin=0, tout=0;
+function renderMoney(){
+  document.getElementById('balance').innerText="₦"+moneyData.bal.toLocaleString();
+  document.getElementById('totalIn').innerText="₦"+moneyData.in.toLocaleString();
+  document.getElementById('totalOut').innerText="₦"+moneyData.out.toLocaleString();
+  document.getElementById('moneyList').innerHTML = moneyData.list.map(m=>`<div class="storyCard">${m.type=='in'?"<b style='color:#1ed760;'>+ ₦"+m.amt.toLocaleString()+"</b>":"<b style='color:#e60023;'>- ₦"+m.amt.toLocaleString()+"</b>"} — ${m.desc}</div>`).join('');
+}
 function addMoney(type){
   let d=document.getElementById('moneyDesc').value || "Money";
   let a=parseInt(document.getElementById('moneyAmt').value);
   if(!a){ alert("Put amount!"); return; }
-  if(type=='in'){ bal+=a; tin+=a; } else { bal-=a; tout+=a; }
-  document.getElementById('balance').innerText="₦"+bal.toLocaleString();
-  document.getElementById('totalIn').innerText="₦"+tin.toLocaleString();
-  document.getElementById('totalOut').innerText="₦"+tout.toLocaleString();
-  document.getElementById('moneyMsg').innerText= bal>=0 ? "You dey go! Keep am up! 🔥" : "Careful, you don spend pass!";
-  document.getElementById('emptyMoney').style.display="none";
-  let div=document.createElement('div'); div.className='storyCard';
-  div.innerHTML=(type=='in'?"<b style='color:#1ed760;'>+ ₦"+a.toLocaleString()+"</b>":"<b style='color:#e60023;'>- ₦"+a.toLocaleString()+"</b>")+" — "+d;
-  document.getElementById('moneyList').prepend(div);
+  if(type=='in'){ moneyData.bal+=a; moneyData.in+=a; } else { moneyData.bal-=a; moneyData.out+=a; }
+  moneyData.list.unshift({type:type, amt:a, desc:d});
+  saveAll(); renderMoney();
   document.getElementById('moneyDesc').value=""; document.getElementById('moneyAmt').value="";
 }
 // STORY
+function renderStories(){
+  document.getElementById('storyList').innerHTML = stories.map(s=>`<div class="storyCard"><b>📖 ${s.title}</b><p>${s.text}</p><small>By Roxy</small></div>`).join('');
+}
 function addStory(){
   let t=document.getElementById('storyTitle').value;
   let txt=document.getElementById('storyText').value;
   if(!t||!txt){ alert("Put title + story!"); return; }
-  document.getElementById('emptyStory').style.display="none";
-  let div=document.createElement('div'); div.className='storyCard';
-  div.innerHTML="<b>📖 "+t+"</b><p>"+txt+"</p><small>By Roxy • Just now • ❤️</small>";
-  document.getElementById('storyList').prepend(div);
+  stories.unshift({title:t, text:txt});
+  saveAll(); renderStories();
   document.getElementById('storyTitle').value=""; document.getElementById('storyText').value="";
 }
-render(products);
+render(products); renderMoney(); renderStories();
 </script>
 </body>
 </html>
