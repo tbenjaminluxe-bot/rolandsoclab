@@ -2,17 +2,18 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>ROXY SUPER SAVE V2</title>
+<title>ROXY V3 - WhatsApp Style</title>
 <style>
 * { box-sizing:border-box; }
 body { margin:0; font-family:Arial; background:#f2f2f2; color:#111; }
-.top { background:#000; color:white; padding:14px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:10; }
-.top b { flex:1; font-size:18px; }
+.top { background:#000; color:white; padding:12px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:10; }
+.backBtn { background:#222; color:white; border:none; width:36px; height:36px; border-radius:50%; font-size:20px; }
+.top b { flex:1; font-size:17px; }
 .top span { background:#1ed760; color:black; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:bold; }
 .page { display:none; padding:12px; padding-bottom:90px; }
 .page.active { display:block; }
 .nav { display:flex; background:#000; position:fixed; bottom:0; left:0; right:0; z-index:10; }
-.nav button { flex:1; background:none; border:none; color:#888; padding:12px 0; font-size:12px; }
+.nav button { flex:1; background:none; border:none; color:#888; padding:10px 0; font-size:12px; }
 .nav button.active { color:#1ed760; }
 .cardBox { background:white; padding:16px; border-radius:16px; box-shadow:0 2px 10px rgba(0,0,0,0.08); margin-bottom:12px; }
 input, textarea { width:100%; padding:13px; border-radius:10px; border:1px solid #ddd; margin-bottom:10px; font-size:15px; background:#fafafa; }
@@ -29,16 +30,24 @@ input, textarea { width:100%; padding:13px; border-radius:10px; border:1px solid
 .empty { text-align:center; color:#888; padding:30px 10px; background:white; border-radius:16px; }
 .moneyTop { background:#000; color:white; padding:20px; border-radius:16px; text-align:center; }
 .storyCard { background:white; padding:14px; border-radius:16px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
-/* FULL PHOTO VIEWER */
 .viewer { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.95); z-index:99; align-items:center; justify-content:center; flex-direction:column; }
 .viewer img { max-width:95%; max-height:78%; border-radius:12px; object-fit:contain; }
 .viewer b { color:white; margin-top:14px; font-size:18px; }
-.viewer small { color:#aaa; margin-top:4px; }
-.viewer button { margin-top:14px; background:white; border:none; padding:12px 32px; border-radius:25px; font-weight:bold; font-size:15px; }
+.viewer button { margin-top:14px; background:white; border:none; padding:12px 32px; border-radius:25px; font-weight:bold; }
+.stepBar { display:flex; gap:6px; margin-bottom:12px; }
+.stepBar div { flex:1; text-align:center; padding:8px; border-radius:20px; font-size:12px; font-weight:bold; background:#eee; color:#888; }
+.stepBar div.on { background:#000; color:white; }
+.payStep { display:none; }
+.payStep.on { display:block; }
+.verifyBox { background:#fff8e1; border:2px dashed #ff9800; padding:16px; border-radius:12px; text-align:center; }
+.successBox { background:#e8f5e9; border:2px solid #1ed760; padding:20px; border-radius:12px; text-align:center; }
 </style>
 </head>
 <body>
-<div class="top"><b>👑 ROXY SUPER SAVE</b><span>✅ SAVES</span></div>
+<div class="top">
+<button class="backBtn" onclick="goBack()">⬅️</button>
+<b>👑 ROXY SUPER SAVE</b><span>✅ V3</span>
+</div>
 
 <div id="page-shop" class="page active">
 <input id="searchInput" oninput="doSearch()" placeholder="🔍 Search your products..." style="background:white; border-radius:25px;">
@@ -50,7 +59,7 @@ input, textarea { width:100%; padding:13px; border-radius:10px; border:1px solid
 <input id="pDesc" placeholder="Description e.g. New and improved">
 <input id="pPhone" placeholder="Your WhatsApp number e.g. 2348031234567">
 <button class="publish" onclick="addProduct()">PUBLISH PRODUCT 🚀</button>
-<p style="font-size:12px; color:#1ed760; text-align:center;">✅ This version SAVES! Tap any product photo to see am FULL!</p>
+<p style="font-size:12px; color:#1ed760; text-align:center;">✅ SAVES! Tap photo to see FULL! ⬅️ Back button on top!</p>
 </div>
 <h3>🔥 My Products <small id="countLabel" style="font-weight:normal; color:#888;">(0)</small></h3>
 <div class="grid" id="grid"></div>
@@ -58,19 +67,65 @@ input, textarea { width:100%; padding:13px; border-radius:10px; border:1px solid
 </div>
 
 <div id="page-money" class="page">
-<div class="moneyTop"><small>YOUR BALANCE</small><br><b id="balance" style="font-size:34px;">₦0</b><br><small id="moneyMsg">Add money to start!</small></div>
+<div class="moneyTop"><small>YOUR BALANCE</small><br><b id="balance" style="font-size:34px;">₦0</b><br><small>Tap ⬅️ on top to go back to Shop</small></div>
 <div style="display:flex; gap:10px; margin:12px 0;">
 <div style="flex:1; background:white; padding:12px; border-radius:12px; text-align:center;"><small style="color:#1ed760;">IN ⬆️</small><br><b id="totalIn">₦0</b></div>
 <div style="flex:1; background:white; padding:12px; border-radius:12px; text-align:center;"><small style="color:#e60023;">OUT ⬇️</small><br><b id="totalOut">₦0</b></div>
 </div>
+
+<div class="stepBar">
+<div id="dot1" class="on">1. Details</div>
+<div id="dot2">2. Verify</div>
+<div id="dot3">3. Done</div>
+</div>
+
+<!-- STEP 1 -->
+<div id="pay1" class="payStep on">
 <div class="cardBox">
+<h3 style="margin:0 0 8px 0;">Step 1: What money be this?</h3>
 <input id="moneyDesc" placeholder="What for? e.g. Sold M5stack">
 <input id="moneyAmt" placeholder="Amount e.g. 5000" type="number">
 <div style="display:flex; gap:10px;">
-<button onclick="addMoney('in')" style="flex:1; background:#1ed760; border:none; padding:14px; border-radius:25px; font-weight:bold;">+ MONEY IN</button>
-<button onclick="addMoney('out')" style="flex:1; background:#e60023; color:white; border:none; padding:14px; border-radius:25px; font-weight:bold;">- MONEY OUT</button>
+<button onclick="setPayType('in')" id="btnIn" style="flex:1; background:#1ed760; border:none; padding:14px; border-radius:25px; font-weight:bold;">+ MONEY IN</button>
+<button onclick="setPayType('out')" id="btnOut" style="flex:1; background:#eee; border:none; padding:14px; border-radius:25px; font-weight:bold;">- MONEY OUT</button>
+</div>
+<br>
+<button class="publish" onclick="goStep2()">NEXT ➡️ VERIFY</button>
 </div>
 </div>
+
+<!-- STEP 2 -->
+<div id="pay2" class="payStep">
+<div class="cardBox">
+<h3 style="margin:0 0 8px 0;">Step 2: Verify before e go!</h3>
+<div class="verifyBox">
+<p>⚠️ CHECK AM WELL!</p>
+<b id="verifyText" style="font-size:18px;"></b><br>
+<small id="verifyDesc"></small><br><br>
+<p style="font-size:13px;">To confirm, type <b>YES</b> for the box below:</p>
+<input id="verifyInput" placeholder="Type YES to confirm">
+</div>
+<br>
+<div style="display:flex; gap:10px;">
+<button onclick="goStep1()" style="flex:1; background:#eee; border:none; padding:14px; border-radius:25px; font-weight:bold;">⬅️ BACK</button>
+<button onclick="confirmPay()" style="flex:1; background:#000; color:white; border:none; padding:14px; border-radius:25px; font-weight:bold;">CONFIRM ✅</button>
+</div>
+</div>
+</div>
+
+<!-- STEP 3 -->
+<div id="pay3" class="payStep">
+<div class="cardBox">
+<div class="successBox">
+<h2 style="margin:0;">✅ TRANSFER DONE!</h2>
+<p id="successText"></p>
+<p>Money don enter your Roxy account!</p>
+</div>
+<br>
+<button class="publish" onclick="resetPay()">DONE — GO BACK TO MONEY 💰</button>
+</div>
+</div>
+
 <div id="moneyList"></div>
 </div>
 
@@ -84,7 +139,6 @@ input, textarea { width:100%; padding:13px; border-radius:10px; border:1px solid
 <div id="storyList"></div>
 </div>
 
-<!-- FULL PHOTO VIEWER -->
 <div id="viewer" class="viewer" onclick="closeViewer()">
 <img id="viewerImg">
 <b id="viewerName"></b>
@@ -99,16 +153,26 @@ input, textarea { width:100%; padding:13px; border-radius:10px; border:1px solid
 </div>
 
 <script>
+let currentPage='shop';
 function showPage(p){
+  currentPage=p;
   document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById('nav-'+p).classList.add('active');
 }
+function goBack(){
+  if(currentPage=='money' || currentPage=='story'){
+    showPage('shop');
+  } else {
+    alert("You already dey Shop — na home be this!");
+  }
+}
 let products = JSON.parse(localStorage.getItem('roxy_products') || '[]');
 let moneyData = JSON.parse(localStorage.getItem('roxy_money') || '{"bal":0,"in":0,"out":0,"list":[]}');
 let stories = JSON.parse(localStorage.getItem('roxy_stories') || '[]');
 let tempPhoto = "";
+let payType='in';
 function saveAll(){
   localStorage.setItem('roxy_products', JSON.stringify(products));
   localStorage.setItem('roxy_money', JSON.stringify(moneyData));
@@ -133,9 +197,7 @@ function openViewer(img, name){
   document.getElementById('viewerName').innerText = name;
   document.getElementById('viewer').style.display = "flex";
 }
-function closeViewer(){
-  document.getElementById('viewer').style.display = "none";
-}
+function closeViewer(){ document.getElementById('viewer').style.display = "none"; }
 function render(list){
   let grid=document.getElementById('grid');
   document.getElementById('countLabel').innerText="("+products.length+")";
@@ -151,13 +213,13 @@ function addProduct(){
   let name=document.getElementById('pName').value.trim();
   let price=document.getElementById('pPrice').value.replace(/[^0-9]/g,'');
   let desc=document.getElementById('pDesc').value || "Good quality";
-  if(!name||!price){ alert("Put name + price first! Price na number only e.g. 1200"); return; }
-  if(!tempPhoto){ alert("Add photo first! Tap the photo box!"); return; }
+  if(!name||!price){ alert("Put name + price first!"); return; }
+  if(!tempPhoto){ alert("Add photo first!"); return; }
   products.unshift({name:name, price:price, desc:desc, img:tempPhoto});
   saveAll(); render(products);
   document.getElementById('pName').value=""; document.getElementById('pPrice').value=""; document.getElementById('pDesc').value="";
   tempPhoto=""; document.getElementById('photoPreview').style.display="none"; document.getElementById('photoText').innerText="📸 TAP TO ADD PHOTO OF YOUR GOODS";
-  alert("✅ SAVED! Even if you close app, e go still dey!");
+  alert("✅ SAVED!");
 }
 function delProduct(i){ if(confirm("Remove this product?")){ products.splice(i,1); saveAll(); render(products); } }
 function orderMe(name,price){
@@ -177,14 +239,44 @@ function renderMoney(){
   document.getElementById('totalOut').innerText="₦"+moneyData.out.toLocaleString();
   document.getElementById('moneyList').innerHTML = moneyData.list.map(m=>`<div class="storyCard">${m.type=='in'?"<b style='color:#1ed760;'>+ ₦"+m.amt.toLocaleString()+"</b>":"<b style='color:#e60023;'>- ₦"+m.amt.toLocaleString()+"</b>"} — ${m.desc}</div>`).join('');
 }
-function addMoney(type){
+// 3-STEP PAYMENT
+function setPayType(t){
+  payType=t;
+  document.getElementById('btnIn').style.background = t=='in' ? '#1ed760' : '#eee';
+  document.getElementById('btnOut').style.background = t=='out' ? '#e60023' : '#eee';
+  document.getElementById('btnOut').style.color = t=='out' ? 'white' : 'black';
+}
+function showPayStep(n){
+  document.querySelectorAll('.payStep').forEach(e=>e.classList.remove('on'));
+  document.getElementById('pay'+n).classList.add('on');
+  document.getElementById('dot1').className = n>=1 ? 'on' : '';
+  document.getElementById('dot2').className = n>=2 ? 'on' : '';
+  document.getElementById('dot3').className = n>=3 ? 'on' : '';
+}
+function goStep1(){ showPayStep(1); }
+function goStep2(){
   let d=document.getElementById('moneyDesc').value || "Money";
   let a=parseInt(document.getElementById('moneyAmt').value);
-  if(!a){ alert("Put amount!"); return; }
-  if(type=='in'){ moneyData.bal+=a; moneyData.in+=a; } else { moneyData.bal-=a; moneyData.out+=a; }
-  moneyData.list.unshift({type:type, amt:a, desc:d});
+  if(!a){ alert("Put amount first for Step 1!"); return; }
+  document.getElementById('verifyText').innerText = (payType=='in' ? "+ ₦" : "- ₦") + a.toLocaleString();
+  document.getElementById('verifyDesc').innerText = d + " — Balance go be ₦" + (payType=='in' ? moneyData.bal + a : moneyData.bal - a).toLocaleString() + " after this";
+  document.getElementById('verifyInput').value="";
+  showPayStep(2);
+}
+function confirmPay(){
+  let v=document.getElementById('verifyInput').value.trim().toUpperCase();
+  if(v!=="YES"){ alert("Type YES to verify! E no go move until you type YES."); return; }
+  let d=document.getElementById('moneyDesc').value || "Money";
+  let a=parseInt(document.getElementById('moneyAmt').value);
+  if(payType=='in'){ moneyData.bal+=a; moneyData.in+=a; } else { moneyData.bal-=a; moneyData.out+=a; }
+  moneyData.list.unshift({type:payType, amt:a, desc:d});
   saveAll(); renderMoney();
+  document.getElementById('successText').innerText = (payType=='in' ? "+ ₦" : "- ₦") + a.toLocaleString() + " — " + d;
+  showPayStep(3);
+}
+function resetPay(){
   document.getElementById('moneyDesc').value=""; document.getElementById('moneyAmt').value="";
+  showPayStep(1);
 }
 function renderStories(){
   document.getElementById('storyList').innerHTML = stories.map(s=>`<div class="storyCard"><b>📖 ${s.title}</b><p>${s.text}</p><small>By Roxy</small></div>`).join('');
