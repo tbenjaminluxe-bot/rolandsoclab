@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>ROXY SUPER APP</title>
+<style>
+* { box-sizing:border-box; }
+body { margin:0; font-family:Arial; background:#000; color:white; }
+#app { width:100vw; height:100dvh; display:flex; flex-direction:column; background:#121212; }
+.page { display:none; flex:1; overflow-y:auto; padding:12px; padding-bottom:90px; }
+.page.active { display:block; }
+.nav { display:flex; background:#000; border-top:1px solid #222; position:fixed; bottom:0; left:0; right:0; }
+.nav button { flex:1; background:none; border:none; color:#888; padding:12px 0; font-size:12px; }
+.nav button.active { color:#1ed760; }
+input, textarea { width:100%; padding:13px; border-radius:10px; border:none; margin-bottom:10px; font-size:15px; background:#1e1e1e; color:white; }
+.bigBtn { width:100%; background:#1ed760; color:black; padding:15px; border:none; border-radius:25px; font-weight:bold; font-size:16px; }
+.card { background:#1e1e1e; padding:14px; border-radius:14px; margin-bottom:10px; }
+</style>
+</head>
+<body>
+<div id="app">
+<div style="display:flex; align-items:center; gap:10px; padding:12px;">
+<img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" style="width:38px; height:38px; border-radius:50%; object-fit:cover;">
+<b style="flex:1;">Roxy Super App</b><span>👑</span>
+</div>
+
+<!-- SHOP -->
+<div id="page-shop" class="page active">
+<h2>🛒 Roxy Shop</h2>
+<p style="color:#aaa; font-size:13px;">Add wetin you dey sell, people go see price + order!</p>
+<input id="shopName" placeholder="What are you selling? e.g. Sneakers">
+<input id="shopPrice" placeholder="Price e.g. 25000" type="number">
+<input id="shopPhone" placeholder="Your WhatsApp number e.g. 2348012345678">
+<button class="bigBtn" onclick="addShop()">➕ ADD TO SHOP</button>
+<div id="shopList" style="margin-top:14px;">
+<div class="card"><b>🔥 Roxy Cap</b><br><span style="color:#1ed760; font-weight:bold;">₦15,000</span><br><button onclick="orderShop('Roxy Cap','15000')" style="background:#25D366; color:white; border:none; padding:10px 16px; border-radius:20px; margin-top:8px; font-weight:bold;">Order on WhatsApp 💬</button></div>
+<div class="card"><b>👟 Roxy Sneakers</b><br><span style="color:#1ed760; font-weight:bold;">₦45,000</span><br><button onclick="orderShop('Roxy Sneakers','45000')" style="background:#25D366; color:white; border:none; padding:10px 16px; border-radius:20px; margin-top:8px; font-weight:bold;">Order on WhatsApp 💬</button></div>
+</div>
+</div>
+
+<!-- MONEY -->
+<div id="page-money" class="page">
+<h2>💰 Roxy Money</h2>
+<div style="background:#1ed760; color:black; padding:18px; border-radius:16px; text-align:center;">
+<small>YOUR BALANCE</small><br><b id="balance" style="font-size:32px;">₦0</b><br><small id="moneyMsg">Add money to start!</small>
+</div>
+<div style="display:flex; gap:10px; margin-top:12px;">
+<div style="flex:1; background:#1e1e1e; padding:12px; border-radius:12px; text-align:center;"><small style="color:#1ed760;">IN ⬆️</small><br><b id="totalIn">₦0</b></div>
+<div style="flex:1; background:#1e1e1e; padding:12px; border-radius:12px; text-align:center;"><small style="color:#ff0055;">OUT ⬇️</small><br><b id="totalOut">₦0</b></div>
+</div>
+<input id="moneyDesc" placeholder="What for? e.g. Sold cap, Bought food" style="margin-top:14px;">
+<input id="moneyAmt" placeholder="Amount e.g. 5000" type="number">
+<div style="display:flex; gap:10px;">
+<button onclick="addMoney('in')" style="flex:1; background:#1ed760; color:black; border:none; padding:14px; border-radius:25px; font-weight:bold;">+ MONEY IN</button>
+<button onclick="addMoney('out')" style="flex:1; background:#ff0055; color:white; border:none; padding:14px; border-radius:25px; font-weight:bold;">- MONEY OUT</button>
+</div>
+<div id="moneyList" style="margin-top:12px;"></div>
+</div>
+
+<!-- STORY -->
+<div id="page-story" class="page">
+<h2>📖 Roxy Story</h2>
+<p style="color:#aaa; font-size:13px;">You be author! Write your story, save am!</p>
+<input id="storyTitle" placeholder="Story Title e.g. The Boy Who Became King">
+<textarea id="storyText" placeholder="Once upon a time..." rows="5"></textarea>
+<button class="bigBtn" onclick="addStory()">📝 PUBLISH STORY</button>
+<div id="storyList" style="margin-top:14px;">
+<div class="card"><b>👑 The Boy Who Became King</b><p>Once upon a time, one boy for Lagos get one dream. E no get much, but e get phone and big idea. E build app, e play game, e score 59! Everybody call am LEGEND...</p><small>By Roxy • 🔥 59 likes</small></div>
+</div>
+</div>
+
+<div class="nav">
+<button id="nav-shop" class="active" onclick="showPage('shop')">🛒<br>Shop</button>
+<button id="nav-money" onclick="showPage('money')">💰<br>Money</button>
+<button id="nav-story" onclick="showPage('story')">📖<br>Story</button>
+</div>
+</div>
+<script>
+function showPage(p){
+  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nav-'+p).classList.add('active');
+}
+// SHOP
+function addShop(){
+  let n=document.getElementById('shopName').value;
+  let pr=document.getElementById('shopPrice').value;
+  if(!n||!pr){ alert("Put name + price first!"); return; }
+  let div=document.createElement('div'); div.className='card';
+  div.innerHTML="<b>🛍️ "+n+"</b><br><span style='color:#1ed760; font-weight:bold;'>₦"+pr+"</span><br><button onclick=\"orderShop('"+n+"','"+pr+"')\" style='background:#25D366; color:white; border:none; padding:10px 16px; border-radius:20px; margin-top:8px; font-weight:bold;'>Order on WhatsApp 💬</button>";
+  document.getElementById('shopList').prepend(div);
+  document.getElementById('shopName').value=""; document.getElementById('shopPrice').value="";
+}
+function orderShop(name,price){
+  let phone=document.getElementById('shopPhone').value || "2348012345678";
+  let msg=encodeURIComponent("Hi Roxy! I want to buy "+name+" for ₦"+price);
+  window.open("https://wa.me/"+phone+"?text="+msg,"_blank");
+}
+// MONEY
+let bal=0, tin=0, tout=0;
+function addMoney(type){
+  let d=document.getElementById('moneyDesc').value || "Money";
+  let a=parseInt(document.getElementById('moneyAmt').value);
+  if(!a){ alert("Put amount!"); return; }
+  if(type=='in'){ bal+=a; tin+=a; } else { bal-=a; tout+=a; }
+  document.getElementById('balance').innerText="₦"+bal.toLocaleString();
+  document.getElementById('totalIn').innerText="₦"+tin.toLocaleString();
+  document.getElementById('totalOut').innerText="₦"+tout.toLocaleString();
+  document.getElementById('moneyMsg').innerText = bal>=0 ? "You dey go! Keep am up! 🔥" : "Careful, you don spend pass!";
+  let div=document.createElement('div'); div.className='card';
+  div.innerHTML=(type=='in'?"<b style='color:#1ed760;'>+ ₦"+a.toLocaleString()+"</b>":"<b style='color:#ff0055;'>- ₦"+a.toLocaleString()+"</b>")+" — "+d;
+  document.getElementById('moneyList').prepend(div);
+  document.getElementById('moneyDesc').value=""; document.getElementById('moneyAmt').value="";
+}
+// STORY
+function addStory(){
+  let t=document.getElementById('storyTitle').value;
+  let txt=document.getElementById('storyText').value;
+  if(!t||!txt){ alert("Put title + story!"); return; }
+  let div=document.createElement('div'); div.className='card';
+  div.innerHTML="<b>📖 "+t+"</b><p>"+txt+"</p><small>By Roxy • Just now • ❤️</small>";
+  document.getElementById('storyList').prepend(div);
+  document.getElementById('storyTitle').value=""; document.getElementById('storyText').value="";
+}
+</script>
+</body>
+</html>
