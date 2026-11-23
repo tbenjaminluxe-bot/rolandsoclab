@@ -2,124 +2,178 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>ROXY SHOP - PRO</title>
+<title>ROXY SUPER PRO</title>
 <style>
 * { box-sizing:border-box; }
 body { margin:0; font-family:Arial; background:#f2f2f2; color:#111; }
 .top { background:#000; color:white; padding:14px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:10; }
 .top b { flex:1; font-size:18px; }
 .top span { background:#1ed760; color:black; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:bold; }
-.search { padding:12px; }
-.search input { width:100%; padding:14px; border-radius:25px; border:1px solid #ddd; font-size:15px; background:white; }
-.addBox { background:white; margin:12px; padding:16px; border-radius:16px; box-shadow:0 2px 10px rgba(0,0,0,0.08); }
-.addBox h3 { margin:0 0 12px 0; }
-.addBox input { width:100%; padding:13px; border-radius:10px; border:1px solid #ddd; margin-bottom:10px; font-size:15px; }
-.photoBtn { display:block; text-align:center; background:#f2f2f2; border:2px dashed #bbb; padding:20px; border-radius:12px; margin-bottom:10px; cursor:pointer; font-weight:bold; color:#555; }
-.photoBtn img { width:100%; max-height:220px; object-fit:cover; border-radius:10px; display:none; }
+.page { display:none; padding:12px; padding-bottom:90px; }
+.page.active { display:block; }
+.nav { display:flex; background:#000; position:fixed; bottom:0; left:0; right:0; z-index:10; }
+.nav button { flex:1; background:none; border:none; color:#888; padding:12px 0; font-size:12px; }
+.nav button.active { color:#1ed760; }
+.cardBox { background:white; padding:16px; border-radius:16px; box-shadow:0 2px 10px rgba(0,0,0,0.08); margin-bottom:12px; }
+input, textarea { width:100%; padding:13px; border-radius:10px; border:1px solid #ddd; margin-bottom:10px; font-size:15px; background:#fafafa; }
 .publish { width:100%; background:#000; color:white; padding:15px; border:none; border-radius:25px; font-weight:bold; font-size:16px; }
-.grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:12px; padding-bottom:30px; }
-.card { background:white; border-radius:16px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.08); }
-.card img { width:100%; height:160px; object-fit:cover; background:#eee; }
-.cardBody { padding:10px; }
+.photoBtn { display:block; text-align:center; background:#f2f2f2; border:2px dashed #bbb; padding:22px; border-radius:12px; margin-bottom:10px; cursor:pointer; font-weight:bold; color:#555; }
+.photoBtn img { width:100%; max-height:240px; object-fit:cover; border-radius:10px; display:none; }
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.pCard { background:white; border-radius:16px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.08); }
+.pCard img { width:100%; height:160px; object-fit:cover; background:#eee; }
+.pBody { padding:10px; }
 .price { color:#e60023; font-weight:bold; font-size:17px; }
-.oldPrice { color:#888; text-decoration:line-through; font-size:12px; }
 .orderBtn { width:100%; background:#25D366; color:white; border:none; padding:11px; border-radius:20px; font-weight:bold; margin-top:8px; }
 .delBtn { width:100%; background:none; border:none; color:#999; padding:6px; font-size:12px; }
+.empty { text-align:center; color:#888; padding:30px 10px; background:white; border-radius:16px; }
+.moneyTop { background:#000; color:white; padding:20px; border-radius:16px; text-align:center; }
+.storyCard { background:white; padding:14px; border-radius:16px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
 </style>
 </head>
 <body>
-<div class="top"><b>🛒 ROXY SHOP</b><span>PRO SELLER</span></div>
+<div class="top"><b>👑 ROXY SUPER PRO</b><span>SELLER</span></div>
 
-<div class="search"><input id="searchInput" oninput="doSearch()" placeholder="🔍 Search sneakers, cap, phone..."></div>
-
-<div class="addBox">
-<h3>➕ Sell New Item</h3>
+<!-- SHOP -->
+<div id="page-shop" class="page active">
+<input id="searchInput" oninput="doSearch()" placeholder="🔍 Search your products..." style="background:white; border-radius:25px;">
+<div class="cardBox">
+<h3 style="margin:0 0 12px 0;">➕ Sell New Item</h3>
 <label class="photoBtn" id="photoLabel">
 <span id="photoText">📸 TAP TO ADD PHOTO OF YOUR GOODS</span>
 <img id="photoPreview">
 <input type="file" id="photoInput" accept="image/*" style="display:none;" onchange="previewPhoto(event)">
 </label>
-<input id="pName" placeholder="Product name e.g. Nike Air Force 1">
+<input id="pName" placeholder="Product name e.g. Nike Shoe">
 <input id="pPrice" placeholder="Price e.g. 45000" type="number">
-<input id="pOldPrice" placeholder="Old price (optional) e.g. 60000" type="number">
-<input id="pDesc" placeholder="Small description e.g. Size 42, Brand new">
+<input id="pDesc" placeholder="Description e.g. Size 42, Brand new">
 <input id="pPhone" placeholder="Your WhatsApp number e.g. 2348031234567">
 <button class="publish" onclick="addProduct()">PUBLISH PRODUCT 🚀</button>
-<p style="font-size:12px; color:#888; text-align:center;">Your products go save for this phone only. Photo no go show for other phone unless you use same phone.</p>
+</div>
+<h3>🔥 My Products <small id="countLabel" style="font-weight:normal; color:#888;">(0)</small></h3>
+<div class="grid" id="grid"></div>
+<div id="emptyShop" class="empty">📦 No product yet.<br><br>Add your first product on top!<br>Photo + Name + Price = Done!</div>
 </div>
 
-<div style="padding:0 12px; display:flex; justify-content:space-between; align-items:center;"><h3 style="margin:0;">🔥 Hot Products</h3><small id="countLabel">4 items</small></div>
-<div class="grid" id="grid"></div>
+<!-- MONEY -->
+<div id="page-money" class="page">
+<div class="moneyTop"><small>YOUR BALANCE</small><br><b id="balance" style="font-size:34px;">₦0</b><br><small id="moneyMsg">Add money to start!</small></div>
+<div style="display:flex; gap:10px; margin:12px 0;">
+<div style="flex:1; background:white; padding:12px; border-radius:12px; text-align:center;"><small style="color:#1ed760;">IN ⬆️</small><br><b id="totalIn">₦0</b></div>
+<div style="flex:1; background:white; padding:12px; border-radius:12px; text-align:center;"><small style="color:#e60023;">OUT ⬇️</small><br><b id="totalOut">₦0</b></div>
+</div>
+<div class="cardBox">
+<input id="moneyDesc" placeholder="What for? e.g. Sold shoe, Bought food">
+<input id="moneyAmt" placeholder="Amount e.g. 5000" type="number">
+<div style="display:flex; gap:10px;">
+<button onclick="addMoney('in')" style="flex:1; background:#1ed760; border:none; padding:14px; border-radius:25px; font-weight:bold;">+ MONEY IN</button>
+<button onclick="addMoney('out')" style="flex:1; background:#e60023; color:white; border:none; padding:14px; border-radius:25px; font-weight:bold;">- MONEY OUT</button>
+</div>
+</div>
+<div id="moneyList"></div>
+<div id="emptyMoney" class="empty">💰 No money record yet.<br>Add your first money IN or OUT on top.</div>
+</div>
+
+<!-- STORY -->
+<div id="page-story" class="page">
+<div class="cardBox">
+<h3 style="margin:0 0 12px 0;">📖 Write Your Story</h3>
+<input id="storyTitle" placeholder="Story Title e.g. My Journey">
+<textarea id="storyText" placeholder="Once upon a time..." rows="5"></textarea>
+<button class="publish" onclick="addStory()">📝 PUBLISH STORY</button>
+</div>
+<div id="storyList"></div>
+<div id="emptyStory" class="empty">📖 No story yet.<br>Write your first story on top!<br>You be author!</div>
+</div>
+
+<div class="nav">
+<button id="nav-shop" class="active" onclick="showPage('shop')">🛒<br>Shop</button>
+<button id="nav-money" onclick="showPage('money')">💰<br>Money</button>
+<button id="nav-story" onclick="showPage('story')">📖<br>Story</button>
+</div>
 
 <script>
-let products = [
-  { name:"Roxy Cap - Black", price:"15000", old:"20000", desc:"One size, Brand new", img:"https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=500" },
-  { name:"Roxy Sneakers", price:"45000", old:"60000", desc:"Size 42, Brand new", img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" },
-  { name:"Roxy Hoodie", price:"28000", old:"35000", desc:"Size L, Soft & warm", img:"https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500" },
-  { name:"Roxy Watch", price:"32000", old:"45000", desc:"Waterproof, New", img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
-];
+function showPage(p){
+  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nav-'+p).classList.add('active');
+}
+// SHOP - START EMPTY, NO FAKE PRODUCTS
+let products = [];
 let tempPhoto = "";
-
 function previewPhoto(e){
-  let file = e.target.files[0];
-  if(!file) return;
-  let reader = new FileReader();
-  reader.onload = function(ev){
-    tempPhoto = ev.target.result;
-    let img = document.getElementById('photoPreview');
-    img.src = tempPhoto; img.style.display="block";
+  let file=e.target.files[0]; if(!file) return;
+  let reader=new FileReader();
+  reader.onload=function(ev){
+    tempPhoto=ev.target.result;
+    let img=document.getElementById('photoPreview');
+    img.src=tempPhoto; img.style.display="block";
     document.getElementById('photoText').innerText="✅ Photo added! Tap to change";
   };
   reader.readAsDataURL(file);
 }
-
 function render(list){
-  let grid = document.getElementById('grid');
-  document.getElementById('countLabel').innerText = list.length + " items";
-  if(list.length==0){ grid.innerHTML="<p style='grid-column:1/3; text-align:center; color:#888;'>No product found. Add one!</p>"; return; }
-  grid.innerHTML = list.map((p,i)=>{
-    let realIndex = products.indexOf(p);
-    return `<div class="card">
-      <img src="${p.img}">
-      <div class="cardBody">
-        <b style="font-size:14px;">${p.name}</b><br>
-        <small style="color:#888;">${p.desc}</small><br>
-        <span class="price">₦${Number(p.price).toLocaleString()}</span> <span class="oldPrice">₦${Number(p.oldPrice||0).toLocaleString()}</span><br>
-        <button class="orderBtn" onclick="orderMe('${p.name}','${p.price}')">Order on WhatsApp 💬</button>
-        <button class="delBtn" onclick="delProduct(${realIndex})">Remove</button>
-      </div>
-    </div>`;
+  let grid=document.getElementById('grid');
+  document.getElementById('countLabel').innerText="("+products.length+")";
+  document.getElementById('emptyShop').style.display = products.length==0 ? "block" : "none";
+  if(list.length==0 && products.length>0){ grid.innerHTML="<p style='grid-column:1/3; text-align:center; color:#888;'>No product found.</p>"; return; }
+  if(products.length==0){ grid.innerHTML=""; return; }
+  grid.innerHTML=list.map((p,i)=>{
+    let realIndex=products.indexOf(p);
+    return `<div class="pCard"><img src="${p.img}"><div class="pBody"><b style="font-size:14px;">${p.name}</b><br><small style="color:#888;">${p.desc}</small><br><span class="price">₦${Number(p.price).toLocaleString()}</span><br><button class="orderBtn" onclick="orderMe('${p.name}','${p.price}')">Order on WhatsApp 💬</button><button class="delBtn" onclick="delProduct(${realIndex})">Remove</button></div></div>`;
   }).join('');
 }
-
 function addProduct(){
   let name=document.getElementById('pName').value;
   let price=document.getElementById('pPrice').value;
-  let old=document.getElementById('pOldPrice').value;
   let desc=document.getElementById('pDesc').value || "Good quality";
-  if(!name || !price){ alert("Put name + price first!"); return; }
+  if(!name||!price){ alert("Put name + price first!"); return; }
   if(!tempPhoto){ alert("Add photo first! Tap the photo box!"); return; }
-  products.unshift({ name:name, price:price, old:old||price, desc:desc, img:tempPhoto });
+  products.unshift({name:name, price:price, desc:desc, img:tempPhoto});
   render(products);
-  document.getElementById('pName').value=""; document.getElementById('pPrice').value=""; document.getElementById('pOldPrice').value=""; document.getElementById('pDesc').value="";
+  document.getElementById('pName').value=""; document.getElementById('pPrice').value=""; document.getElementById('pDesc').value="";
   tempPhoto=""; document.getElementById('photoPreview').style.display="none"; document.getElementById('photoText').innerText="📸 TAP TO ADD PHOTO OF YOUR GOODS";
-  alert("✅ Published! Your product don show for shop!");
-  window.scrollTo(0, document.body.scrollHeight);
+  alert("✅ Published! Your product don show!");
 }
-
 function delProduct(i){ if(confirm("Remove this product?")){ products.splice(i,1); render(products); } }
-
 function orderMe(name,price){
   let phone=document.getElementById('pPhone').value;
   if(!phone){ alert("Put your WhatsApp number for the box on top first! e.g. 2348031234567"); return; }
   let msg=encodeURIComponent("Hi Roxy! I want to buy "+name+" for ₦"+price);
   window.open("https://wa.me/"+phone+"?text="+msg,"_blank");
 }
-
 function doSearch(){
   let q=document.getElementById('searchInput').value.toLowerCase();
-  let found=products.filter(p=>(p.name+p.desc).toLowerCase().includes(q));
-  render(found);
+  render(products.filter(p=>(p.name+p.desc).toLowerCase().includes(q)));
+}
+// MONEY
+let bal=0, tin=0, tout=0;
+function addMoney(type){
+  let d=document.getElementById('moneyDesc').value || "Money";
+  let a=parseInt(document.getElementById('moneyAmt').value);
+  if(!a){ alert("Put amount!"); return; }
+  if(type=='in'){ bal+=a; tin+=a; } else { bal-=a; tout+=a; }
+  document.getElementById('balance').innerText="₦"+bal.toLocaleString();
+  document.getElementById('totalIn').innerText="₦"+tin.toLocaleString();
+  document.getElementById('totalOut').innerText="₦"+tout.toLocaleString();
+  document.getElementById('moneyMsg').innerText= bal>=0 ? "You dey go! Keep am up! 🔥" : "Careful, you don spend pass!";
+  document.getElementById('emptyMoney').style.display="none";
+  let div=document.createElement('div'); div.className='storyCard';
+  div.innerHTML=(type=='in'?"<b style='color:#1ed760;'>+ ₦"+a.toLocaleString()+"</b>":"<b style='color:#e60023;'>- ₦"+a.toLocaleString()+"</b>")+" — "+d;
+  document.getElementById('moneyList').prepend(div);
+  document.getElementById('moneyDesc').value=""; document.getElementById('moneyAmt').value="";
+}
+// STORY
+function addStory(){
+  let t=document.getElementById('storyTitle').value;
+  let txt=document.getElementById('storyText').value;
+  if(!t||!txt){ alert("Put title + story!"); return; }
+  document.getElementById('emptyStory').style.display="none";
+  let div=document.createElement('div'); div.className='storyCard';
+  div.innerHTML="<b>📖 "+t+"</b><p>"+txt+"</p><small>By Roxy • Just now • ❤️</small>";
+  document.getElementById('storyList').prepend(div);
+  document.getElementById('storyTitle').value=""; document.getElementById('storyText').value="";
 }
 render(products);
 </script>
