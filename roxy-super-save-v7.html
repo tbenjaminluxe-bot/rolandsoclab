@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>ROXY V6 - ALL IN ONE</title>
+<title>ROXY V7 - Visitors & Orders</title>
 <style>
 * { box-sizing:border-box; }
 body { margin:0; font-family:Arial; background:#f2f2f2; color:#111; }
@@ -13,7 +13,7 @@ body { margin:0; font-family:Arial; background:#f2f2f2; color:#111; }
 .page { display:none; padding:12px; padding-bottom:90px; }
 .page.active { display:block; }
 .nav { display:flex; background:#000; position:fixed; bottom:0; left:0; right:0; z-index:10; }
-.nav button { flex:1; background:none; border:none; color:#888; padding:10px 0; font-size:12px; }
+.nav button { flex:1; background:none; border:none; color:#888; padding:8px 0; font-size:11px; }
 .nav button.active { color:#1ed760; }
 .cardBox { background:white; padding:16px; border-radius:16px; box-shadow:0 2px 10px rgba(0,0,0,0.08); margin-bottom:12px; }
 input, textarea, select { width:100%; padding:13px; border-radius:10px; border:1px solid #ddd; margin-bottom:10px; font-size:15px; background:#fafafa; }
@@ -55,12 +55,14 @@ input, textarea, select { width:100%; padding:13px; border-radius:10px; border:1
 .goalBar { background:#eee; height:20px; border-radius:20px; overflow:hidden; margin:10px 0; }
 .goalFill { height:100%; background:#1ed760; width:0%; transition:0.5s; }
 .receipt { background:white; border:2px dashed #000; padding:16px; border-radius:12px; text-align:center; }
+.orderCard { background:white; padding:14px; border-radius:16px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.06); border-left:5px solid #25D366; }
+.visitCard { background:white; padding:12px 14px; border-radius:12px; margin-bottom:8px; border-left:5px solid #000; font-size:14px; }
 </style>
 </head>
 <body>
 <div class="top">
 <button class="backBtn" onclick="goBack()">⬅️</button>
-<b>👑 ROXY SUPER SAVE</b><span>🔥 V6 ALL</span>
+<b>👑 ROXY SUPER SAVE</b><span>🔥 V7</span>
 </div>
 
 <div id="page-shop" class="page active">
@@ -91,7 +93,7 @@ input, textarea, select { width:100%; padding:13px; border-radius:10px; border:1
 <div class="moneyTop"><small>YOUR BALANCE</small><br><b id="balance" style="font-size:34px;">₦0</b><br><small id="pinStatus">🔒 PIN Protected</small><br><button class="changePinBtn" onclick="changePin()">🔑 Change PIN</button></div>
 <div class="cardBox" style="margin-top:12px;">
 <h3 style="margin:0 0 8px 0;">🏆 My Savings Goal</h3>
-<p id="goalText" style="font-size:13px; color:#555;">Set your goal! e.g. ₦50,000 for Christmas</p>
+<p id="goalText" style="font-size:13px; color:#555;">Set your goal!</p>
 <div class="goalBar"><div id="goalFill" class="goalFill"></div></div>
 <b id="goalPercent">0% don reach!</b><br>
 <input id="goalInput" placeholder="Goal amount e.g. 50000" type="number">
@@ -132,26 +134,49 @@ input, textarea, select { width:100%; padding:13px; border-radius:10px; border:1
 <div id="storyList"></div>
 </div>
 
+<div id="page-orders" class="page">
+<div class="cardBox" style="background:#000; color:white; text-align:center;">
+<small>👀 TOTAL VISITORS</small><br><b id="visitCount" style="font-size:36px;">0</b><br><small>People wey open your shop link</small>
+</div>
+<div style="display:flex; gap:10px; margin-bottom:12px;">
+<div style="flex:1; background:white; padding:12px; border-radius:12px; text-align:center;"><small>🛒 ORDERS</small><br><b id="orderCount">0</b></div>
+<div style="flex:1; background:white; padding:12px; border-radius:12px; text-align:center;"><small>💰 ORDER VALUE</small><br><b id="orderValue">₦0</b></div>
+</div>
+<h3>🛒 Who Order? — Tap to call them!</h3>
+<div id="orderList"></div>
+<h3 style="margin-top:20px;">👀 Who Visit? — Last 20 visits</h3>
+<div id="visitList"></div>
+<button onclick="clearVisits()" style="width:100%; background:none; border:none; color:#999; padding:10px;">Clear Visit History</button>
+</div>
+
 <div id="viewer" class="viewer" onclick="closeViewer()"><img id="viewerImg"><b id="viewerName"></b><small>Tap anywhere to close</small><button onclick="closeViewer()">✖ CLOSE</button></div>
 
 <div class="nav">
 <button id="nav-shop" class="active" onclick="showPage('shop')">🛒<br>Shop</button>
 <button id="nav-money" onclick="showPage('money')">💰<br>Money</button>
 <button id="nav-story" onclick="showPage('story')">📖<br>Story</button>
+<button id="nav-orders" onclick="showPage('orders')">👀<br>Visitors</button>
 </div>
 
 <script>
 let currentPage='shop';
 function showPage(p){ currentPage=p; document.querySelectorAll('.page').forEach(e=>e.classList.remove('active')); document.getElementById('page-'+p).classList.add('active'); document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active')); document.getElementById('nav-'+p).classList.add('active'); }
-function goBack(){ if(currentPage=='money' || currentPage=='story'){ showPage('shop'); } else { alert("You already dey Shop — na home be this!"); } }
+function goBack(){ if(currentPage!='shop'){ showPage('shop'); } else { alert("You already dey Shop — na home be this!"); } }
 let products = JSON.parse(localStorage.getItem('roxy_products') || '[]');
 let moneyData = JSON.parse(localStorage.getItem('roxy_money') || '{"bal":0,"in":0,"out":0,"list":[]}');
 let stories = JSON.parse(localStorage.getItem('roxy_stories') || '[]');
 let goalData = JSON.parse(localStorage.getItem('roxy_goal') || '{"amt":0,"name":""}');
+let orders = JSON.parse(localStorage.getItem('roxy_orders') || '[]');
+let visits = JSON.parse(localStorage.getItem('roxy_visits') || '[]');
 let tempPhoto = ""; let payType='in'; let pinEntered=""; let savedPin = localStorage.getItem('roxy_pin') || "";
 let currentCat='All'; let lastReceipt={};
+// VISITOR TRACKING - NEW!
+let now = new Date().toLocaleString();
+visits.unshift({time: now, info: "Someone open your shop link"});
+if(visits.length>50) visits = visits.slice(0,50);
+localStorage.setItem('roxy_visits', JSON.stringify(visits));
 function updatePinStatus(){ document.getElementById('pinStatus').innerText = savedPin ? "🔒 PIN Protected • PIN don set" : "🔒 First time? Create your PIN for Step 3!"; document.getElementById('pinTitle').innerText = savedPin ? "🔒 Enter Your 4-Digit PIN" : "🔒 Create Your 4-Digit PIN"; }
-function saveAll(){ localStorage.setItem('roxy_products', JSON.stringify(products)); localStorage.setItem('roxy_money', JSON.stringify(moneyData)); localStorage.setItem('roxy_stories', JSON.stringify(stories)); localStorage.setItem('roxy_phone', document.getElementById('pPhone').value); localStorage.setItem('roxy_goal', JSON.stringify(goalData)); if(savedPin) localStorage.setItem('roxy_pin', savedPin); }
+function saveAll(){ localStorage.setItem('roxy_products', JSON.stringify(products)); localStorage.setItem('roxy_money', JSON.stringify(moneyData)); localStorage.setItem('roxy_stories', JSON.stringify(stories)); localStorage.setItem('roxy_phone', document.getElementById('pPhone').value); localStorage.setItem('roxy_goal', JSON.stringify(goalData)); localStorage.setItem('roxy_orders', JSON.stringify(orders)); localStorage.setItem('roxy_visits', JSON.stringify(visits)); if(savedPin) localStorage.setItem('roxy_pin', savedPin); }
 let savedPhone = localStorage.getItem('roxy_phone'); if(savedPhone) document.getElementById('pPhone').value = savedPhone;
 function previewPhoto(e){ let file=e.target.files[0]; if(!file) return; let reader=new FileReader(); reader.onload=function(ev){ tempPhoto=ev.target.result; let img=document.getElementById('photoPreview'); img.src=tempPhoto; img.style.display="block"; document.getElementById('photoText').innerText="✅ Photo added! Tap to change"; }; reader.readAsDataURL(file); }
 function openViewer(img, name){ document.getElementById('viewerImg').src = img; document.getElementById('viewerName').innerText = name; document.getElementById('viewer').style.display = "flex"; }
@@ -161,7 +186,12 @@ function render(list){ let grid=document.getElementById('grid'); document.getEle
 function addProduct(){ let name=document.getElementById('pName').value.trim(); let price=document.getElementById('pPrice').value.replace(/[^0-9]/g,''); let desc=document.getElementById('pDesc').value || "Good quality"; let cat=document.getElementById('pCat').value; if(!name||!price){ alert("Put name + price first!"); return; } if(!tempPhoto){ alert("Add photo first!"); return; } products.unshift({name:name, price:price, desc:desc, cat:cat, img:tempPhoto, sold:false}); saveAll(); render(products); document.getElementById('pName').value=""; document.getElementById('pPrice').value=""; document.getElementById('pDesc').value=""; tempPhoto=""; document.getElementById('photoPreview').style.display="none"; document.getElementById('photoText').innerText="📸 TAP TO ADD PHOTO OF YOUR GOODS"; alert("✅ SAVED!"); }
 function toggleSold(i){ products[i].sold = !products[i].sold; saveAll(); render(products); }
 function delProduct(i){ if(confirm("Remove this product?")){ products.splice(i,1); saveAll(); render(products); } }
-function orderMe(name,price){ let phone=document.getElementById('pPhone').value; if(!phone){ alert("Put your WhatsApp number first!"); return; } saveAll(); let msg=encodeURIComponent("Hi Roxy! I want to buy "+name+" for ₦"+price); window.open("https://wa.me/"+phone+"?text="+msg,"_blank"); }
+// ORDER WITH NAME + PHONE - NEW!
+function orderMe(name,price){ let buyerName = prompt("You want order "+name+" for ₦"+price+"?\n\nWetin be your NAME?"); if(!buyerName) return; let buyerPhone = prompt("Hi "+buyerName+"! Wetin be your WhatsApp number? e.g. 08031234567"); if(!buyerPhone) return; orders.unshift({product:name, price:price, name:buyerName, phone:buyerPhone, time:new Date().toLocaleString(), done:false}); saveAll(); renderOrders(); let myPhone=document.getElementById('pPhone').value; if(!myPhone){ alert("Order saved! But put your WhatsApp number first to chat buyer!"); return; } let msg=encodeURIComponent("Hi Roxy! I be "+buyerName+" ("+buyerPhone+"). I want to buy "+name+" for ₦"+price); window.open("https://wa.me/"+myPhone+"?text="+msg,"_blank"); }
+function renderOrders(){ document.getElementById('visitCount').innerText = visits.length; document.getElementById('orderCount').innerText = orders.length; let total = orders.reduce((s,o)=> s+Number(o.price||0),0); document.getElementById('orderValue').innerText = "₦"+total.toLocaleString(); if(orders.length==0){ document.getElementById('orderList').innerHTML="<div class='empty'>No order yet.<br>Share your link! When person order, e go show here!</div>"; } else { document.getElementById('orderList').innerHTML = orders.map((o,i)=>`<div class="orderCard"><b>🛒 ${o.product} — ₦${Number(o.price).toLocaleString()}</b><br>👤 Name: <b>${o.name}</b><br>📞 Phone: <b>${o.phone}</b><br><small>⏰ ${o.time}</small><br><div style="display:flex; gap:8px; margin-top:8px;"><button onclick="callBuyer('${o.phone}')" style="flex:1; background:#25D366; color:white; border:none; padding:10px; border-radius:20px; font-weight:bold;">📞 Call / WhatsApp</button><button onclick="markDone(${i})" style="flex:1; background:${o.done?'#1ed760':'#000'}; color:white; border:none; padding:10px; border-radius:20px; font-weight:bold;">${o.done?'✅ DONE':'Mark Done'}</button></div></div>`).join(''); } if(visits.length==0){ document.getElementById('visitList').innerHTML="<div class='empty'>No visit yet.</div>"; } else { document.getElementById('visitList').innerHTML = visits.slice(0,20).map(v=>`<div class="visitCard">👀 Visitor — ${v.time}<br><small>${v.info}</small></div>`).join(''); } }
+function callBuyer(phone){ let clean = phone.replace(/[^0-9]/g,''); if(clean.startsWith('0')) clean = '234'+clean.slice(1); window.open("https://wa.me/"+clean,"_blank"); }
+function markDone(i){ orders[i].done = !orders[i].done; saveAll(); renderOrders(); }
+function clearVisits(){ if(confirm("Clear visit history?")){ visits=[]; saveAll(); renderOrders(); } }
 function doSearch(){ render(products); }
 function renderGoal(){ if(!goalData.amt){ document.getElementById('goalText').innerText="Set your goal! e.g. ₦50,000 for Christmas"; document.getElementById('goalPercent').innerText="0% don reach!"; document.getElementById('goalFill').style.width="0%"; return; } let pct = Math.min(100, Math.round(moneyData.bal / goalData.amt * 100)); document.getElementById('goalText').innerText="🎯 Goal: "+goalData.name+" — ₦"+Number(goalData.amt).toLocaleString()+" | You get ₦"+moneyData.bal.toLocaleString(); document.getElementById('goalFill').style.width=pct+"%"; document.getElementById('goalPercent').innerText=pct+"% don reach! "+ (pct>=100 ? "🎉 YOU DON REACH AM!" : "Keep going!"); }
 function setGoal(){ let amt=parseInt(document.getElementById('goalInput').value); let name=document.getElementById('goalName').value || "My Goal"; if(!amt){ alert("Put goal amount first!"); return; } goalData={amt:amt, name:name}; saveAll(); renderGoal(); alert("🏆 Goal set! "+name+" — ₦"+amt.toLocaleString()); }
@@ -182,7 +212,7 @@ function resetPay(){ document.getElementById('moneyDesc').value=""; document.get
 function changePin(){ if(!savedPin){ let np = prompt("You never set PIN before! Create new PIN — 4 numbers only:"); if(!np) return; if(np.length!==4 || isNaN(np)){ alert("PIN must be 4 numbers!"); return; } savedPin=np; localStorage.setItem('roxy_pin', savedPin); updatePinStatus(); alert("✅ PIN CREATED!"); return; } let oldPin = prompt("Enter your OLD PIN:"); if(oldPin===null) return; if(oldPin!==savedPin){ alert("❌ Wrong OLD PIN!"); return; } let newPin = prompt("Old PIN correct! Enter NEW 4-digit PIN:"); if(!newPin) return; if(newPin.length!==4 || isNaN(newPin)){ alert("PIN must be 4 numbers!"); return; } let c2 = prompt("Type NEW PIN again:"); if(c2!==newPin){ alert("❌ PIN no match!"); return; } savedPin=newPin; localStorage.setItem('roxy_pin', savedPin); updatePinStatus(); alert("✅ PIN CHANGED!"); }
 function renderStories(){ document.getElementById('storyList').innerHTML = stories.map(s=>`<div class="storyCard"><b>📖 ${s.title}</b><p>${s.text}</p><small>By Roxy</small></div>`).join(''); }
 function addStory(){ let t=document.getElementById('storyTitle').value; let txt=document.getElementById('storyText').value; if(!t||!txt){ alert("Put title + story!"); return; } stories.unshift({title:t, text:txt}); saveAll(); renderStories(); document.getElementById('storyTitle').value=""; document.getElementById('storyText').value=""; }
-render(products); renderMoney(); renderStories(); updatePinStatus();
+render(products); renderMoney(); renderStories(); renderOrders(); updatePinStatus();
 </script>
 </body>
 </html>
