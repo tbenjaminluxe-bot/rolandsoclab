@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY v6.0 - All In One + 2 New Lessons</title>
+<title>ROXY v6.1 - All In One + Cyber Tools</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
@@ -52,8 +52,8 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v6.0</span> 🦈🛡️🐍🧰</h1>
-<p>Linux + Nmap + Wireshark + Python + Quiz + Phishing + Career + Attacks + Windows | By Roland 🇳🇬</p>
+<h1>ROXY <span>CHAT v6.1</span> 🦈🛡️🐍🧰</h1>
+<p>Linux + Nmap + Wireshark + Python + Quiz + Phishing + Career + Attacks + Windows + Cyber Tools | By Roland 🇳🇬</p>
 <p class="status" id="statusText">● Online</p>
 </div>
 <div class="login" id="loginScreen">
@@ -80,6 +80,7 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <button style="background:#ff00aa;color:#fff;" onclick="toggleCareer()">🧰 Career Tools</button>
 <button style="background:#dc2626;color:#fff;" onclick="toggleDDoS()">🛡️ Attacks By Layer</button>
 <button style="background:#2563eb;color:#fff;" onclick="toggleWin()">⌨️ Windows Shortcuts</button>
+<button style="background:#ff0055;color:#fff;" onclick="toggleCyber()">🧰 Cyber Tools</button>
 <button style="background:#00ff88;color:#000;" onclick="toggleShare()">🔗 Share</button>
 <button class="logout" onclick="doLogout()">Logout</button>
 </div>
@@ -171,6 +172,14 @@ Ctrl+C Copy<br>Ctrl+V Paste<br>Ctrl+X Cut<br>Ctrl+Z Undo<br>Ctrl+Y Redo<br>Ctrl+
 <div id="winAI" style="margin-top:8px;font-size:13px;"></div>
 </div>
 
+<div id="cyberBox" class="scamBox hidden" style="border-color:#ff0055;">
+<h3 style="color:#ff88aa;">🧰 CYBER SECURITY TOOLS - 4 GROUPS - So You No Go Forget!</h3>
+<input id="cyberSearch" placeholder="🔍 Search e.g. OpenVAS, Wireshark, Frida, Dradis..." oninput="renderCyber()">
+<div id="cyberList"></div>
+<button style="background:#ff0055;color:#fff;" onclick="askCyber()">🤖 Ask ROXY AI - Explain All 4</button>
+<div id="cyberAI" style="margin-top:8px;font-size:13px;"></div>
+</div>
+
 <div id="shareBox" class="scamBox hidden" style="border-color:#00ff88;">
 <h3 style="color:#aaffcc;">🔗 Share ROXY</h3>
 <p style="font-size:13px;color:#aaa;">Copy your link and share with friends!</p>
@@ -187,11 +196,12 @@ Ctrl+C Copy<br>Ctrl+V Paste<br>Ctrl+X Cut<br>Ctrl+Z Undo<br>Ctrl+Y Redo<br>Ctrl+
 <button onclick="quickAsk('career tools')">🧰 Career</button>
 <button onclick="quickAsk('ddos attack')">🛡️ DDoS</button>
 <button onclick="quickAsk('windows shortcut')">⌨️ Windows</button>
+<button onclick="quickAsk('cyber tools')">🧰 Cyber Tools</button>
 </div>
 <div class="chat" id="chat"></div>
 <div class="inputBox">
 <button class="micBtn" onclick="startMic()">🎤</button>
-<input id="inp" placeholder="Ask ROXY: ddos, windows, python, quiz, phishing, career..." onkeypress="if(event.key==='Enter')send()">
+<input id="inp" placeholder="Ask ROXY: cyber tools, ddos, windows, python..." onkeypress="if(event.key==='Enter')send()">
 <button class="sendBtn" onclick="send()">➤</button>
 </div>
 </div>
@@ -294,6 +304,12 @@ let CAREER=[
 {n:'8. Threat Intel & OSINT',items:'Maltego | Shodan | theHarvester | MISP | Censys',what:'OSINT = Open Source Intel - Find info from public internet. Shodan = Google for devices! E go find cameras, servers wey dey open.',tip:'Only search public info. No hack!'},
 {n:'9. Forensics & Incident Response',items:'Autopsy | Volatility | FTK Imager | Wireshark | Memory Analysis',what:'Forensics = After attack happen, find wetin hacker do. Like police for computer. Autopsy = Check hard drive. Volatility = Check memory (RAM).',tip:'If attack happen, no delete anything - save evidence!'}
 ];
+let CYBER=[
+{n:'1. 🎯 Vulnerability Scanning',items:'OpenVAS | Wapiti | Nikto | Vuls',what:'Scan to find weakness BEFORE hacker find am. Like check house door if e lock well.',tip:'Start here! Scan YOUR OWN lab only. OpenVAS = big scanner, Nikto = web scanner, Wapiti = find web holes, Vuls = check for known holes.'},
+{n:'2. 🕷️ Penetration Testing',items:'Wireshark | Ettercap | ArpSpoof | NetCat',what:'Legal test to see if you fit enter. Wireshark = see packets, Ettercap = see traffic for network, ArpSpoof = test ARP (for lab only!), NetCat = connect to ports like Swiss army knife.',tip:'You already sabi Wireshark! NetCat na next: nc -vv 192.168.1.1 80'},
+{n:'3. 📱 Mobile Security',items:'Drozer (Drozer) | Androguard | Frida | MobSF',what:'Check Android apps if dem get wahala. Drozer = test Android app, Androguard = read APK, Frida = hook app while e dey run, MobSF = full scan for Android + iOS.',tip:'Only test YOUR OWN app / test app. No test bank app!'},
+{n:'4. 📝 Reporting & Documentation',items:'Dradis | Faraday | Ghostwriter | PwnDoc',what:'After you find wahala, you MUST write report! Dradis = team report, Faraday = manage findings, Ghostwriter = write fine report, PwnDoc = make pentest report sharp.',tip:'SOC / Pen Tester wey no fit write report, no go get job! Practice: write 3 lines for any finding.'}
+];
 let myCmds=JSON.parse(localStorage.getItem('roxy_cmds')||'[]');
 let quizIdx=0,quizScore=0;
 function allCmds(){return [...DEFAULT_CMDS.map(c=>({...c,mine:false})), ...myCmds.map((c,i)=>({...c,mine:true,idx:i}))];}
@@ -301,14 +317,14 @@ window.onload=function(){updateHistCount();updateCmdCount();if(myName){showChat(
 function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN! Tap "Forgot PIN? Reset" below.');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
 function resetPin(){if(!confirm('Reset PIN?'))return;localStorage.removeItem('roxy_pin');localStorage.removeItem('roxy_name');savedPin='';myName='';alert('PIN don reset! Type name + NEW PIN and tap Enter Chat.');location.reload();}
 function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
-function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands + 10 Linux + 10 Wireshark + 10 Python + Quiz + Phishing + 9 Career Groups + 2 NEW Lessons! Tap 🛡️ Attacks or ⌨️ Windows!`:`Hi ${myName}! Na me be ROXY v6.0 - ALL IN ONE! 🦈🐍🎮🌐🧰🛡️⌨️`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
+function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands + 10 Linux + 10 Wireshark + 10 Python + Quiz + Phishing + 9 Career Groups + Attacks + Windows + 4 Cyber Tools Groups! Tap 🧰 Cyber Tools!`:`Hi ${myName}! Na me be ROXY v6.1 - ALL IN ONE! 🦈🐍🎮🌐🧰🛡️⌨️`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
 function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';b.className=voiceOn?'':'off';if(voiceOn)speak("Voice on!");}
 function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
 function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;window.speechSynthesis.speak(u);}
 function testVoice(){speak(`Hi ${myName}! I sabi Python, Quiz, Phishing and Career Tools now.`);}
 function startMic(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert("Your browser no support mic. Type instead!");return;}let Rec=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=new Rec();rec.lang='en-US';rec.onresult=(e)=>{inp.value=e.results[0][0].transcript;send();};rec.start();}
 function quickAsk(t){inp.value=t;send();}
-function hideAll(){['scamBox','histBox','cmdBox','linuxBox','sharkBox','pyBox','quizBox','phishBox','careerBox','shareBox','ddosBox','winBox'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
+function hideAll(){['scamBox','histBox','cmdBox','linuxBox','sharkBox','pyBox','quizBox','phishBox','careerBox','shareBox','ddosBox','winBox','cyberBox'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
 function toggleScam(){let b=document.getElementById('scamBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
 function toggleHistory(){let b=document.getElementById('histBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderHistory();}}
 function toggleCmd(){let b=document.getElementById('cmdBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderCmds();}}
@@ -320,8 +336,10 @@ function togglePhish(){let b=document.getElementById('phishBox');let w=b.classLi
 function toggleCareer(){let b=document.getElementById('careerBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderCareer();}}
 function toggleDDoS(){let b=document.getElementById('ddosBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
 function toggleWin(){let b=document.getElementById('winBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
+function toggleCyber(){let b=document.getElementById('cyberBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderCyber();}}
 function askDDoS(){document.getElementById('ddosAI').innerHTML="🤖 <b>ROXY AI:</b> Layer 3/4 na ROAD, Layer 7 na SHOP. Volumetric block road with plenty cars. Application disturb one shop only. IP na house address so data sabi where to go. Learn to DEFEND, no attack others!"; speak("Layer 3 and 4 na road, Layer 7 na shop. Learn to defend!");}
 function askWin(){document.getElementById('winAI').innerHTML="🤖 <b>ROXY AI:</b> Try now: Windows+L to lock, Windows+E for files, Ctrl+Shift+T to bring back closed tab. Which 3 you go use most?"; speak("Try Windows L to lock, Windows E for files!");}
+function askCyber(){document.getElementById('cyberAI').innerHTML="🤖 <b>ROXY AI:</b> Remember am like this: 1. SCAN find wahala (OpenVAS/Nikto), 2. TEST try enter (Wireshark/NetCat), 3. MOBILE check phone apps (Frida/MobSF), 4. REPORT write am down (Dradis/PwnDoc). Scan -> Test -> Mobile -> Report!"; speak("Scan, Test, Mobile, Report! You go remember am!");}
 function toggleShare(){let b=document.getElementById('shareBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');document.getElementById('shareLink').value=window.location.href;}}
 function copyShare(){let v=document.getElementById('shareLink');v.select();document.execCommand('copy');alert('Link Copied! ✅');}
 function updateHistCount(){document.getElementById('histCount').innerText=history.length;}
@@ -334,6 +352,7 @@ function renderLinux(){let q=(document.getElementById('linuxSearch').value||'').
 function renderShark(){let q=(document.getElementById('sharkSearch').value||'').toLowerCase();let list=document.getElementById('sharkList');let f=SHARK.filter(x=>(x.n+x.what+x.how+x.filter+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="toolCard" style="border-color:#00ffff;"><b style="color:#aaffff;">🦈 ${x.n}</b><br><b>What:</b> ${x.what}<br><b>How:</b> ${x.how}<br><b>Filter:</b><code>${x.filter}</code><button class="copyBtn" style="background:#00aaaa!important;color:#000!important;" onclick="copyCmd('${x.filter}')">📋 Copy Filter</button><br><span style="color:#aaffff;">${x.tip}</span></div>`).join('');}
 function renderPy(){let q=(document.getElementById('pySearch').value||'').toLowerCase();let list=document.getElementById('pyList');let f=PY.filter(x=>(x.n+x.what+x.code+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="toolCard" style="border-color:#ffdd00;"><b style="color:#ffee88;">🐍 ${x.n}</b><br><b>What:</b> ${x.what}<br><b>Code:</b><code>${x.code.replace(/\n/g,'<br>')}</code><button class="copyBtn" style="background:#ffdd00!important;color:#000!important;" onclick="copyCmd('${x.code.replace(/\n/g,'\\n').replace(/'/g,"")}')">📋 Copy Code</button><br><span style="color:#ffee88;">💡 ${x.tip}</span></div>`).join('');}
 function renderCareer(){let q=(document.getElementById('careerSearch').value||'').toLowerCase();let list=document.getElementById('careerList');let f=CAREER.filter(x=>(x.n+x.items+x.what+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="toolCard" style="border-color:#ff00aa;"><b style="color:#ff88cc;">🧰 ${x.n}</b><br><b>Tools:</b> ${x.items}<br><b>What:</b> ${x.what}<br><span style="color:#ff88cc;">💡 ${x.tip}</span></div>`).join('');}
+function renderCyber(){let q=(document.getElementById('cyberSearch').value||'').toLowerCase();let list=document.getElementById('cyberList');let f=CYBER.filter(x=>(x.n+x.items+x.what+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="toolCard" style="border-color:#ff0055;"><b style="color:#ff88aa;">${x.n}</b><br><b>Tools:</b> ${x.items}<br><b>What:</b> ${x.what}<br><span style="color:#ff88aa;">💡 ${x.tip}</span></div>`).join('');}
 function copyCmd(txt){navigator.clipboard.writeText(txt).then(()=>alert('Copied!')).catch(()=>{let ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();alert('Copied!');});}
 function saveMyCmd(){let t=document.getElementById('newCmdTitle').value.trim();let c=document.getElementById('newCmdText').value.trim();let d=document.getElementById('newCmdDesc').value.trim()||'My saved command';if(!t||!c){alert('Type Title + Command first!');return;}myCmds.unshift({t:t,c:c,d:d,tag:'mine'});localStorage.setItem('roxy_cmds',JSON.stringify(myCmds));document.getElementById('newCmdTitle').value='';document.getElementById('newCmdText').value='';document.getElementById('newCmdDesc').value='';updateCmdCount();renderCmds();alert('Saved! ✅');}
 function deleteMyCmd(i){if(!confirm('Delete?'))return;myCmds.splice(i,1);localStorage.setItem('roxy_cmds',JSON.stringify(myCmds));updateCmdCount();renderCmds();}
@@ -378,6 +397,7 @@ function addMsg(text,who){let d=document.createElement('div');d.className='msg '
 function send(){let t=inp.value.trim();if(!t)return;addMsg(t,'me');inp.value='';let ty=document.createElement('div');ty.className='typing';ty.id='typing';ty.innerText='ROXY is thinking...';chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{document.getElementById('typing').remove();let ans=getReply(t);addMsg(ans,'roxy');speak(ans);},600);}
 function getReply(text){
   let t=text.toLowerCase();
+  if(t.includes('cyber')||t.includes('openvas')||t.includes('nikto')||t.includes('frida')||t.includes('mobsf')||t.includes('dradis')||t.includes('wapiti')||t.includes('vuls')||t.includes('ettercap')||t.includes('netcat')||t.includes('drozer')||t.includes('androguard')||t.includes('faraday')||t.includes('ghostwriter')||t.includes('pwndoc'))return `<b>🧰 CYBER SECURITY TOOLS!</b><br>1. Vulnerability Scanning: OpenVAS, Wapiti, Nikto, Vuls - find weakness<br>2. Penetration Testing: Wireshark, Ettercap, ArpSpoof, NetCat - legal test<br>3. Mobile Security: Drozer, Androguard, Frida, MobSF - check phone apps<br>4. Reporting: Dradis, Faraday, Ghostwriter, PwnDoc - write report! Tap 🧰 Cyber Tools!`;
   if(t.includes('ddos')||t.includes('attack')||t.includes('layer')||t.includes('volumetric'))return `<b>🛡️ Attacks By Layer!</b><br>Layer 3/4 = ROAD: Volumetric flood + Protocol exploit knock whole network. Layer 7 = SHOP: Attack one app only. IP = house address e.g 192.168.1.10. Defend: Firewall + Cloudflare. Tap 🛡️ Attacks By Layer for top!`;
   if(t.includes('windows')||t.includes('shortcut')||t.includes('ctrl+')||t.includes('lock'))return `<b>⌨️ Windows Shortcuts!</b><br>Windows+L Lock, Windows+E Files, Windows+Shift+S Snip, Ctrl+Shift+T Bring back tab, Alt+Tab Switch. Tap ⌨️ Windows Shortcuts for full list!`;
   if(t.includes('ip')&&t.includes('what'))return `<b>What is IP?</b><br>IP na unique number for device, like house address. Example: 192.168.1.10. Without am data no sabi where to go!`;
@@ -391,10 +411,10 @@ function getReply(text){
   if(t.includes('wireshark'))return `<b>🦈 WIRESHARK</b><br>Filters: http, dns, ip.addr == 192.168.1.1, icmp, arp<br>Tap 🦈 Wireshark!`;
   if(t.includes('nmap'))return `<b>Nmap 📟</b><br>-sS SYN, -sT Connect, -sU UDP, -p 22, -p- all ports, -T0-T5 speed, -O OS, -sV version`;
   if(t.includes('linux'))return `<b>Linux 🐧</b><br>Tap 🐧 Linux Fix - 10 scenarios!`;
-  if(t==="hi"||t==="hello"||t.startsWith("hi "))return `Hi ${myName}! Ask me: 'ddos', 'windows shortcut', 'python', 'quiz', 'phishing link', 'career tools', 'wireshark', or tap 🛡️⌨️🐍🎮🌐🧰!`;
+  if(t==="hi"||t==="hello"||t.startsWith("hi "))return `Hi ${myName}! Ask me: 'cyber tools', 'ddos', 'windows shortcut', 'python', 'quiz', 'phishing link', 'career tools', 'wireshark', or tap 🧰🛡️⌨️🐍🎮🌐!`;
   if(t.includes('thank'))return `You are welcome, ${myName}!`;
   if(t.includes('bye'))return `Good night, ${myName}! ROXY dey watch.`;
-  return `Interesting, ${myName}! Ask me: 'ddos', 'windows shortcut', 'python', 'quiz', 'phishing link', 'career tools', 'wireshark', or tap 🛡️ Attacks / ⌨️ Windows / 🐍 Python / 🎮 Quiz!`;
+  return `Interesting, ${myName}! Ask me: 'cyber tools', 'ddos', 'windows shortcut', 'python', 'quiz', 'phishing link', 'career tools', 'wireshark', or tap 🧰 Cyber Tools / 🛡️ Attacks / ⌨️ Windows!`;
 }
 </script>
 </body>
