@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY v6.2 - All In One + Subnetting</title>
+<title>ROXY v6.3 - All In One + Android Partitions</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
@@ -55,8 +55,8 @@ th{background:#222;color:#00ff88}
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v6.2</span> 🦈🛡️🐍🧰🌐</h1>
-<p>Linux + Nmap + Wireshark + Python + Quiz + Phishing + Career + Attacks + Windows + Cyber Tools + Subnetting | By Roland 🇳🇬</p>
+<h1>ROXY <span>CHAT v6.3</span> 🦈🛡️🐍🧰🌐📱</h1>
+<p>Linux + Nmap + Wireshark + Python + Quiz + Phishing + Career + Attacks + Windows + Cyber Tools + Subnetting + Android | By Roland 🇳🇬</p>
 <p class="status" id="statusText">● Online</p>
 </div>
 <div class="login" id="loginScreen">
@@ -85,6 +85,7 @@ th{background:#222;color:#00ff88}
 <button style="background:#2563eb;color:#fff;" onclick="toggleWin()">⌨️ Windows Shortcuts</button>
 <button style="background:#ff0055;color:#fff;" onclick="toggleCyber()">🧰 Cyber Tools</button>
 <button style="background:#00ff88;color:#000;" onclick="toggleSubnet()">🌐 Subnetting</button>
+<button style="background:#3ddc84;color:#000;" onclick="toggleAndroid()">📱 Android Partitions</button>
 <button style="background:#00ff88;color:#000;" onclick="toggleShare()">🔗 Share</button>
 <button class="logout" onclick="doLogout()">Logout</button>
 </div>
@@ -196,28 +197,8 @@ Ctrl+C Copy<br>Ctrl+V Paste<br>Ctrl+X Cut<br>Ctrl+Z Undo<br>Ctrl+Y Redo<br>Ctrl+
 <table>
 <tr><th>CIDR</th><th>Subnet Mask</th><th>Hosts</th></tr>
 <tr><td>/1</td><td>128.0.0.0</td><td>2,147,483,646</td></tr>
-<tr><td>/2</td><td>192.0.0.0</td><td>1,073,741,822</td></tr>
-<tr><td>/3</td><td>224.0.0.0</td><td>536,870,910</td></tr>
-<tr><td>/4</td><td>240.0.0.0</td><td>268,435,454</td></tr>
-<tr><td>/5</td><td>248.0.0.0</td><td>134,217,726</td></tr>
-<tr><td>/6</td><td>252.0.0.0</td><td>67,108,862</td></tr>
-<tr><td>/7</td><td>254.0.0.0</td><td>33,554,430</td></tr>
 <tr><td>/8</td><td>255.0.0.0</td><td>16,777,214</td></tr>
-<tr><td>/9</td><td>255.128.0.0</td><td>8,388,606</td></tr>
-<tr><td>/10</td><td>255.192.0.0</td><td>4,194,302</td></tr>
-<tr><td>/11</td><td>255.224.0.0</td><td>2,097,150</td></tr>
-<tr><td>/12</td><td>255.240.0.0</td><td>1,048,574</td></tr>
-<tr><td>/13</td><td>255.248.0.0</td><td>524,286</td></tr>
-<tr><td>/14</td><td>255.252.0.0</td><td>262,142</td></tr>
-<tr><td>/15</td><td>255.254.0.0</td><td>131,070</td></tr>
 <tr><td>/16</td><td>255.255.0.0</td><td>65,534</td></tr>
-<tr><td>/17</td><td>255.255.128.0</td><td>32,766</td></tr>
-<tr><td>/18</td><td>255.255.192.0</td><td>16,382</td></tr>
-<tr><td>/19</td><td>255.255.224.0</td><td>8,190</td></tr>
-<tr><td>/20</td><td>255.255.240.0</td><td>4,094</td></tr>
-<tr><td>/21</td><td>255.255.248.0</td><td>2,046</td></tr>
-<tr><td>/22</td><td>255.255.252.0</td><td>1,022</td></tr>
-<tr><td>/23</td><td>255.255.254.0</td><td>510</td></tr>
 <tr><td>/24</td><td>255.255.255.0</td><td>254</td></tr>
 <tr><td>/25</td><td>255.255.255.128</td><td>126</td></tr>
 <tr><td>/26</td><td>255.255.255.192</td><td>62</td></tr>
@@ -225,12 +206,23 @@ Ctrl+C Copy<br>Ctrl+V Paste<br>Ctrl+X Cut<br>Ctrl+Z Undo<br>Ctrl+Y Redo<br>Ctrl+
 <tr><td>/28</td><td>255.255.255.240</td><td>14</td></tr>
 <tr><td>/29</td><td>255.255.255.248</td><td>6</td></tr>
 <tr><td>/30</td><td>255.255.255.252</td><td>2</td></tr>
-<tr><td>/31</td><td>255.255.255.254</td><td>0 (Point-to-Point)</td></tr>
-<tr><td>/32</td><td>255.255.255.255</td><td>1 (Single Host)</td></tr>
+<tr><td>/31</td><td>255.255.255.254</td><td>0</td></tr>
+<tr><td>/32</td><td>255.255.255.255</td><td>1</td></tr>
 </table>
-<p style="font-size:12px;margin-top:8px;color:#aaa;">Subnet Mask (Replace x): 128 | 192 | 224 | 240 | 248 | 252 | 254 | 255<br>Example from your sheet: 192.168.1.0/24 = Subnet 255.255.255.0 | Hosts 254 | Range 192.168.1.1 - 192.168.1.254 | Broadcast 192.168.1.255</p>
+<p style="font-size:12px;margin-top:8px;color:#aaa;">Example: 192.168.1.0/24 = Mask 255.255.255.0 | Hosts 254 | Range 192.168.1.1 - 192.168.1.254 | Broadcast 192.168.1.255</p>
 <button style="background:#00ff88;color:#000;" onclick="askSubnet()">🤖 Ask ROXY AI - Explain Subnetting</button>
 <div id="subnetAI" style="margin-top:8px;font-size:13px;"></div>
+</div>
+
+<div id="androidBox" class="scamBox hidden" style="border-color:#3ddc84;">
+<h3 style="color:#aaffcc;">📱 Understanding The Partition Layout - Android Hacker's Handbook</h3>
+<p style="font-size:12px;color:#ffaaaa;background:#2a0000;padding:8px;border-radius:8px;">⚠️ WARNING: From your book - Rooting your device, if you do not know what you are doing, can cause your phone to stop functioning correctly. Most Android devices can be returned to stock factory state if needed. Learn first, no rush!</p>
+<p style="font-size:13px;line-height:1.6;margin-top:8px;">Partitions are logical storage units or divisions made inside the device's persistent storage memory. The layout refers to the order, offsets, and sizes of the various partitions. The partition layout is handled by the boot loader in most devices, although in some rare cases it can also be handled by the kernel itself.</p>
+<p style="font-size:13px;margin-top:6px;">Layout fit vary between vendors and platforms. Two different devices typically do not have the same partitions or the same layout. However, a few partitions are present in all Android devices. The most common of these are the boot, system, data, recovery, and cache partitions.</p>
+<input id="androidSearch" placeholder="🔍 Search e.g. boot, system, cache, radio..." oninput="renderAndroid()">
+<div id="androidList"></div>
+<button style="background:#3ddc84;color:#000;" onclick="askAndroid()">🤖 Ask ROXY AI - Explain Partitions</button>
+<div id="androidAI" style="margin-top:8px;font-size:13px;"></div>
 </div>
 
 <div id="shareBox" class="scamBox hidden" style="border-color:#00ff88;">
@@ -251,11 +243,12 @@ Ctrl+C Copy<br>Ctrl+V Paste<br>Ctrl+X Cut<br>Ctrl+Z Undo<br>Ctrl+Y Redo<br>Ctrl+
 <button onclick="quickAsk('windows shortcut')">⌨️ Windows</button>
 <button onclick="quickAsk('cyber tools')">🧰 Cyber Tools</button>
 <button onclick="quickAsk('subnetting')">🌐 Subnetting</button>
+<button onclick="quickAsk('android partitions')">📱 Android</button>
 </div>
 <div class="chat" id="chat"></div>
 <div class="inputBox">
 <button class="micBtn" onclick="startMic()">🎤</button>
-<input id="inp" placeholder="Ask ROXY: subnetting, cyber tools, ddos, windows..." onkeypress="if(event.key==='Enter')send()">
+<input id="inp" placeholder="Ask ROXY: android, subnetting, cyber tools..." onkeypress="if(event.key==='Enter')send()">
 <button class="sendBtn" onclick="send()">➤</button>
 </div>
 </div>
@@ -364,6 +357,16 @@ let CYBER=[
 {n:'3. 📱 Mobile Security',items:'Drozer (Drozer) | Androguard | Frida | MobSF',what:'Check Android apps if dem get wahala. Drozer = test Android app, Androguard = read APK, Frida = hook app while e dey run, MobSF = full scan for Android + iOS.',tip:'Only test YOUR OWN app / test app. No test bank app!'},
 {n:'4. 📝 Reporting & Documentation',items:'Dradis | Faraday | Ghostwriter | PwnDoc',what:'After you find wahala, you MUST write report! Dradis = team report, Faraday = manage findings, Ghostwriter = write fine report, PwnDoc = make pentest report sharp.',tip:'SOC / Pen Tester wey no fit write report, no go get job! Practice: write 3 lines for any finding.'}
 ];
+let ANDROID=[
+{n:'1. bootloader',what:'Stores the phone\'s boot loader program, which takes care of initializing the hardware when the phone boots, booting the Android kernel, and implementing alternative boot modes such as download mode.',tip:'Na first thing wey run when you power phone. E decide which system to boot.'},
+{n:'2. splash',what:'Stores the first splash screen image seen right after powering on the device. This usually contains the manufacturer\'s or operator\'s logo. On some devices, the splash screen bitmap is embedded in the boot loader itself rather than stored in a separate partition.',tip:'Na logo you see first when phone on.'},
+{n:'3. boot',what:'Stores the Android boot image, which consists of a Linux kernel (zImage) and the root file system ram disk (initrd).',tip:'Kernel + initrd dey here. If this spoil, phone no go boot.'},
+{n:'4. recovery',what:'Stores a minimal Android boot image that provides maintenance functions and serves as a failsafe.',tip:'Recovery na emergency mode - to wipe, update, repair.'},
+{n:'5. system',what:'Stores the Android system image that is mounted as /system on a device. This image contains the Android framework, libraries, system binaries, and pre-installed applications.',tip:'Mounted as /system. Android OS itself dey here.'},
+{n:'6. userdata',what:'Also called the data partition, this is the device\'s internal storage for application data and user files such as pictures, videos, audio, and downloads. This is mounted as /data on a booted system.',tip:'Mounted as /data. Your photos, apps data, downloads dey here!'},
+{n:'7. cache',what:'Used to store various utility files such as recovery logs and update packages downloaded over-the-air. On devices with applications installed on an SD card, it may also contain the Dalvik VM cache folder, which stores the Dalvik-cache (VM) cache.',tip:'Temporary files, update packages, cache dey here.'},
+{n:'8. radio',what:'A partition that stores the baseband image. This partition is usually present only on devices with telephony capabilities.',tip:'Baseband = phone network part. Only phones with SIM get am.'}
+];
 let myCmds=JSON.parse(localStorage.getItem('roxy_cmds')||'[]');
 let quizIdx=0,quizScore=0;
 function allCmds(){return [...DEFAULT_CMDS.map(c=>({...c,mine:false})), ...myCmds.map((c,i)=>({...c,mine:true,idx:i}))];}
@@ -371,14 +374,14 @@ window.onload=function(){updateHistCount();updateCmdCount();if(myName){showChat(
 function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN! Tap "Forgot PIN? Reset" below.');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
 function resetPin(){if(!confirm('Reset PIN?'))return;localStorage.removeItem('roxy_pin');localStorage.removeItem('roxy_name');savedPin='';myName='';alert('PIN don reset! Type name + NEW PIN and tap Enter Chat.');location.reload();}
 function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
-function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands + 10 Linux + 10 Wireshark + 10 Python + Quiz + Phishing + 9 Career Groups + Attacks + Windows + 4 Cyber Tools + Subnetting! Tap 🌐 Subnetting!`:`Hi ${myName}! Na me be ROXY v6.2 - ALL IN ONE! 🦈🐍🎮🌐🧰🛡️⌨️`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
+function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands + 10 Linux + 10 Wireshark + 10 Python + Quiz + Phishing + 9 Career Groups + Attacks + Windows + 4 Cyber Tools + Subnetting + 8 Android Partitions! Tap 📱 Android!`:`Hi ${myName}! Na me be ROXY v6.3 - ALL IN ONE! 🦈🐍🎮🌐🧰🛡️⌨️📱`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
 function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';b.className=voiceOn?'':'off';if(voiceOn)speak("Voice on!");}
 function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
 function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;window.speechSynthesis.speak(u);}
 function testVoice(){speak(`Hi ${myName}! I sabi Python, Quiz, Phishing and Career Tools now.`);}
 function startMic(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert("Your browser no support mic. Type instead!");return;}let Rec=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=new Rec();rec.lang='en-US';rec.onresult=(e)=>{inp.value=e.results[0][0].transcript;send();};rec.start();}
 function quickAsk(t){inp.value=t;send();}
-function hideAll(){['scamBox','histBox','cmdBox','linuxBox','sharkBox','pyBox','quizBox','phishBox','careerBox','shareBox','ddosBox','winBox','cyberBox','subnetBox'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
+function hideAll(){['scamBox','histBox','cmdBox','linuxBox','sharkBox','pyBox','quizBox','phishBox','careerBox','shareBox','ddosBox','winBox','cyberBox','subnetBox','androidBox'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
 function toggleScam(){let b=document.getElementById('scamBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
 function toggleHistory(){let b=document.getElementById('histBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderHistory();}}
 function toggleCmd(){let b=document.getElementById('cmdBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderCmds();}}
@@ -392,10 +395,12 @@ function toggleDDoS(){let b=document.getElementById('ddosBox');let w=b.classList
 function toggleWin(){let b=document.getElementById('winBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
 function toggleCyber(){let b=document.getElementById('cyberBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderCyber();}}
 function toggleSubnet(){let b=document.getElementById('subnetBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
+function toggleAndroid(){let b=document.getElementById('androidBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderAndroid();}}
 function askDDoS(){document.getElementById('ddosAI').innerHTML="🤖 <b>ROXY AI:</b> Layer 3/4 na ROAD, Layer 7 na SHOP. Volumetric block road with plenty cars. Application disturb one shop only. IP na house address so data sabi where to go. Learn to DEFEND, no attack others!"; speak("Layer 3 and 4 na road, Layer 7 na shop. Learn to defend!");}
 function askWin(){document.getElementById('winAI').innerHTML="🤖 <b>ROXY AI:</b> Try now: Windows+L to lock, Windows+E for files, Ctrl+Shift+T to bring back closed tab. Which 3 you go use most?"; speak("Try Windows L to lock, Windows E for files!");}
 function askCyber(){document.getElementById('cyberAI').innerHTML="🤖 <b>ROXY AI:</b> Remember am like this: 1. SCAN find wahala (OpenVAS/Nikto), 2. TEST try enter (Wireshark/NetCat), 3. MOBILE check phone apps (Frida/MobSF), 4. REPORT write am down (Dradis/PwnDoc). Scan -> Test -> Mobile -> Report!"; speak("Scan, Test, Mobile, Report! You go remember am!");}
 function askSubnet(){document.getElementById('subnetAI').innerHTML="🤖 <b>ROXY AI:</b> Subnetting na to cut big network into small small pieces. Example: /24 = 254 devices. /25 = 126, /26 = 62, /27 = 30. Rule: Hosts double each CIDR, minus 2 for Network + Broadcast. 192.168.1.0/24: Network 192.168.1.0, First 192.168.1.1, Last 192.168.1.254, Broadcast 192.168.1.255!"; speak("Subnetting na to cut big network into small pieces!");}
+function askAndroid(){document.getElementById('androidAI').innerHTML="🤖 <b>ROXY AI:</b> Think am like house: bootloader = gate man, splash = signboard, boot = engine, recovery = emergency room, system = house itself (/system), userdata = your room (/data) - photos + apps dey there, cache = store room, radio = phone network. Remember: boot, system, data, recovery, cache na the 5 main ones!"; speak("Bootloader na gate man, system na house, data na your room!");}
 function calcSubnet(){
   let ip=document.getElementById('subIP').value.trim(); let cidr=parseInt(document.getElementById('subCIDR').value);
   if(!ip||isNaN(cidr)||cidr<0||cidr>32){alert('Type correct IP + CIDR e.g. 192.168.1.0 + 24');return;}
@@ -422,6 +427,7 @@ function renderShark(){let q=(document.getElementById('sharkSearch').value||'').
 function renderPy(){let q=(document.getElementById('pySearch').value||'').toLowerCase();let list=document.getElementById('pyList');let f=PY.filter(x=>(x.n+x.what+x.code+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="toolCard" style="border-color:#ffdd00;"><b style="color:#ffee88;">🐍 ${x.n}</b><br><b>What:</b> ${x.what}<br><b>Code:</b><code>${x.code.replace(/\n/g,'<br>')}</code><button class="copyBtn" style="background:#ffdd00!important;color:#000!important;" onclick="copyCmd('${x.code.replace(/\n/g,'\\n').replace(/'/g,"")}')">📋 Copy Code</button><br><span style="color:#ffee88;">💡 ${x.tip}</span></div>`).join('');}
 function renderCareer(){let q=(document.getElementById('careerSearch').value||'').toLowerCase();let list=document.getElementById('careerList');let f=CAREER.filter(x=>(x.n+x.items+x.what+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="toolCard" style="border-color:#ff00aa;"><b style="color:#ff88cc;">🧰 ${x.n}</b><br><b>Tools:</b> ${x.items}<br><b>What:</b> ${x.what}<br><span style="color:#ff88cc;">💡 ${x.tip}</span></div>`).join('');}
 function renderCyber(){let q=(document.getElementById('cyberSearch').value||'').toLowerCase();let list=document.getElementById('cyberList');let f=CYBER.filter(x=>(x.n+x.items+x.what+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="toolCard" style="border-color:#ff0055;"><b style="color:#ff88aa;">${x.n}</b><br><b>Tools:</b> ${x.items}<br><b>What:</b> ${x.what}<br><span style="color:#ff88aa;">💡 ${x.tip}</span></div>`).join('');}
+function renderAndroid(){let q=(document.getElementById('androidSearch').value||'').toLowerCase();let list=document.getElementById('androidList');let f=ANDROID.filter(x=>(x.n+x.what+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="toolCard" style="border-color:#3ddc84;"><b style="color:#aaffcc;">📱 ${x.n}</b><br>${x.what}<br><span style="color:#aaffcc;">💡 ${x.tip}</span></div>`).join('');}
 function copyCmd(txt){navigator.clipboard.writeText(txt).then(()=>alert('Copied!')).catch(()=>{let ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();alert('Copied!');});}
 function saveMyCmd(){let t=document.getElementById('newCmdTitle').value.trim();let c=document.getElementById('newCmdText').value.trim();let d=document.getElementById('newCmdDesc').value.trim()||'My saved command';if(!t||!c){alert('Type Title + Command first!');return;}myCmds.unshift({t:t,c:c,d:d,tag:'mine'});localStorage.setItem('roxy_cmds',JSON.stringify(myCmds));document.getElementById('newCmdTitle').value='';document.getElementById('newCmdText').value='';document.getElementById('newCmdDesc').value='';updateCmdCount();renderCmds();alert('Saved! ✅');}
 function deleteMyCmd(i){if(!confirm('Delete?'))return;myCmds.splice(i,1);localStorage.setItem('roxy_cmds',JSON.stringify(myCmds));updateCmdCount();renderCmds();}
@@ -466,25 +472,23 @@ function addMsg(text,who){let d=document.createElement('div');d.className='msg '
 function send(){let t=inp.value.trim();if(!t)return;addMsg(t,'me');inp.value='';let ty=document.createElement('div');ty.className='typing';ty.id='typing';ty.innerText='ROXY is thinking...';chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{document.getElementById('typing').remove();let ans=getReply(t);addMsg(ans,'roxy');speak(ans);},600);}
 function getReply(text){
   let t=text.toLowerCase();
-  if(t.includes('subnet')||t.includes('cidr')||t.includes('/24')||t.includes('/25')||t.includes('broadcast')||t.includes('network id'))return `<b>🌐 Subnetting!</b><br>Subnetting na to cut big network into small pieces. /24 = 254 hosts, /25 = 126, /26 = 62, /27 = 30, /28 = 14. Rule: Minus 2 for Network ID + Broadcast. Example: 192.168.1.0/24: Network 192.168.1.0, Range 192.168.1.1 - 192.168.1.254, Broadcast 192.168.1.255. Tap 🌐 Subnetting + try Calculator!`;
-  if(t.includes('cyber')||t.includes('openvas')||t.includes('nikto')||t.includes('frida')||t.includes('mobsf')||t.includes('dradis'))return `<b>🧰 CYBER SECURITY TOOLS!</b><br>1. Vulnerability Scanning: OpenVAS, Wapiti, Nikto, Vuls<br>2. Penetration Testing: Wireshark, Ettercap, ArpSpoof, NetCat<br>3. Mobile Security: Drozer, Androguard, Frida, MobSF<br>4. Reporting: Dradis, Faraday, Ghostwriter, PwnDoc. Tap 🧰 Cyber Tools!`;
-  if(t.includes('ddos')||t.includes('attack')||t.includes('layer')||t.includes('volumetric'))return `<b>🛡️ Attacks By Layer!</b><br>Layer 3/4 = ROAD: Volumetric flood + Protocol exploit knock whole network. Layer 7 = SHOP: Attack one app only. IP = house address e.g 192.168.1.10. Defend: Firewall + Cloudflare. Tap 🛡️ Attacks By Layer for top!`;
-  if(t.includes('windows')||t.includes('shortcut')||t.includes('ctrl+')||t.includes('lock'))return `<b>⌨️ Windows Shortcuts!</b><br>Windows+L Lock, Windows+E Files, Windows+Shift+S Snip, Ctrl+Shift+T Bring back tab, Alt+Tab Switch. Tap ⌨️ Windows Shortcuts for full list!`;
-  if(t.includes('ip')&&t.includes('what'))return `<b>What is IP?</b><br>IP na unique number for device, like house address. Example: 192.168.1.10. Without am data no sabi where to go!`;
-  if(t.includes('career')||t.includes('tools'))return `<b>🧰 CAREER TOOLS!</b><br>Tap 🧰 Career Tools for top! You go see all 9 groups: OS, Networking, Programming, Web Security, Pen Test, SOC, Cloud, OSINT, Forensics!`;
-  if(t.includes('disk'))return `<b>💾 DISK FULL</b><br>Fix: df -h → du -sh /var/log/* → sudo find / -type f -size +1G → sudo lsof +L1`;
-  if(t.includes('high cpu'))return `<b>🔥 HIGH CPU</b><br>Fix: top → ps aux --sort=-%cpu | head`;
-  if(t.includes('ssh'))return `<b>🔑 SSH FAIL</b><br>Fix: systemctl status ssh → ls -l ~/.ssh/authorized_keys → sshd -t`;
-  if(t.includes('python'))return `<b>🐍 PYTHON FOR SOC</b><br>Tap 🐍 Python for top! Start with:<code>print("Hello Roland")</code>`;
-  if(t.includes('quiz'))return `<b>🎮 QUIZ!</b><br>Tap 🎮 Quiz for top and tap START QUIZ! If you score 7+, you be SOC STAR! ⭐`;
-  if(t.includes('phish')||t.includes('link'))return `<b>🌐 PHISHING LINK CHECKER</b><br>Tap 🌐 Phishing for top, paste link, ROXY go tell you if e fake!`;
-  if(t.includes('wireshark'))return `<b>🦈 WIRESHARK</b><br>Filters: http, dns, ip.addr == 192.168.1.1, icmp, arp<br>Tap 🦈 Wireshark!`;
-  if(t.includes('nmap'))return `<b>Nmap 📟</b><br>-sS SYN, -sT Connect, -sU UDP, -p 22, -p- all ports, -T0-T5 speed, -O OS, -sV version`;
-  if(t.includes('linux'))return `<b>Linux 🐧</b><br>Tap 🐧 Linux Fix - 10 scenarios!`;
-  if(t==="hi"||t==="hello"||t.startsWith("hi "))return `Hi ${myName}! Ask me: 'subnetting', 'cyber tools', 'ddos', 'windows shortcut', 'python', 'quiz', 'phishing link', 'career tools', 'wireshark', or tap 🌐🧰🛡️⌨️🐍🎮!`;
+  if(t.includes('android')||t.includes('partition')||t.includes('bootloader')||t.includes('userdata')||t.includes('splash')||t.includes('recovery')||t.includes('cache')||t.includes('radio'))return `<b>📱 Android Partitions!</b><br>bootloader = gate man, splash = logo, boot = kernel + ramdisk, recovery = emergency mode, system = Android OS (/system), userdata = your photos + apps (/data), cache = temp files, radio = baseband for SIM. Main 5: boot, system, data, recovery, cache. Tap 📱 Android Partitions!`;
+  if(t.includes('subnet')||t.includes('cidr')||t.includes('/24')||t.includes('broadcast'))return `<b>🌐 Subnetting!</b><br>/24 = 254 hosts, /25 = 126, /26 = 62, /27 = 30. Minus 2 for Network + Broadcast. 192.168.1.0/24: Network 192.168.1.0, Range 192.168.1.1-254, Broadcast 192.168.1.255. Tap 🌐 Subnetting!`;
+  if(t.includes('cyber')||t.includes('openvas')||t.includes('nikto')||t.includes('frida'))return `<b>🧰 CYBER TOOLS!</b><br>1. Scanning: OpenVAS, Wapiti, Nikto, Vuls<br>2. Pen Test: Wireshark, Ettercap, ArpSpoof, NetCat<br>3. Mobile: Drozer, Androguard, Frida, MobSF<br>4. Reporting: Dradis, Faraday, Ghostwriter, PwnDoc. Tap 🧰 Cyber Tools!`;
+  if(t.includes('ddos')||t.includes('attack')||t.includes('layer'))return `<b>🛡️ Attacks By Layer!</b><br>Layer 3/4 = ROAD, Layer 7 = SHOP. Tap 🛡️ Attacks!`;
+  if(t.includes('windows')||t.includes('shortcut'))return `<b>⌨️ Windows!</b><br>Windows+L Lock, Windows+E Files, Ctrl+Shift+T Bring back tab. Tap ⌨️ Windows!`;
+  if(t.includes('career'))return `<b>🧰 Career!</b><br>Tap 🧰 Career Tools!`;
+  if(t.includes('disk'))return `<b>💾 DISK FULL</b><br>Fix: df -h → du -sh /var/log/*`;
+  if(t.includes('python'))return `<b>🐍 PYTHON</b><br>Tap 🐍 Python! print("Hello Roland")`;
+  if(t.includes('quiz'))return `<b>🎮 QUIZ!</b><br>Tap 🎮 Quiz!`;
+  if(t.includes('phish')||t.includes('link'))return `<b>🌐 PHISHING</b><br>Tap 🌐 Phishing, paste link!`;
+  if(t.includes('wireshark'))return `<b>🦈 WIRESHARK</b><br>Filters: http, dns, ip.addr == 192.168.1.1`;
+  if(t.includes('nmap'))return `<b>Nmap 📟</b><br>-sS, -sT, -sU, -p 22, -p-, -O, -sV`;
+  if(t.includes('linux'))return `<b>Linux 🐧</b><br>Tap 🐧 Linux Fix!`;
+  if(t==="hi"||t==="hello"||t.startsWith("hi "))return `Hi ${myName}! Ask me: 'android partitions', 'subnetting', 'cyber tools', 'ddos', 'windows', 'python', 'quiz', or tap 📱🌐🧰🛡️!`;
   if(t.includes('thank'))return `You are welcome, ${myName}!`;
   if(t.includes('bye'))return `Good night, ${myName}! ROXY dey watch.`;
-  return `Interesting, ${myName}! Ask me: 'subnetting', 'cyber tools', 'ddos', 'windows shortcut', 'python', 'quiz', 'phishing link', 'career tools', 'wireshark', or tap 🌐 Subnetting / 🧰 Cyber Tools!`;
+  return `Interesting, ${myName}! Ask me: 'android partitions', 'subnetting', 'cyber tools', 'ddos', 'windows', 'python', 'quiz', or tap 📱 Android / 🌐 Subnetting!`;
 }
 </script>
 </body>
