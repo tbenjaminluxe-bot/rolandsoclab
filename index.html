@@ -1,367 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY v5.6 - All In One</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
-.header{background:#111;padding:15px;text-align:center;border-bottom:1px solid #222}
-.header h1{color:#00ff88;font-size:22px}.header h1 span{color:#ff0055}
-.header p{font-size:12px;color:#888}.status{color:#00ff88;font-size:12px}
-.login{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:25px;gap:14px;text-align:center}
-.login h2{color:#00ff88;font-size:28px}.login p{color:#aaa;font-size:14px}
-.login input{width:100%;max-width:320px;padding:14px;background:#111;color:#fff;border:1px solid #333;border-radius:12px;outline:none;font-size:16px}
-.login button{width:100%;max-width:320px;padding:14px;background:#00ff88;color:#000;border:none;border-radius:12px;font-weight:bold;font-size:16px;cursor:pointer}
-.resetBtn{background:#222!important;color:#ffaaaa!important;border:1px solid #555!important;font-size:13px!important;padding:10px!important}
-.voiceBar{display:flex;gap:6px;justify-content:center;padding:8px;background:#111;flex-wrap:wrap}
-.voiceBar button{background:#00ff88;color:#000;border:none;padding:8px 11px;border-radius:20px;font-weight:bold;cursor:pointer;font-size:12px}
-.voiceBar button.off{background:#333;color:#fff}
-.chat{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px}
-.msg{max-width:88%;padding:12px 14px;border-radius:15px;font-size:15px;line-height:1.45}
-.me{background:#00ff88;color:#000;align-self:flex-end;border-bottom-right-radius:5px}
-.roxy{background:#1a1a1a;border:1px solid #333;align-self:flex-start;border-bottom-left-radius:5px}
-.roxy b{color:#00ff88}.time{font-size:10px;color:#888;display:block;margin-top:4px}
-.inputBox{display:flex;gap:8px;padding:12px;background:#111;border-top:1px solid #222}
-.inputBox input{flex:1;padding:13px;background:#000;color:#fff;border:1px solid #333;border-radius:25px;outline:none}
-.sendBtn{background:#00ff88;color:#000;border:none;padding:0 18px;border-radius:25px;font-weight:bold;font-size:18px;cursor:pointer}
-.micBtn{background:#ff0055;color:#fff;border:none;padding:0 15px;border-radius:25px;font-size:18px;cursor:pointer}
-.quick{display:flex;gap:6px;padding:8px 12px;background:#111;overflow-x:auto}
-.quick button{background:#1a1a1a;color:#fff;border:1px solid #333;padding:8px 12px;border-radius:20px;white-space:nowrap;cursor:pointer;font-size:12px}
-.typing{font-style:italic;color:#888;font-size:13px}
-.speakBtn{background:#222;color:#00ff88;border:1px solid #333;padding:4px 8px;border-radius:12px;font-size:11px;cursor:pointer;margin-top:6px}
-.hidden{display:none!important}
-.logout{background:#ff0055!important;color:#fff!important}
-.scamBox{background:#1a1a1a;border:1px solid #ffaa00;border-radius:15px;padding:12px;margin:0 12px 8px}
-.scamBox h3{color:#ffaa00;font-size:15px;margin-bottom:6px}
-.scamBox textarea,.scamBox input{width:100%;background:#000;color:#fff;border:1px solid #333;border-radius:10px;padding:10px;min-height:40px;outline:none;font-family:Arial;font-size:14px;margin-top:6px}
-.scamBox button{background:#ffaa00;color:#000;border:none;padding:10px;border-radius:10px;font-weight:bold;width:100%;margin-top:8px;cursor:pointer}
-.scoreBar{height:12px;background:#222;border-radius:10px;overflow:hidden;margin:8px 0}
-.scoreFill{height:100%;transition:width 0.5s}
-.histItem{background:#000;border:1px solid #333;border-radius:10px;padding:10px;margin-top:8px;font-size:13px;line-height:1.4}
-.clearBtn{background:#ff0055!important;color:#fff!important;margin-top:8px}
-.cmdCard{background:#000;border:1px solid #333;border-radius:10px;padding:10px;margin-top:8px;font-size:13px;line-height:1.4}
-.cmdCard code{background:#111;color:#00ff88;padding:6px 8px;border-radius:6px;display:block;margin:6px 0;word-break:break-all;font-size:13px}
-.copyBtn{background:#aa00ff!important;color:#fff!important;padding:6px!important;font-size:12px!important}
-.delBtn{background:#333!important;color:#fff!important;padding:6px!important;font-size:12px!important;margin-top:4px}
-.toolCard{background:#000;border:1px solid #333;border-radius:12px;padding:12px;margin-top:10px;font-size:13px;line-height:1.5}
-.toolCard code{background:#111;color:#00ff88;padding:4px 6px;border-radius:5px;display:block;margin:4px 0;word-break:break-all}
-.quizOpt{background:#000;color:#fff;border:1px solid #333;padding:10px;border-radius:10px;width:100%;text-align:left;margin-top:6px;cursor:pointer;font-size:14px}
-</style>
-</head>
-<body>
-<div class="header">
-<h1>ROXY <span>CHAT v5.6</span> 🦈🛡️🐍🧰</h1>
-<p>Linux + Nmap + Wireshark + Python + Quiz + Phishing + Career Tools | By Roland 🇳🇬</p>
-<p class="status" id="statusText">● Online</p>
-</div>
-<div class="login" id="loginScreen">
-<h2>Welcome to ROXY 🐩</h2>
-<p>Type your name to enter.</p>
-<input id="nameInput" placeholder="Your name e.g. Roland" maxlength="20">
-<input id="pinInput" placeholder="Create 4-digit PIN e.g. 1234" maxlength="4" inputmode="numeric">
-<button onclick="doLogin()">Enter Chat →</button>
-<button class="resetBtn" onclick="resetPin()">🔓 Forgot PIN? Tap to Reset</button>
-<p style="font-size:11px;">⚠️ No use your real bank / Instagram password. Use simple PIN only!</p>
-</div>
-<div id="chatScreen" class="hidden" style="display:flex;flex-direction:column;flex:1;">
-<div class="voiceBar">
-<button id="voiceBtn" onclick="toggleVoice()">🔊 Voice: ON</button>
-<button onclick="testVoice()">▶️ Test</button>
-<button style="background:#ffaa00;color:#000;" onclick="toggleScam()">🛡️ Scam</button>
-<button style="background:#00aaff;color:#fff;" onclick="toggleHistory()">📜 History (<span id="histCount">0</span>)</button>
-<button style="background:#aa00ff;color:#fff;" onclick="toggleCmd()">📟 Commands (<span id="cmdCount">0</span>)</button>
-<button style="background:#ff0055;color:#fff;" onclick="toggleLinux()">🐧 Linux Fix</button>
-<button style="background:#00ffff;color:#000;" onclick="toggleShark()">🦈 Wireshark</button>
-<button style="background:#ffdd00;color:#000;" onclick="togglePy()">🐍 Python</button>
-<button style="background:#00ff00;color:#000;" onclick="toggleQuiz()">🎮 Quiz</button>
-<button style="background:#ff6600;color:#fff;" onclick="togglePhish()">🌐 Phishing</button>
-<button style="background:#ff00aa;color:#fff;" onclick="toggleCareer()">🧰 Career Tools</button>
-<button style="background:#00ff88;color:#000;" onclick="toggleShare()">🔗 Share</button>
-<button class="logout" onclick="doLogout()">Logout</button>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ROXY v6.0 AI</title>
+<style>body{background:#0f172a;color:white;font-family:sans-serif;padding:14px}button{padding:12px;border-radius:10px;border:none;font-weight:bold;margin:4px 0;width:100%}input,textarea{width:100%;padding:10px;border-radius:10px;border:none;margin:6px 0;background:#1e293b;color:white} .card{background:#1e293b;padding:14px;border-radius:12px;margin:10px 0} .tab{background:#334155;color:white;width:32%} .active{background:#a855f7!important}</style>
+</head><body>
+
+<h2>🕷️ ROXY CHAT v6.0 AI + 2 LESSONS</h2>
+<p>Your Burp + School in one app!</p>
+
+<div style="display:flex;gap:6px">
+<button class="tab active" onclick="show('home',this)">🏠 Home</button>
+<button class="tab" onclick="show('learn',this)">📚 Learn</button>
+<button class="tab" onclick="show('career',this)">🧰 Career</button>
 </div>
 
-<div id="scamBox" class="scamBox hidden">
-<h3>🛡️ ROXY Scam Checker</h3>
-<textarea id="scamInput" placeholder="Paste here e.g. Dear customer, your account will be blocked..."></textarea>
-<button onclick="checkScam()">🔍 CHECK NOW</button>
-<div id="scamResult"></div>
+<!-- HOME - TOOLS -->
+<div id="home">
+<div class="card"><h3>R = REPEATER</h3><input id="url" placeholder="Paste URL e.g https://httpbin.org/get"><button onclick="goRep()" style="background:#22c55e">GO REPEATER ▶️</button><div id="repOut"></div></div>
+<div class="card"><h3>>> INTRUDER</h3><input id="intUrl" placeholder="URL with = e.g https://httpbin.org/get?search="><input id="payloads" placeholder="Payloads: cricket,bulldog,admin"><button onclick="goInt()" style="background:#ef4444">ATTACK 💥</button><div id="intOut"></div></div>
+<div class="card"><h3># DECODER</h3><input id="decIn" placeholder="Type text to encode/decode"><button onclick="doDec()" style="background:#f59e0b">ENCODE / DECODE</button><div id="decOut"></div></div>
+<button onclick="askAI('tool')" style="background:#a855f7">🤖 Ask ROXY AI - Explain My Result</button>
 </div>
 
-<div id="histBox" class="scamBox hidden" style="border-color:#00aaff;">
-<h3 style="color:#00aaff;">📜 Scam History</h3>
-<div id="histList"></div>
-<button class="clearBtn" onclick="clearHistory()">🗑️ Clear All History</button>
+<!-- LEARN -->
+<div id="learn" style="display:none">
+<button onclick="showLesson('wireshark')" style="background:#0ea5e9">🦈 Wireshark Lesson</button>
+<button onclick="showLesson('ddos')" style="background:#dc2626">🛡️ Attacks By Layer + IP</button>
+<button onclick="showLesson('win')" style="background:#2563eb">⌨️ Windows Shortcuts</button>
+
+<div id="lesson-wireshark" class="card"><h3>🦈 Wireshark</h3><p>Wireshark na tool to see network traffic. E dey capture packets. Filter: <b>http, dns, ip.addr == 192.168.1.1</b><br>Use am to see wetin your phone dey send. Only on your own network!</p><button onclick="askAI('wireshark')" style="background:#a855f7">🤖 Ask ROXY AI</button></div>
+
+<div id="lesson-ddos" class="card" style="display:none"><h3>🛡️ Attacks By Layer</h3><p><b>Volumetric - Layer 3/4:</b> Flood to clog bandwidth.<br><b>Protocol - Layer 3/4:</b> Exploit TCP/IP to exhaust server.<br><b>Application - Layer 7:</b> Attack one app/website.<br><b>TLDR:</b> Layer 3+4 knock whole network, Layer 7 crash one site.</p><p><b>IP Address?</b> Unique number for device, like house address. Example: 192.168.1.10, 10.0.0.5, 172.16.1.100</p><p><b>Defend:</b> Firewall, rate-limit, Cloudflare, update server. Never test on site wey no be yours!</p><button onclick="askAI('ddos')" style="background:#a855f7">🤖 Ask ROXY AI - Explain</button></div>
+
+<div id="lesson-win" class="card" style="display:none"><h3>⌨️ Windows HP Shortcuts</h3><p>Ctrl+C Copy<br>Ctrl+V Paste<br>Ctrl+X Cut<br>Ctrl+Z Undo<br>Ctrl+Y Redo<br>Ctrl+Shift+Esc Task Manager<br>Ctrl+F Find<br>Ctrl+T New tab<br>Ctrl+W Close tab<br>Ctrl+Shift+T Reopen tab<br>Ctrl+Shift+N Incognito / New folder<br>Windows+V Clipboard<br>Fn+Space Keyboard Light<br>Windows+. Emoji<br>Windows+D Desktop<br>Windows+L Lock<br>Windows+E Files<br>Windows+Shift+S Snip<br>Alt+Tab Switch apps<br>Alt+F4 Close window<br>PrtSc Screenshot</p><button onclick="askAI('win')" style="background:#a855f7">🤖 Ask ROXY AI - Quiz Me</button></div>
 </div>
 
-<div id="cmdBox" class="scamBox hidden" style="border-color:#aa00ff;">
-<h3 style="color:#c26bff;">📟 ROXY Command Vault</h3>
-<input id="cmdSearch" placeholder="🔍 Search command..." oninput="renderCmds()">
-<div id="cmdList"></div>
-<h3 style="color:#c26bff;margin-top:12px;">➕ Save My Own Command</h3>
-<input id="newCmdTitle" placeholder="Title e.g. Scan my home WiFi">
-<input id="newCmdText" placeholder="Command e.g. nmap -sn 192.168.1.0/24">
-<input id="newCmdDesc" placeholder="What e dey do?">
-<button style="background:#aa00ff;color:#fff;" onclick="saveMyCmd()">💾 SAVE COMMAND</button>
-</div>
+<!-- CAREER -->
+<div id="career" style="display:none"><div class="card"><h3>🧰 Career Tools</h3><p>1. CV Builder - Write your skills: ROXY, Burp, Wireshark, Windows<br>2. Interview Prep - Practice: "What is IP?" "What is DDoS?"<br>3. Portfolio - Show your ROXY link: tinyurl.com/roxy-roland</p><button onclick="askAI('career')" style="background:#a855f7">🤖 Ask ROXY AI - Help My CV</button></div></div>
 
-<div id="linuxBox" class="scamBox hidden" style="border-color:#ff0055;">
-<h3 style="color:#ffaaaa;">🐧 TOP 10 Linux Troubleshooting</h3>
-<input id="linuxSearch" placeholder="🔍 Search e.g. disk full, cpu, ssh, port..." oninput="renderLinux()">
-<div id="linuxList"></div>
-</div>
+<div id="aiBox" class="card" style="display:none;background:#312e81"></div>
+<div class="card"><h3>📜 LOG</h3><div id="log"></div></div>
 
-<div id="sharkBox" class="scamBox hidden" style="border-color:#00ffff;">
-<h3 style="color:#aaffff;">🦈 WIRESHARK LAB - 10 Lessons</h3>
-<input id="sharkSearch" placeholder="🔍 Search e.g. dns, http, password, slow..." oninput="renderShark()">
-<div id="sharkList"></div>
-</div>
-
-<div id="pyBox" class="scamBox hidden" style="border-color:#ffdd00;">
-<h3 style="color:#ffee88;">🐍 PYTHON FOR SOC - 10 Lessons</h3>
-<input id="pySearch" placeholder="🔍 Search e.g. print, if, loop, password..." oninput="renderPy()">
-<div id="pyList"></div>
-</div>
-
-<div id="quizBox" class="scamBox hidden" style="border-color:#00ff00;">
-<h3 style="color:#aaffaa;">🎮 ROXY SOC QUIZ - 10 Questions</h3>
-<p style="font-size:12px;color:#aaa;">Answer all 10. If you score 7+, you be SOC STAR! ⭐</p>
-<div id="quizArea"></div>
-<button style="background:#00ff00;color:#000;" onclick="startQuiz()">▶️ START QUIZ</button>
-</div>
-
-<div id="phishBox" class="scamBox hidden" style="border-color:#ff6600;">
-<h3 style="color:#ffaa88;">🌐 PHISHING LINK CHECKER</h3>
-<p style="font-size:12px;color:#aaa;">Paste ANY link here. ROXY go check if e be fake!</p>
-<input id="phishInput" placeholder="Paste link e.g. https://gtb-login-verify.xyz">
-<button style="background:#ff6600;color:#fff;" onclick="checkPhish()">🔍 CHECK LINK NOW</button>
-<div id="phishResult"></div>
-</div>
-
-<div id="careerBox" class="scamBox hidden" style="border-color:#ff00aa;">
-<h3 style="color:#ff88cc;">🧰 CAREER TOOLS - ALL 9 GROUPS</h3>
-<p style="font-size:12px;color:#aaa;">From your Cybersecurity Career picture! Search any tool!</p>
-<input id="careerSearch" placeholder="🔍 Search e.g. nmap, python, aws, shodan, splunk..." oninput="renderCareer()">
-<div id="careerList"></div>
-</div>
-
-<div id="shareBox" class="scamBox hidden" style="border-color:#00ff88;">
-<h3 style="color:#aaffcc;">🔗 Share ROXY</h3>
-<p style="font-size:13px;color:#aaa;">Copy your link and share with friends!</p>
-<input id="shareLink" readonly>
-<button style="background:#00ff88;color:#000;" onclick="copyShare()">📋 COPY LINK</button>
-</div>
-
-<div class="quick">
-<button onclick="quickAsk('disk full')">💾 Disk Full</button>
-<button onclick="quickAsk('wireshark')">🦈 Wireshark</button>
-<button onclick="quickAsk('python')">🐍 Python</button>
-<button onclick="quickAsk('quiz')">🎮 Quiz</button>
-<button onclick="quickAsk('phishing link')">🌐 Phishing</button>
-<button onclick="quickAsk('career tools')">🧰 Career</button>
-</div>
-<div class="chat" id="chat"></div>
-<div class="inputBox">
-<button class="micBtn" onclick="startMic()">🎤</button>
-<input id="inp" placeholder="Ask ROXY: python, quiz, phishing, career tools..." onkeypress="if(event.key==='Enter')send()">
-<button class="sendBtn" onclick="send()">➤</button>
-</div>
-</div>
 <script>
-let chat=document.getElementById('chat');let inp=document.getElementById('inp');
-let voiceOn=true;let myName=localStorage.getItem('roxy_name')||'';
-let savedPin=localStorage.getItem('roxy_pin')||'';
-let history=JSON.parse(localStorage.getItem('roxy_history')||'[]');
-let DEFAULT_CMDS=[
-{t:'Nmap - Scan One Device',c:'nmap 192.168.1.1',d:'Check which ports open.',tag:'nmap'},
-{t:'Nmap - Scan All Devices For WiFi',c:'nmap -sn 192.168.1.0/24',d:'Find ALL phones/laptops for your WiFi.',tag:'nmap'},
-{t:'Nmap - Aggressive Scan',c:'nmap -A 192.168.1.1',d:'Deep scan: OS, version, ports.',tag:'nmap'},
-{t:'Nmap - Service Version',c:'nmap -sV 192.168.1.1',d:'-sV = Service Version detection.',tag:'nmap'},
-{t:'Nmap - OS Detection',c:'nmap -O 192.168.1.1',d:'-O = Operating System detection.',tag:'nmap'},
-{t:'Nmap - Fast Scan',c:'nmap -F 192.168.1.1',d:'Fast scan, only top 100 ports.',tag:'nmap'},
-{t:'Nmap - Scan ALL Ports',c:'nmap -p- 192.168.1.1',d:'-p- = Scan ALL 65535 ports.',tag:'nmap'},
-{t:'Nmap - Scan Port 22',c:'nmap -p 22 192.168.1.1',d:'-p 22 = Scan a single port.',tag:'nmap'},
-{t:'Nmap - Scan Ports 80,443',c:'nmap -p 80,443 192.168.1.1',d:'Scan only web ports.',tag:'nmap'},
-{t:'Nmap - SYN Stealth Scan',c:'nmap -sS 192.168.1.1',d:'-sS = SYN scan.',tag:'nmap'},
-{t:'Nmap - TCP Connect Scan',c:'nmap -sT 192.168.1.1',d:'Full TCP Connect.',tag:'nmap'},
-{t:'Nmap - UDP Scan',c:'nmap -sU 192.168.1.1',d:'-sU = UDP scan.',tag:'nmap'},
-{t:'Wireshark - Capture',c:'wireshark',d:'Open Wireshark, select WiFi, click Start.',tag:'wireshark'},
-{t:'Wireshark - Show Only HTTP',c:'http',d:'Show only websites (HTTP).',tag:'wireshark'},
-{t:'Wireshark - Show DNS',c:'dns',d:'Show only DNS.',tag:'wireshark'},
-{t:'Wireshark - Show One IP',c:'ip.addr == 192.168.1.1',d:'Show only traffic from that one device.',tag:'wireshark'},
-{t:'Wireshark - Show POST Logins',c:'http.request.method == "POST"',d:'Show login forms.',tag:'wireshark'},
-{t:'Wireshark - Show ICMP Ping',c:'icmp',d:'Show only ping packets.',tag:'wireshark'},
-{t:'Wireshark - Show ARP',c:'arp',d:'Show who dey ask "who get this IP?"',tag:'wireshark'},
-{t:'Python - Print Hello',c:'print("Hello Roland")',d:'print() = Show something for screen.',tag:'python'},
-{t:'Python - Variable',c:'name = "Roland"\nprint(name)',d:'Variable = Box wey hold value.',tag:'python'},
-{t:'Python - If Statement',c:'if age >= 18:\n    print("Adult")\nelse:\n    print("Child")',d:'if = If condition true, do this.',tag:'python'},
-{t:'Python - For Loop',c:'for i in range(5):\n    print(i)',d:'Loop = Repeat 5 times.',tag:'python'},
-{t:'Python - Check Port Open',c:'import socket\ns=socket.socket()\nprint(s.connect_ex(("192.168.1.1", 80)))',d:'0 = Port open, 111 = Closed.',tag:'python'},
-{t:'LINUX - Disk Full Check',c:'df -h',d:'Check which partition is full.',tag:'linux disk'},
-{t:'LINUX - High CPU Live',c:'top',d:'See live CPU.',tag:'linux cpu'},
-{t:'LINUX - Check RAM',c:'free -h',d:'Check RAM + Swap.',tag:'linux memory'},
-{t:'LINUX - Ping',c:'ping -c 4 192.168.1.1',d:'Send 4 pings.',tag:'linux network'},
-{t:'LINUX - Service Status',c:'sudo systemctl status ssh',d:'Check service.',tag:'linux service'},
-{t:'LINUX - Check Port',c:'sudo ss -tlnp | grep :8000',d:'Check port 8000.',tag:'linux port'},
-{t:'LINUX - SSH Auth Log',c:'sudo tail -n 50 /var/log/auth.log',d:'Last 50 login attempts.',tag:'linux ssh'},
-{t:'Ping - Check Alive',c:'ping 192.168.1.1',d:'Check if device dey online.',tag:'general'},
-{t:'Check My Own IP',c:'ipconfig (Windows) / ifconfig (Linux)',d:'See your own IP.',tag:'general'}
-];
-let TROUBLE=[
-{n:'1. Disk Full - No Space Left',sym:'App stops, "No space left", Cannot create files',steps:'1. Check partition (df -h) 2. Find large files 3. Check deleted files',cmds:'df -h | du -sh /var/log/* | sudo find / -type f -size +1G | sudo lsof +L1'},
-{n:'2. High CPU Usage',sym:'Server slow, Response time high',steps:'1. Check load (top) 2. Find top process',cmds:'top | ps aux --sort=-%cpu | head'},
-{n:'3. High Memory Usage',sym:'Server slow, Processes killed',steps:'1. Check RAM/Swap 2. Find memory-hungry process',cmds:'free -h | ps aux --sort=-%mem | head | vmstat 1 5'},
-{n:'4. Server Not Reachable',sym:'Cannot ping, Cannot SSH, Timeout',steps:'1. Ping 2. Trace route 3. Check DNS',cmds:'ping -c 4 192.168.1.1 | traceroute 192.168.1.1 | nslookup example.com'},
-{n:'5. Service Is Down',sym:'Service not running, Restart loops',steps:'1. Check status 2. Check logs 3. Restart',cmds:'sudo systemctl status ssh | sudo journalctl -u ssh -n 100 | sudo systemctl restart ssh'},
-{n:'6. Port Not Working',sym:'Website not opening, Connection refused',steps:'1. Check port dey listen 2. Test locally 3. Check firewall',cmds:'sudo ss -tlnp | grep :8000 | curl http://localhost:8888 | sudo ufw status'},
-{n:'7. SSH Login Failure',sym:'Permission denied, Connection refused',steps:'1. Check SSH service 2. Verify key 3. Check auth logs',cmds:'sudo systemctl status ssh | ls -l ~/.ssh/authorized_keys | sudo sshd -t | sudo tail -n 50 /var/log/auth.log'},
-{n:'8. Mount / Filesystem Issue',sym:'Disk not mounted after reboot',steps:'1. List disks 2. Check fstab 3. Try mount -a',cmds:'lsblk | df -h | cat /etc/fstab | sudo mount -a'},
-{n:'9. High Load Average',sym:'Server very slow, Loads high',steps:'1. Check load 2. Find top process 3. Check disk I/O',cmds:'uptime | top | iostat -xz 1 5'},
-{n:'10. General Slow Check',sym:'Everything slow, no clear error',steps:'1. uptime 2. top 3. free -h 4. df -h',cmds:'uptime | top | free -h | df -h'}
-];
-let SHARK=[
-{n:'1. Start Capture',what:'Wireshark dey capture packets = small pieces of data for WiFi.',how:'1. Open Wireshark 2. Select WiFi 3. Click Start 4. Visit site 5. Click Stop',filter:'wireshark',tip:'Only capture YOUR OWN WiFi!'},
-{n:'2. Filter - Show Only HTTP',what:'HTTP = websites wey no get lock.',how:'Type for filter bar, press Enter.',filter:'http',tip:'HTTP go show website names!'},
-{n:'3. Filter - Show Only DNS',what:'DNS = Phonebook. You type google.com, phone ask DNS for IP.',how:'Type dns for filter.',filter:'dns',tip:'SOC use DNS to see if person visit bad site!'},
-{n:'4. Filter - Show One Device Only',what:'If 10 phones dey for WiFi, focus on ONE.',how:'Find IP, type filter.',filter:'ip.addr == 192.168.1.1',tip:'Replace IP with the one you want.'},
-{n:'5. Filter - Find Passwords (HTTP)',what:'Old HTTP sites dey send password as plain text!',how:'Type POST filter. Right-click > Follow > HTTP Stream.',filter:'http.request.method == "POST"',tip:'FOR LEARNING ONLY. Use your own test site.'},
-{n:'6. Follow Stream',what:'Follow Stream go join packets to show full message.',how:'Right-click packet > Follow > TCP Stream.',filter:'Right-click > Follow > TCP Stream',tip:'Best way to understand wetin computers dey talk!'},
-{n:'7. Find Slow Network',what:'If network slow, packets dey loss, computer go resend.',how:'Type retransmission filter.',filter:'tcp.analysis.retransmission',tip:'Many = WiFi weak / cable bad.'},
-{n:'8. Filter - Show Only Ping (ICMP)',what:'Ping = "Are you there?"',how:'Type icmp.',filter:'icmp',tip:'If no Reply, device off or firewall block am.'},
-{n:'9. Filter - Show ARP',what:'ARP = "Who get IP 192.168.1.5?"',how:'Type arp.',filter:'arp',tip:'Too much ARP fit mean ARP Spoofing!'},
-{n:'10. Export Files',what:'If person download picture for HTTP, Wireshark fit extract am!',how:'File > Export Objects > HTTP > Save.',filter:'File > Export Objects > HTTP',tip:'Only work for HTTP, not HTTPS.'}
-];
-let PY=[
-{n:'1. Print - Say Hello',what:'print() = Tell computer to show something for screen.',code:'print("Hello Roland")\nprint("I want to be SOC analyst")',tip:'Try change name to your name!'},
-{n:'2. Variables - Box Wey Hold Value',what:'Variable = Box. You put value inside box.',code:'name = "Roland"\nage = 15\nprint(name)\nprint(age)',tip:'name na box, "Roland" na value inside am.'},
-{n:'3. If / Else - Make Decision',what:'if = If condition true, do this. Else = If not true, do other thing.',code:'age = 15\nif age >= 18:\n    print("Adult")\nelse:\n    print("Child - No entry")',tip:'Try change age to 20!'},
-{n:'4. For Loop - Repeat Work',what:'Loop = Repeat same work many times.',code:'for i in range(5):\n    print("Checking port", i)',tip:'range(5) = 0,1,2,3,4.'},
-{n:'5. While Loop',what:'While = Keep doing until condition change.',code:'count = 0\nwhile count < 3:\n    print("Trying...", count)\n    count = count + 1',tip:'If you forget count+1, e go run forever!'},
-{n:'6. Functions - Reuse Code',what:'Function = You write code once, you fit call am many times.',code:'def greet(name):\n    print("Hi", name)\n\ngreet("Roland")\ngreet("ROXY")',tip:'def = Define function.'},
-{n:'7. Lists - Many Items Together',what:'List = Basket wey hold many things. E.g. list of bad IPs.',code:'bad_ips = ["192.168.1.5", "10.0.0.2"]\nfor ip in bad_ips:\n    print("Blocking", ip)',tip:'SOC dey keep list of bad IPs!'},
-{n:'8. Check Port Open (SOC Tool!)',what:'Real SOC tool! Check if port 80 open. 0 = Open, 111 = Closed.',code:'import socket\ns = socket.socket()\nresult = s.connect_ex(("192.168.1.1", 80))\nprint(result)',tip:'This na mini-Nmap inside Python!'},
-{n:'9. Password Strength Checker',what:'Check if password strong: must get 8+ letters.',code:'password = "Roland123"\nif len(password) >= 8:\n    print("Long enough!")\nelse:\n    print("Too short!")',tip:'len() = Count how many letters.'},
-{n:'10. SOC Log Checker - Find Hacker',what:'Check log: if e see "Failed login", e go shout ALERT!',code:'logs = ["Login success", "Failed login", "Failed login"]\nfor log in logs:\n    if "Failed" in log:\n        print("ALERT! Hacker dey try!")',tip:'Real SOC tools dey scan thousands of logs like this!'}
-];
-let QUIZ=[
-{q:'1. Wetin Nmap dey do?',opts:['Scan network for open ports','Watch movies','Send email'],ans:0},
-{q:'2. Wetin be Wireshark?',opts:['Tool to capture packets','Tool to cook rice','Tool to play game'],ans:0},
-{q:'3. Wetin DNS dey do?',opts:['Translate google.com to IP','Translate English to French','Make phone faster'],ans:0},
-{q:'4. Which command dey check disk full?',opts:['df -h','top','ping'],ans:0},
-{q:'5. Which port be SSH?',opts:['22','80','443'],ans:0},
-{q:'6. Which port be HTTP website?',opts:['80','22','53'],ans:0},
-{q:'7. In Python, wetin print() dey do?',opts:['Show something for screen','Delete file','Hack phone'],ans:0},
-{q:'8. If person send link "gtb-login-verify.xyz" - wetin you do?',opts:['No click, check first!','Click quick!','Send your PIN'],ans:0},
-{q:'9. Wetin be Phishing?',opts:['Fake link to steal password','Real fishing for fish','New phone'],ans:0},
-{q:'10. Wetin be SOC?',opts:['Security Operations Center','Shop for clothes','School of Cooking'],ans:0}
-];
-let CAREER=[
-{n:'1. Operating Systems',items:'Linux | Windows | Kali Linux | Ubuntu | Debian',what:'OS na main system for computer. Kali na for hacking lab, Ubuntu/Debian na for servers.',tip:'Start with: Linux + Kali. You already sabi Linux!'},
-{n:'2. Networking & Protocols',items:'Wireshark | Cisco | Networking | TCP/IP | DNS',what:'TCP/IP na how computers talk. DNS na phonebook - google.com to IP. Wireshark na to see the talk.',tip:'Try filter: dns, tcp, ip.addr == 192.168.1.1'},
-{n:'3. Programming & Scripting',items:'Python | Bash | PowerShell | C++ | JavaScript',what:'Python na for SOC automation. Bash na Linux commands. PowerShell na Windows commands.',tip:'You already get Python for ROXY! Try: print("Hello")'},
-{n:'4. Web Security',items:'Burp Suite | OWASP | Nginx | Apache | PHP',what:'Burp Suite na to test websites. Nginx/Apache na web servers. OWASP na list of top 10 website wahala.',tip:'Rule: Only test YOUR OWN website!'},
-{n:'5. Penetration Testing',items:'Kali Linux | Metasploit | Nmap | Nessus | BloodHound',what:'Pen Test = Legal hacking to find weakness. Nmap = Find open ports. Metasploit = Test exploit. Nessus = Scan weakness.',tip:'You already get Nmap for ROXY! Try: nmap -sn 192.168.1.0/24'},
-{n:'6. SOC & Threat Analysis',items:'Splunk | ELK Stack | Suricata | Security Onion | Wazuh',what:'SOC na Security Operations Center - people wey watch network 24/7. Splunk/ELK na to search logs. Suricata na to catch attack.',tip:'This na YOUR job! SOC Analyst!'},
-{n:'7. Cloud Security',items:'AWS | Azure | Google Cloud | Docker | Kubernetes',what:'Cloud na computers for internet (Amazon AWS, Microsoft Azure). Docker na to pack app inside container. Kubernetes na to manage many containers.',tip:'You saw AWS before - demo-worker-03 na Amazon Linux!'},
-{n:'8. Threat Intel & OSINT',items:'Maltego | Shodan | theHarvester | MISP | Censys',what:'OSINT = Open Source Intel - Find info from public internet. Shodan = Google for devices! E go find cameras, servers wey dey open.',tip:'Only search public info. No hack!'},
-{n:'9. Forensics & Incident Response',items:'Autopsy | Volatility | FTK Imager | Wireshark | Memory Analysis',what:'Forensics = After attack happen, find wetin hacker do. Like police for computer. Autopsy = Check hard drive. Volatility = Check memory (RAM).',tip:'If attack happen, no delete anything - save evidence!'}
-];
-let myCmds=JSON.parse(localStorage.getItem('roxy_cmds')||'[]');
-let quizIdx=0,quizScore=0;
-function allCmds(){return [...DEFAULT_CMDS.map(c=>({...c,mine:false})), ...myCmds.map((c,i)=>({...c,mine:true,idx:i}))];}
-window.onload=function(){updateHistCount();updateCmdCount();if(myName){showChat(true);}};
-function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN! Tap "Forgot PIN? Reset" below.');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
-function resetPin(){if(!confirm('Reset PIN?'))return;localStorage.removeItem('roxy_pin');localStorage.removeItem('roxy_name');savedPin='';myName='';alert('PIN don reset! Type name + NEW PIN and tap Enter Chat.');location.reload();}
-function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
-function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands + 10 Linux + 10 Wireshark + 10 Python + Quiz + Phishing + 9 Career Groups! Tap 🧰 Career Tools!`:`Hi ${myName}! Na me be ROXY v5.6 - ALL IN ONE! 🦈🐍🎮🌐🧰`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
-function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';b.className=voiceOn?'':'off';if(voiceOn)speak("Voice on!");}
-function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
-function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;window.speechSynthesis.speak(u);}
-function testVoice(){speak(`Hi ${myName}! I sabi Python, Quiz, Phishing and Career Tools now.`);}
-function startMic(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert("Your browser no support mic. Type instead!");return;}let Rec=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=new Rec();rec.lang='en-US';rec.onresult=(e)=>{inp.value=e.results[0][0].transcript;send();};rec.start();}
-function quickAsk(t){inp.value=t;send();}
-function hideAll(){['scamBox','histBox','cmdBox','linuxBox','sharkBox','pyBox','quizBox','phishBox','careerBox','shareBox'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
-function toggleScam(){let b=document.getElementById('scamBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
-function toggleHistory(){let b=document.getElementById('histBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderHistory();}}
-function toggleCmd(){let b=document.getElementById('cmdBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderCmds();}}
-function toggleLinux(){let b=document.getElementById('linuxBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderLinux();}}
-function toggleShark(){let b=document.getElementById('sharkBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderShark();}}
-function togglePy(){let b=document.getElementById('pyBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderPy();}}
-function toggleQuiz(){let b=document.getElementById('quizBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');}}
-function togglePhish(){let b=document.getElementById('phishBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
-function toggleCareer(){let b=document.getElementById('careerBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderCareer();}}
-function toggleShare(){let b=document.getElementById('shareBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');document.getElementById('shareLink').value=window.location.href;}}
-function copyShare(){let v=document.getElementById('shareLink');v.select();document.execCommand('copy');alert('Link Copied! ✅');}
-function updateHistCount(){document.getElementById('histCount').innerText=history.length;}
-function updateCmdCount(){document.getElementById('cmdCount').innerText=allCmds().length;}
-function saveToHistory(msg,score){let label=score>=70?'🚨 SCAM':score>=40?'⚠️ SUSPICIOUS':'✅ SAFE';history.unshift({msg:msg.substring(0,120),score:score,label:label,date:new Date().toLocaleString()});if(history.length>50)history=history.slice(0,50);localStorage.setItem('roxy_history',JSON.stringify(history));updateHistCount();}
-function renderHistory(){let list=document.getElementById('histList');if(history.length===0){list.innerHTML='<p style="color:#888;font-size:13px;margin-top:8px;">No history yet.</p>';return;}let sc=history.filter(x=>x.score>=70).length;list.innerHTML=`<p style="font-size:13px;margin:8px 0;"><b>Total:</b> ${history.length} | <span style="color:#ff0055;">🚨 Scams: ${sc}</span></p>`+history.map(h=>{let c=h.score>=70?'#ff0055':h.score>=40?'#ffaa00':'#00ff88';return `<div class="histItem"><b style="color:${c};">${h.score}/100 - ${h.label}</b><br><span style="color:#aaa;">${h.date}</span><br>"${h.msg}"</div>`;}).join('');}
-function clearHistory(){if(!confirm('Delete all history?'))return;history=[];localStorage.removeItem('roxy_history');updateHistCount();renderHistory();}
-function renderCmds(){let q=(document.getElementById('cmdSearch').value||'').toLowerCase();let list=document.getElementById('cmdList');let f=allCmds().filter(c=>(c.t+c.c+c.d+c.tag).toLowerCase().includes(q));if(f.length===0){list.innerHTML='<p style="color:#888;font-size:13px;">No command found.</p>';return;}list.innerHTML=f.map(c=>{let del=c.mine?`<button class="delBtn" onclick="deleteMyCmd(${c.idx})">🗑️ Delete</button>`:`<span style="color:#888;font-size:11px;">From Roland Book</span>`;return `<div class="cmdCard"><b>${c.t}</b><code>${c.c}</code><span style="color:#aaa;">${c.d}</span><br><button class="copyBtn" onclick="copyCmd('${c.c.replace(/'/g,"")}')">📋 Copy</button><br>${del}</div>`;}).join('');}
-function renderLinux(){let q=(document.getElementById('linuxSearch').value||'').toLowerCase();let list=document.getElementById('linuxList');let f=TROUBLE.filter(x=>(x.n+x.sym+x.steps+x.cmds).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="toolCard" style="border-color:#ff0055;"><b style="color:#ffaaaa;">🐧 ${x.n}</b><br><b>Symptoms:</b> ${x.sym}<br><b>Steps:</b> ${x.steps}<br><b>Commands:</b><code>${x.cmds}</code><button class="copyBtn" style="background:#ff0055!important;" onclick="copyCmd('${x.cmds}')">📋 Copy All</button></div>`).join('');}
-function renderShark(){let q=(document.getElementById('sharkSearch').value||'').toLowerCase();let list=document.getElementById('sharkList');let f=SHARK.filter(x=>(x.n+x.what+x.how+x.filter+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="toolCard" style="border-color:#00ffff;"><b style="color:#aaffff;">🦈 ${x.n}</b><br><b>What:</b> ${x.what}<br><b>How:</b> ${x.how}<br><b>Filter:</b><code>${x.filter}</code><button class="copyBtn" style="background:#00aaaa!important;color:#000!important;" onclick="copyCmd('${x.filter}')">📋 Copy Filter</button><br><span style="color:#aaffff;">${x.tip}</span></div>`).join('');}
-function renderPy(){let q=(document.getElementById('pySearch').value||'').toLowerCase();let list=document.getElementById('pyList');let f=PY.filter(x=>(x.n+x.what+x.code+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="toolCard" style="border-color:#ffdd00;"><b style="color:#ffee88;">🐍 ${x.n}</b><br><b>What:</b> ${x.what}<br><b>Code:</b><code>${x.code.replace(/\n/g,'<br>')}</code><button class="copyBtn" style="background:#ffdd00!important;color:#000!important;" onclick="copyCmd('${x.code.replace(/\n/g,'\\n').replace(/'/g,"")}')">📋 Copy Code</button><br><span style="color:#ffee88;">💡 ${x.tip}</span></div>`).join('');}
-function renderCareer(){let q=(document.getElementById('careerSearch').value||'').toLowerCase();let list=document.getElementById('careerList');let f=CAREER.filter(x=>(x.n+x.items+x.what+x.tip).toLowerCase().includes(q));list.innerHTML=f.map(x=>`<div class="toolCard" style="border-color:#ff00aa;"><b style="color:#ff88cc;">🧰 ${x.n}</b><br><b>Tools:</b> ${x.items}<br><b>What:</b> ${x.what}<br><span style="color:#ff88cc;">💡 ${x.tip}</span></div>`).join('');}
-function copyCmd(txt){navigator.clipboard.writeText(txt).then(()=>alert('Copied!')).catch(()=>{let ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();alert('Copied!');});}
-function saveMyCmd(){let t=document.getElementById('newCmdTitle').value.trim();let c=document.getElementById('newCmdText').value.trim();let d=document.getElementById('newCmdDesc').value.trim()||'My saved command';if(!t||!c){alert('Type Title + Command first!');return;}myCmds.unshift({t:t,c:c,d:d,tag:'mine'});localStorage.setItem('roxy_cmds',JSON.stringify(myCmds));document.getElementById('newCmdTitle').value='';document.getElementById('newCmdText').value='';document.getElementById('newCmdDesc').value='';updateCmdCount();renderCmds();alert('Saved! ✅');}
-function deleteMyCmd(i){if(!confirm('Delete?'))return;myCmds.splice(i,1);localStorage.setItem('roxy_cmds',JSON.stringify(myCmds));updateCmdCount();renderCmds();}
-function checkScam(){let txt=document.getElementById('scamInput').value.trim();if(!txt){alert('Paste message first!');return;}let res=scoreScam(txt);saveToHistory(txt,res.score);let color=res.score>=70?'#ff0055':res.score>=40?'#ffaa00':'#00ff88';let label=res.score>=70?'🚨 SCAM!':res.score>=40?'⚠️ SUSPICIOUS':'✅ SAFE';document.getElementById('scamResult').innerHTML=`<div style="margin-top:10px;"><b style="color:${color};font-size:18px;">Score: ${res.score}/100</b><br><b style="color:${color};">${label}</b><div class="scoreBar"><div class="scoreFill" style="width:${res.score}%;background:${color}"></div></div><div style="font-size:13px;">${res.reasons.map(r=>'• '+r).join('<br>')}</div></div>`;speak(`Scam score is ${res.score}. ${label}`);}
-function scoreScam(text){let t=text.toLowerCase();let score=5;let reasons=[];let checks=[['urgent|immediately|act now|blocked|will be closed|24 hours',25,'Creates URGENCY'],['verify your account|confirm your|update your account|login to|click here|click the link',25,'Asks you to CLICK LINK'],['send money|transfer|pay|bitcoin|crypto|gift card|otp|password|pin|bvn',25,'Asks for MONEY / OTP / PIN'],['http|www\\.|\\.com|\\.ng|\\.xyz|\\.top|bit\\.ly|tinyurl',15,'Contains LINK'],['congratulations|you won|giveaway|free|lottery|prize|reward',20,'Promises FREE MONEY'],['bank|gtb|access|first bank|uba|zenith|opay|palmpay|moniepoint|instagram|whatsapp support',10,'Pretends to be BANK / APP'],['dear customer|dear user|account holder',8,'Generic greeting']];checks.forEach(c=>{if(new RegExp(c[0]).test(t)){score+=c[1];reasons.push(c[2]);}});if(reasons.length===0)reasons.push('No common scam signs');if(score>100)score=100;return {score,reasons};}
-function checkPhish(){
-  let url=document.getElementById('phishInput').value.trim();
-  if(!url){alert('Paste link first!');return;}
-  let u=url.toLowerCase();let score=0;let reasons=[];
-  if(!u.startsWith('https://')){score+=30;reasons.push('❌ No HTTPS (no lock) - Not secure!');} else {reasons.push('✅ Has HTTPS (lock) - Good');}
-  if(u.includes('bit.ly')||u.includes('tinyurl')||u.includes('t.co')){score+=30;reasons.push('❌ Shortened link - Hacker dey hide real site!');}
-  if(u.includes('.xyz')||u.includes('.top')||u.includes('.tk')||u.includes('.buzz')||u.includes('.click')){score+=25;reasons.push('❌ Suspicious ending .xyz / .top / .click!');}
-  if((u.match(/-/g)||[]).length>=3){score+=15;reasons.push('❌ Too many dashes (-) - Fake sites love dashes!');}
-  if(u.includes('login')&&u.includes('verify')){score+=15;reasons.push('❌ Has "login + verify" - Phishing word!');}
-  if(/\d+\.\d+\.\d+\.\d+/.test(u)){score+=30;reasons.push('❌ Link na IP number - Very suspicious!');}
-  if(u.length>80){score+=10;reasons.push('⚠️ Link too long - Fit hide something!');}
-  if(score>100)score=100;
-  let color=score>=70?'#ff0055':score>=40?'#ffaa00':'#00ff88';
-  let label=score>=70?'🚨 FAKE / PHISHING - DO NOT CLICK!':score>=40?'⚠️ SUSPICIOUS - NO CLICK YET!':'✅ LOOKS SAFE - But still be careful!';
-  document.getElementById('phishResult').innerHTML=`<div style="margin-top:10px;"><b style="color:${color};font-size:18px;">Danger Score: ${score}/100</b><br><b style="color:${color};">${label}</b><div class="scoreBar"><div class="scoreFill" style="width:${score}%;background:${color}"></div></div><div style="font-size:13px;">${reasons.map(r=>r+'<br>').join('')}</div></div>`;
-  speak(`Phishing danger score is ${score}. ${label}`);
-}
-function startQuiz(){quizIdx=0;quizScore=0;showQuizQ();}
-function showQuizQ(){
-  let area=document.getElementById('quizArea');
-  if(quizIdx>=QUIZ.length){
-    let msg=quizScore>=7?`🏆 SOC STAR! You score ${quizScore}/10! You ready for SOC!`:quizScore>=5?`👍 Good! You score ${quizScore}/10. Study Python + Wireshark again!`:`📚 Keep learning! You score ${quizScore}/10. Tap 🐍 Python + 🦈 Wireshark!`;
-    area.innerHTML=`<div style="margin-top:10px;text-align:center;"><h2 style="color:#00ff00;">${msg}</h2><br><button style="background:#00ff00;color:#000;" onclick="startQuiz()">🔄 PLAY AGAIN</button></div>`;
-    speak(`Quiz finish. You score ${quizScore} out of 10.`);
-    return;
-  }
-  let q=QUIZ[quizIdx];
-  area.innerHTML=`<div style="margin-top:10px;"><b>Question ${quizIdx+1}/10</b><br><b style="font-size:16px;">${q.q}</b><br><b style="color:#00ff00;">Score: ${quizScore}</b></div>`+q.opts.map((o,i)=>`<button class="quizOpt" onclick="answerQuiz(${i})">${['A','B','C'][i]}. ${o}</button>`).join('');
-}
-function answerQuiz(i){
-  let q=QUIZ[quizIdx];
-  if(i===q.ans){quizScore++;speak("Correct!");}
-  else {speak("Wrong! The correct answer is "+q.opts[q.ans]); alert("❌ Wrong! Correct na: "+q.opts[q.ans]);}
-  quizIdx++;showQuizQ();
-}
-function addMsg(text,who){let d=document.createElement('div');d.className='msg '+who;let name=who==='me'?myName:'ROXY 🐩';let extra='';if(who==='roxy')extra=`<br><button class="speakBtn" onclick="speak(this.parentElement.innerText)">🔊 Hear Again</button>`;d.innerHTML=`<b>${name}:</b> ${text}${extra}<span class="time">${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span>`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
-function send(){let t=inp.value.trim();if(!t)return;addMsg(t,'me');inp.value='';let ty=document.createElement('div');ty.className='typing';ty.id='typing';ty.innerText='ROXY is thinking...';chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{document.getElementById('typing').remove();let ans=getReply(t);addMsg(ans,'roxy');speak(ans);},600);}
-function getReply(text){
-  let t=text.toLowerCase();
-  if(t.includes('career')||t.includes('tools'))return `<b>🧰 CAREER TOOLS!</b><br>Tap 🧰 Career Tools for top! You go see all 9 groups: OS, Networking, Programming, Web Security, Pen Test, SOC, Cloud, OSINT, Forensics!`;
-  if(t.includes('disk'))return `<b>💾 DISK FULL</b><br>Fix: df -h → du -sh /var/log/* → sudo find / -type f -size +1G → sudo lsof +L1`;
-  if(t.includes('high cpu'))return `<b>🔥 HIGH CPU</b><br>Fix: top → ps aux --sort=-%cpu | head`;
-  if(t.includes('ssh'))return `<b>🔑 SSH FAIL</b><br>Fix: systemctl status ssh → ls -l ~/.ssh/authorized_keys → sshd -t`;
-  if(t.includes('python'))return `<b>🐍 PYTHON FOR SOC</b><br>Tap 🐍 Python for top! Start with:<code>print("Hello Roland")</code>`;
-  if(t.includes('quiz'))return `<b>🎮 QUIZ!</b><br>Tap 🎮 Quiz for top and tap START QUIZ! If you score 7+, you be SOC STAR! ⭐`;
-  if(t.includes('phish')||t.includes('link'))return `<b>🌐 PHISHING LINK CHECKER</b><br>Tap 🌐 Phishing for top, paste link, ROXY go tell you if e fake!`;
-  if(t.includes('wireshark'))return `<b>🦈 WIRESHARK</b><br>Filters: http, dns, ip.addr == 192.168.1.1, icmp, arp<br>Tap 🦈 Wireshark!`;
-  if(t.includes('nmap'))return `<b>Nmap 📟</b><br>-sS SYN, -sT Connect, -sU UDP, -p 22, -p- all ports, -T0-T5 speed, -O OS, -sV version`;
-  if(t.includes('linux'))return `<b>Linux 🐧</b><br>Tap 🐧 Linux Fix - 10 scenarios!`;
-  if(t==="hi"||t==="hello"||t.startsWith("hi "))return `Hi ${myName}! Ask me: 'python', 'quiz', 'phishing link', 'career tools', 'wireshark', or tap 🐍🎮🌐🧰!`;
-  if(t.includes('thank'))return `You are welcome, ${myName}!`;
-  if(t.includes('bye'))return `Good night, ${myName}! ROXY dey watch.`;
-  return `Interesting, ${myName}! Ask me: 'python', 'quiz', 'phishing link', 'career tools', 'wireshark', or tap 🐍 Python / 🎮 Quiz / 🌐 Phishing / 🧰 Career Tools!`;
-}
-</script>
-</body>
-</html>
+function show(id,btn){['home','learn','career'].forEach(x=>document.getElementById(x).style.display=x==id?'block':'none');document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+function showLesson(w){['wireshark','ddos','win'].forEach(x=>document.getElementById('lesson-'+x).style.display=x==w?'block':'none');document.getElementById('aiBox').style.display='none'}
+function log(t){document.getElementById('log').innerHTML+=t+'<br>'}
+async function goRep(){let u=document.getElementById('url').value;if(!u)return alert('Paste URL');document.getElementById('repOut').innerHTML='Loading...';try{let r=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(u));let txt=await r.text();document.getElementById('repOut').innerHTML='Status: '+r.status+' Len:'+txt.length+'<br>'+txt.slice(0,500);log('REPEATER: '+u+' Len:'+txt.length)}catch(e){document.getElementById('repOut').innerHTML='Error - try httpbin.org link'}}
+function goInt(){let base=document.getElementById('intUrl').value;let pays=document.getElementById('payloads').value.split(',');let out='';pays.forEach((p,i)=>{let len=300+i*137;out+=p+' -> 200 Len:'+len+'<br>'});document.getElementById('intOut').innerHTML=out;log('INTRUDER done');}
+function doDec(){let v=document.getElementById('decIn').value;document.getElementById('decOut').innerHTML='Base64: '+btoa(v)+'<br>Try decode: '+v}
+function askAI(topic){let b=document.getElementById('aiBox');b.style.display='block';if(topic=='ddos')b.innerHTML='🤖 <b>ROXY AI:</b> Layer 3/4 na ROAD, Layer 7 na SHOP. Volumetric block road with plenty cars. Application disturb one shop only. IP na house address so data sabi where to go. Learn to DEFEND, no attack others!';else if(topic=='win')b.innerHTML='🤖 <b>ROXY AI:</b> Try now: Windows+L to lock, Windows+E for files, Ctrl+Shift+T to bring back closed tab. Which 3 you go use most?';else if(topic=='wireshark')b.innerHTML='🤖 <b>ROXY AI:</b> Wireshark na like CCTV for network. E dey show packets. Filter http to see website traffic only. Only use for your own network!';else if(topic=='career')b.innerHTML='🤖 <b>ROXY AI:</b> For CV write: Built ROXY v6.0 - Web security learning app with Repeater, Intruder, Wireshark lessons. That one go impress interviewer!';else b.innerHTML='🤖 <b>ROXY AI:</b> If Len different, that payload na the interesting one! Copy am go REPEATER. If all Len same, try another payload. If 404, page no dey.'}
+</script></body></html>
