@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROXY v5.6 - All In One</title>
+<title>ROXY v6.0 - All In One + 2 New Lessons</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;flex-direction:column}
@@ -52,8 +52,8 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 </head>
 <body>
 <div class="header">
-<h1>ROXY <span>CHAT v5.6</span> 🦈🛡️🐍🧰</h1>
-<p>Linux + Nmap + Wireshark + Python + Quiz + Phishing + Career Tools | By Roland 🇳🇬</p>
+<h1>ROXY <span>CHAT v6.0</span> 🦈🛡️🐍🧰</h1>
+<p>Linux + Nmap + Wireshark + Python + Quiz + Phishing + Career + Attacks + Windows | By Roland 🇳🇬</p>
 <p class="status" id="statusText">● Online</p>
 </div>
 <div class="login" id="loginScreen">
@@ -78,6 +78,8 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <button style="background:#00ff00;color:#000;" onclick="toggleQuiz()">🎮 Quiz</button>
 <button style="background:#ff6600;color:#fff;" onclick="togglePhish()">🌐 Phishing</button>
 <button style="background:#ff00aa;color:#fff;" onclick="toggleCareer()">🧰 Career Tools</button>
+<button style="background:#dc2626;color:#fff;" onclick="toggleDDoS()">🛡️ Attacks By Layer</button>
+<button style="background:#2563eb;color:#fff;" onclick="toggleWin()">⌨️ Windows Shortcuts</button>
 <button style="background:#00ff88;color:#000;" onclick="toggleShare()">🔗 Share</button>
 <button class="logout" onclick="doLogout()">Logout</button>
 </div>
@@ -146,6 +148,29 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <div id="careerList"></div>
 </div>
 
+<div id="ddosBox" class="scamBox hidden" style="border-color:#dc2626;">
+<h3 style="color:#ffaaaa;">🛡️ Attacks By Layer + IP Address</h3>
+<p style="font-size:13px;line-height:1.6;">
+<b>Volumetric - Layer 3 / 4:</b> Flood to clog bandwidth.<br>
+<b>Protocol - Layer 3 / 4:</b> Exploit TCP/IP rules to exhaust server.<br>
+<b>Application - Layer 7:</b> Attack one app / website.<br>
+<b>TLDR:</b> Layer 3+4 knock whole network, Layer 7 crash one site.<br><br>
+<b>What is IP?</b> Unique number for device, like house address. Example: 192.168.1.10, 10.0.0.5, 172.16.1.100<br><br>
+<b>🛡️ Defend:</b> Firewall, rate-limit, Cloudflare, update server. Never test on site wey no be yours!
+</p>
+<button style="background:#dc2626;color:#fff;" onclick="askDDoS()">🤖 Ask ROXY AI - Explain</button>
+<div id="ddosAI" style="margin-top:8px;font-size:13px;"></div>
+</div>
+
+<div id="winBox" class="scamBox hidden" style="border-color:#2563eb;">
+<h3 style="color:#aaccff;">⌨️ Windows HP General Shortcuts</h3>
+<p style="font-size:13px;line-height:1.8;">
+Ctrl+C Copy<br>Ctrl+V Paste<br>Ctrl+X Cut<br>Ctrl+Z Undo<br>Ctrl+Y Redo<br>Ctrl+Shift+Esc Task Manager<br>Ctrl+F Find<br>Ctrl+T New tab<br>Ctrl+W Close tab<br>Ctrl+Shift+T Reopen tab<br>Ctrl+Shift+N Incognito / New folder<br>Windows+V Clipboard<br>Fn+Space Keyboard Light<br>Windows+. Emoji<br>Windows+D Desktop<br>Windows+L Lock<br>Windows+E Files<br>Windows+Shift+S Snip<br>Alt+Tab Switch apps<br>Alt+F4 Close window<br>PrtSc Screenshot
+</p>
+<button style="background:#2563eb;color:#fff;" onclick="askWin()">🤖 Ask ROXY AI - Quiz Me</button>
+<div id="winAI" style="margin-top:8px;font-size:13px;"></div>
+</div>
+
 <div id="shareBox" class="scamBox hidden" style="border-color:#00ff88;">
 <h3 style="color:#aaffcc;">🔗 Share ROXY</h3>
 <p style="font-size:13px;color:#aaa;">Copy your link and share with friends!</p>
@@ -160,11 +185,13 @@ body{background:#0a0a0a;color:#fff;font-family:Arial;height:100vh;display:flex;f
 <button onclick="quickAsk('quiz')">🎮 Quiz</button>
 <button onclick="quickAsk('phishing link')">🌐 Phishing</button>
 <button onclick="quickAsk('career tools')">🧰 Career</button>
+<button onclick="quickAsk('ddos attack')">🛡️ DDoS</button>
+<button onclick="quickAsk('windows shortcut')">⌨️ Windows</button>
 </div>
 <div class="chat" id="chat"></div>
 <div class="inputBox">
 <button class="micBtn" onclick="startMic()">🎤</button>
-<input id="inp" placeholder="Ask ROXY: python, quiz, phishing, career tools..." onkeypress="if(event.key==='Enter')send()">
+<input id="inp" placeholder="Ask ROXY: ddos, windows, python, quiz, phishing, career..." onkeypress="if(event.key==='Enter')send()">
 <button class="sendBtn" onclick="send()">➤</button>
 </div>
 </div>
@@ -274,14 +301,14 @@ window.onload=function(){updateHistCount();updateCmdCount();if(myName){showChat(
 function doLogin(){let n=document.getElementById('nameInput').value.trim();let p=document.getElementById('pinInput').value.trim();if(!n){alert('Type your name first!');return;}if(!p||p.length<4){alert('Create 4-digit PIN!');return;}if(savedPin && savedPin!==p){alert('Wrong PIN! Tap "Forgot PIN? Reset" below.');return;}myName=n;localStorage.setItem('roxy_name',n);localStorage.setItem('roxy_pin',p);showChat(false);}
 function resetPin(){if(!confirm('Reset PIN?'))return;localStorage.removeItem('roxy_pin');localStorage.removeItem('roxy_name');savedPin='';myName='';alert('PIN don reset! Type name + NEW PIN and tap Enter Chat.');location.reload();}
 function doLogout(){localStorage.removeItem('roxy_name');localStorage.removeItem('roxy_pin');location.reload();}
-function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands + 10 Linux + 10 Wireshark + 10 Python + Quiz + Phishing + 9 Career Groups! Tap 🧰 Career Tools!`:`Hi ${myName}! Na me be ROXY v5.6 - ALL IN ONE! 🦈🐍🎮🌐🧰`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
+function showChat(isBack){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('chatScreen').classList.remove('hidden');document.getElementById('statusText').innerText='● Online - Welcome '+myName;chat.innerHTML='';let welcome=isBack?`Welcome back, ${myName}! You get ${allCmds().length} commands + 10 Linux + 10 Wireshark + 10 Python + Quiz + Phishing + 9 Career Groups + 2 NEW Lessons! Tap 🛡️ Attacks or ⌨️ Windows!`:`Hi ${myName}! Na me be ROXY v6.0 - ALL IN ONE! 🦈🐍🎮🌐🧰🛡️⌨️`;addMsg(welcome,'roxy');if(!isBack)speak(welcome);}
 function toggleVoice(){voiceOn=!voiceOn;let b=document.getElementById('voiceBtn');b.innerText=voiceOn?'🔊 Voice: ON':'🔇 Voice: OFF';b.className=voiceOn?'':'off';if(voiceOn)speak("Voice on!");}
 function cleanForSpeech(t){return t.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
 function speak(text){if(!voiceOn)return;if(!('speechSynthesis' in window))return;window.speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(cleanForSpeech(text));u.rate=1;u.pitch=1.1;window.speechSynthesis.speak(u);}
 function testVoice(){speak(`Hi ${myName}! I sabi Python, Quiz, Phishing and Career Tools now.`);}
 function startMic(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){alert("Your browser no support mic. Type instead!");return;}let Rec=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=new Rec();rec.lang='en-US';rec.onresult=(e)=>{inp.value=e.results[0][0].transcript;send();};rec.start();}
 function quickAsk(t){inp.value=t;send();}
-function hideAll(){['scamBox','histBox','cmdBox','linuxBox','sharkBox','pyBox','quizBox','phishBox','careerBox','shareBox'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
+function hideAll(){['scamBox','histBox','cmdBox','linuxBox','sharkBox','pyBox','quizBox','phishBox','careerBox','shareBox','ddosBox','winBox'].forEach(id=>document.getElementById(id).classList.add('hidden'));}
 function toggleScam(){let b=document.getElementById('scamBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
 function toggleHistory(){let b=document.getElementById('histBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderHistory();}}
 function toggleCmd(){let b=document.getElementById('cmdBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderCmds();}}
@@ -291,6 +318,10 @@ function togglePy(){let b=document.getElementById('pyBox');let w=b.classList.con
 function toggleQuiz(){let b=document.getElementById('quizBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');}}
 function togglePhish(){let b=document.getElementById('phishBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
 function toggleCareer(){let b=document.getElementById('careerBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');renderCareer();}}
+function toggleDDoS(){let b=document.getElementById('ddosBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
+function toggleWin(){let b=document.getElementById('winBox');let w=b.classList.contains('hidden');hideAll();if(w)b.classList.remove('hidden');}
+function askDDoS(){document.getElementById('ddosAI').innerHTML="🤖 <b>ROXY AI:</b> Layer 3/4 na ROAD, Layer 7 na SHOP. Volumetric block road with plenty cars. Application disturb one shop only. IP na house address so data sabi where to go. Learn to DEFEND, no attack others!"; speak("Layer 3 and 4 na road, Layer 7 na shop. Learn to defend!");}
+function askWin(){document.getElementById('winAI').innerHTML="🤖 <b>ROXY AI:</b> Try now: Windows+L to lock, Windows+E for files, Ctrl+Shift+T to bring back closed tab. Which 3 you go use most?"; speak("Try Windows L to lock, Windows E for files!");}
 function toggleShare(){let b=document.getElementById('shareBox');let w=b.classList.contains('hidden');hideAll();if(w){b.classList.remove('hidden');document.getElementById('shareLink').value=window.location.href;}}
 function copyShare(){let v=document.getElementById('shareLink');v.select();document.execCommand('copy');alert('Link Copied! ✅');}
 function updateHistCount(){document.getElementById('histCount').innerText=history.length;}
@@ -347,6 +378,9 @@ function addMsg(text,who){let d=document.createElement('div');d.className='msg '
 function send(){let t=inp.value.trim();if(!t)return;addMsg(t,'me');inp.value='';let ty=document.createElement('div');ty.className='typing';ty.id='typing';ty.innerText='ROXY is thinking...';chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;setTimeout(()=>{document.getElementById('typing').remove();let ans=getReply(t);addMsg(ans,'roxy');speak(ans);},600);}
 function getReply(text){
   let t=text.toLowerCase();
+  if(t.includes('ddos')||t.includes('attack')||t.includes('layer')||t.includes('volumetric'))return `<b>🛡️ Attacks By Layer!</b><br>Layer 3/4 = ROAD: Volumetric flood + Protocol exploit knock whole network. Layer 7 = SHOP: Attack one app only. IP = house address e.g 192.168.1.10. Defend: Firewall + Cloudflare. Tap 🛡️ Attacks By Layer for top!`;
+  if(t.includes('windows')||t.includes('shortcut')||t.includes('ctrl+')||t.includes('lock'))return `<b>⌨️ Windows Shortcuts!</b><br>Windows+L Lock, Windows+E Files, Windows+Shift+S Snip, Ctrl+Shift+T Bring back tab, Alt+Tab Switch. Tap ⌨️ Windows Shortcuts for full list!`;
+  if(t.includes('ip')&&t.includes('what'))return `<b>What is IP?</b><br>IP na unique number for device, like house address. Example: 192.168.1.10. Without am data no sabi where to go!`;
   if(t.includes('career')||t.includes('tools'))return `<b>🧰 CAREER TOOLS!</b><br>Tap 🧰 Career Tools for top! You go see all 9 groups: OS, Networking, Programming, Web Security, Pen Test, SOC, Cloud, OSINT, Forensics!`;
   if(t.includes('disk'))return `<b>💾 DISK FULL</b><br>Fix: df -h → du -sh /var/log/* → sudo find / -type f -size +1G → sudo lsof +L1`;
   if(t.includes('high cpu'))return `<b>🔥 HIGH CPU</b><br>Fix: top → ps aux --sort=-%cpu | head`;
@@ -357,10 +391,10 @@ function getReply(text){
   if(t.includes('wireshark'))return `<b>🦈 WIRESHARK</b><br>Filters: http, dns, ip.addr == 192.168.1.1, icmp, arp<br>Tap 🦈 Wireshark!`;
   if(t.includes('nmap'))return `<b>Nmap 📟</b><br>-sS SYN, -sT Connect, -sU UDP, -p 22, -p- all ports, -T0-T5 speed, -O OS, -sV version`;
   if(t.includes('linux'))return `<b>Linux 🐧</b><br>Tap 🐧 Linux Fix - 10 scenarios!`;
-  if(t==="hi"||t==="hello"||t.startsWith("hi "))return `Hi ${myName}! Ask me: 'python', 'quiz', 'phishing link', 'career tools', 'wireshark', or tap 🐍🎮🌐🧰!`;
+  if(t==="hi"||t==="hello"||t.startsWith("hi "))return `Hi ${myName}! Ask me: 'ddos', 'windows shortcut', 'python', 'quiz', 'phishing link', 'career tools', 'wireshark', or tap 🛡️⌨️🐍🎮🌐🧰!`;
   if(t.includes('thank'))return `You are welcome, ${myName}!`;
   if(t.includes('bye'))return `Good night, ${myName}! ROXY dey watch.`;
-  return `Interesting, ${myName}! Ask me: 'python', 'quiz', 'phishing link', 'career tools', 'wireshark', or tap 🐍 Python / 🎮 Quiz / 🌐 Phishing / 🧰 Career Tools!`;
+  return `Interesting, ${myName}! Ask me: 'ddos', 'windows shortcut', 'python', 'quiz', 'phishing link', 'career tools', 'wireshark', or tap 🛡️ Attacks / ⌨️ Windows / 🐍 Python / 🎮 Quiz!`;
 }
 </script>
 </body>
