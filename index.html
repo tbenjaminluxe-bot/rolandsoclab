@@ -1,31 +1,36 @@
-<!-- ===== ROXY AI CHAT BOX - TYPE YOUR QUESTION ===== -->
-<div style="position:fixed;bottom:0;left:0;right:0;background:#1e1b4b;padding:10px;border-top:2px solid #a855f7;z-index:999;">
-  <div id="aiChat" style="background:#0f172a;padding:10px;border-radius:10px;max-height:120px;overflow:auto;margin-bottom:8px;font-size:14px;">🤖 <b>ROXY AI:</b> Hi Roland! Ask me anything - e.g "What is IP?" "What is DDoS?" "How to use Intruder?"</div>
-  <div style="display:flex;gap:6px;">
-    <input id="aiInput" placeholder="Ask ROXY AI anything..." style="flex:1;padding:12px;border-radius:10px;border:none;background:white;color:black;">
-    <button onclick="chatAI()" style="background:#a855f7;color:white;padding:12px 16px;border-radius:10px;width:auto;">Send ➡️</button>
+<!-- ===== ROXY AI BIG CHAT - FIXED ===== -->
+<div style="background:#1e1b4b;padding:16px;border-radius:16px;margin:16px 0;border:2px solid #a855f7;">
+  <h3 style="margin:0;">🤖 ROXY AI - Ask Me Anything!</h3>
+  <p style="font-size:14px;">Try: What is IP? What is DDoS? How to use Intruder?</p>
+
+  <div id="aiChat" style="background:#0f172a;padding:14px;border-radius:12px;height:280px;overflow:auto;font-size:16px;line-height:1.5;">
+    🤖 <b>ROXY AI:</b> Hi Roland! 👋 Ask me anything below, I go answer you!
   </div>
+
+  <input id="aiInput" placeholder="Type your question here..." style="width:100%;padding:16px;border-radius:12px;border:none;margin-top:12px;font-size:16px;background:white;color:black;">
+  <button onclick="chatAI()" style="background:#a855f7;color:white;padding:16px;border-radius:12px;width:100%;margin-top:10px;font-size:18px;font-weight:bold;">Send ➡️ Ask ROXY AI</button>
+  <button onclick="document.getElementById('aiChat').innerHTML='🤖 <b>ROXY AI:</b> Cleared! Ask me new question!'" style="background:#334155;color:white;padding:10px;border-radius:10px;width:100%;margin-top:8px;">Clear Chat 🧹</button>
 </div>
-<div style="height:170px;"></div>
 
 <script>
 function chatAI(){
-  let q = document.getElementById('aiInput').value.toLowerCase();
+  let inp = document.getElementById('aiInput');
+  let q = inp.value.toLowerCase();
   if(!q) return;
   let box = document.getElementById('aiChat');
   let ans = "";
-  if(q.includes('ip')) ans = "IP na your device house address. E.g 192.168.1.10. Without am, data no go sabi where to go!";
-  else if(q.includes('ddos') || q.includes('attack')) ans = "DDoS na when plenty fake traffic jam server make real users no fit enter. Layer 3/4 na to block road, Layer 7 na to disturb one shop. To defend: firewall + Cloudflare. Never attack site wey no be yours!";
-  else if(q.includes('wireshark')) ans = "Wireshark na CCTV for network. E dey show packets. Try filter: http or dns. Only use for your own network!";
-  else if(q.includes('windows') || q.includes('shortcut') || q.includes('lock') || q.includes('screenshot')) ans = "Best shortcuts: Windows+L = Lock, Windows+E = Files, Windows+Shift+S = Snip screenshot, Ctrl+Shift+T = Bring back closed tab, Alt+Tab = Switch apps!";
-  else if(q.includes('intruder') || q.includes('payload')) ans = "Intruder na to try many payloads at once. If one Len different from others, that one na the interesting one! Copy am go Repeater!";
-  else if(q.includes('repeater')) ans = "Repeater na to send one request again and again, change small thing, see wetin change. Paste URL, tap GO!";
-  else if(q.includes('decoder') || q.includes('base64')) ans = "Decoder na to change text to code and back. E.g hello -> aGVsbG8=. Use am to hide or read hidden data!";
-  else if(q.includes('cv') || q.includes('career') || q.includes('job') || q.includes('interview')) ans = "For CV write: Built ROXY v6.0 - Web security learning app. For interview, practice: What is IP? What is DDoS? What is Wireshark? You don sabi all!";
-  else if(q.includes('hi') || q.includes('hello') || q.includes('hey')) ans = "Hey Roland! 👋 I dey here. Ask me about IP, DDoS, Wireshark, Windows shortcuts, Intruder, Repeater - anything!";
-  else ans = "Good question! For ROXY: If na about network, think IP + Layers. If na about tool, try Repeater for 1 request, Intruder for many. Try ask: 'What is IP?' or 'What is DDoS?'";
-  box.innerHTML += "<br><br>🧑 <b>You:</b> " + document.getElementById('aiInput').value + "<br>🤖 <b>ROXY AI:</b> " + ans;
+  if(q.includes('ip')) ans = "IP na your device house address. Example: 192.168.1.10. Without am, data no go sabi where to go!";
+  else if(q.includes('ddos') || q.includes('attack')) ans = "DDoS na when plenty fake traffic jam server make real users no fit enter. Layer 3/4 block road, Layer 7 disturb one shop. Defend with firewall + Cloudflare. Never attack site wey no be yours!";
+  else if(q.includes('wireshark')) ans = "Wireshark na CCTV for network. E dey show packets. Try filter: http or dns. Only for your own network!";
+  else if(q.includes('windows') || q.includes('shortcut') || q.includes('lock') || q.includes('screenshot')) ans = "Best shortcuts: Windows+L = Lock, Windows+E = Files, Windows+Shift+S = Snip, Ctrl+Shift+T = Bring back closed tab, Alt+Tab = Switch apps!";
+  else if(q.includes('intruder') || q.includes('payload')) ans = "Intruder na to try many payloads at once. If one Len different, that one na the interesting one! Copy am go Repeater!";
+  else if(q.includes('repeater')) ans = "Repeater na to send one request again and again. Paste URL, tap GO!";
+  else if(q.includes('decoder') || q.includes('base64')) ans = "Decoder na to change text to code and back. E.g hello -> aGVsbG8=";
+  else if(q.includes('cv') || q.includes('career') || q.includes('job')) ans = "For CV write: Built ROXY v6.0 - Web security learning app. For interview practice: What is IP? What is DDoS? What is Wireshark?";
+  else if(q.includes('hi') || q.includes('hello') || q.includes('hey')) ans = "Hey Roland! 👋 I dey here. Ask me about IP, DDoS, Wireshark, Windows, Intruder - anything!";
+  else ans = "Good question! Try ask: 'What is IP?' or 'What is DDoS?' or 'How to use Intruder?' - I sabi all ROXY topics!";
+  box.innerHTML += "<br><br>🧑 <b>You:</b> " + inp.value + "<br>🤖 <b>ROXY AI:</b> " + ans;
   box.scrollTop = box.scrollHeight;
-  document.getElementById('aiInput').value = "";
+  inp.value = "";
 }
 </script>
