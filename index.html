@@ -1,51 +1,31 @@
-<!DOCTYPE html>
-<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ROXY v6.0 AI</title>
-<style>body{background:#0f172a;color:white;font-family:sans-serif;padding:14px}button{padding:12px;border-radius:10px;border:none;font-weight:bold;margin:4px 0;width:100%}input,textarea{width:100%;padding:10px;border-radius:10px;border:none;margin:6px 0;background:#1e293b;color:white} .card{background:#1e293b;padding:14px;border-radius:12px;margin:10px 0} .tab{background:#334155;color:white;width:32%} .active{background:#a855f7!important}</style>
-</head><body>
-
-<h2>🕷️ ROXY CHAT v6.0 AI + 2 LESSONS</h2>
-<p>Your Burp + School in one app!</p>
-
-<div style="display:flex;gap:6px">
-<button class="tab active" onclick="show('home',this)">🏠 Home</button>
-<button class="tab" onclick="show('learn',this)">📚 Learn</button>
-<button class="tab" onclick="show('career',this)">🧰 Career</button>
+<!-- ===== ROXY AI CHAT BOX - TYPE YOUR QUESTION ===== -->
+<div style="position:fixed;bottom:0;left:0;right:0;background:#1e1b4b;padding:10px;border-top:2px solid #a855f7;z-index:999;">
+  <div id="aiChat" style="background:#0f172a;padding:10px;border-radius:10px;max-height:120px;overflow:auto;margin-bottom:8px;font-size:14px;">🤖 <b>ROXY AI:</b> Hi Roland! Ask me anything - e.g "What is IP?" "What is DDoS?" "How to use Intruder?"</div>
+  <div style="display:flex;gap:6px;">
+    <input id="aiInput" placeholder="Ask ROXY AI anything..." style="flex:1;padding:12px;border-radius:10px;border:none;background:white;color:black;">
+    <button onclick="chatAI()" style="background:#a855f7;color:white;padding:12px 16px;border-radius:10px;width:auto;">Send ➡️</button>
+  </div>
 </div>
-
-<!-- HOME - TOOLS -->
-<div id="home">
-<div class="card"><h3>R = REPEATER</h3><input id="url" placeholder="Paste URL e.g https://httpbin.org/get"><button onclick="goRep()" style="background:#22c55e">GO REPEATER ▶️</button><div id="repOut"></div></div>
-<div class="card"><h3>>> INTRUDER</h3><input id="intUrl" placeholder="URL with = e.g https://httpbin.org/get?search="><input id="payloads" placeholder="Payloads: cricket,bulldog,admin"><button onclick="goInt()" style="background:#ef4444">ATTACK 💥</button><div id="intOut"></div></div>
-<div class="card"><h3># DECODER</h3><input id="decIn" placeholder="Type text to encode/decode"><button onclick="doDec()" style="background:#f59e0b">ENCODE / DECODE</button><div id="decOut"></div></div>
-<button onclick="askAI('tool')" style="background:#a855f7">🤖 Ask ROXY AI - Explain My Result</button>
-</div>
-
-<!-- LEARN -->
-<div id="learn" style="display:none">
-<button onclick="showLesson('wireshark')" style="background:#0ea5e9">🦈 Wireshark Lesson</button>
-<button onclick="showLesson('ddos')" style="background:#dc2626">🛡️ Attacks By Layer + IP</button>
-<button onclick="showLesson('win')" style="background:#2563eb">⌨️ Windows Shortcuts</button>
-
-<div id="lesson-wireshark" class="card"><h3>🦈 Wireshark</h3><p>Wireshark na tool to see network traffic. E dey capture packets. Filter: <b>http, dns, ip.addr == 192.168.1.1</b><br>Use am to see wetin your phone dey send. Only on your own network!</p><button onclick="askAI('wireshark')" style="background:#a855f7">🤖 Ask ROXY AI</button></div>
-
-<div id="lesson-ddos" class="card" style="display:none"><h3>🛡️ Attacks By Layer</h3><p><b>Volumetric - Layer 3/4:</b> Flood to clog bandwidth.<br><b>Protocol - Layer 3/4:</b> Exploit TCP/IP to exhaust server.<br><b>Application - Layer 7:</b> Attack one app/website.<br><b>TLDR:</b> Layer 3+4 knock whole network, Layer 7 crash one site.</p><p><b>IP Address?</b> Unique number for device, like house address. Example: 192.168.1.10, 10.0.0.5, 172.16.1.100</p><p><b>Defend:</b> Firewall, rate-limit, Cloudflare, update server. Never test on site wey no be yours!</p><button onclick="askAI('ddos')" style="background:#a855f7">🤖 Ask ROXY AI - Explain</button></div>
-
-<div id="lesson-win" class="card" style="display:none"><h3>⌨️ Windows HP Shortcuts</h3><p>Ctrl+C Copy<br>Ctrl+V Paste<br>Ctrl+X Cut<br>Ctrl+Z Undo<br>Ctrl+Y Redo<br>Ctrl+Shift+Esc Task Manager<br>Ctrl+F Find<br>Ctrl+T New tab<br>Ctrl+W Close tab<br>Ctrl+Shift+T Reopen tab<br>Ctrl+Shift+N Incognito / New folder<br>Windows+V Clipboard<br>Fn+Space Keyboard Light<br>Windows+. Emoji<br>Windows+D Desktop<br>Windows+L Lock<br>Windows+E Files<br>Windows+Shift+S Snip<br>Alt+Tab Switch apps<br>Alt+F4 Close window<br>PrtSc Screenshot</p><button onclick="askAI('win')" style="background:#a855f7">🤖 Ask ROXY AI - Quiz Me</button></div>
-</div>
-
-<!-- CAREER -->
-<div id="career" style="display:none"><div class="card"><h3>🧰 Career Tools</h3><p>1. CV Builder - Write your skills: ROXY, Burp, Wireshark, Windows<br>2. Interview Prep - Practice: "What is IP?" "What is DDoS?"<br>3. Portfolio - Show your ROXY link: tinyurl.com/roxy-roland</p><button onclick="askAI('career')" style="background:#a855f7">🤖 Ask ROXY AI - Help My CV</button></div></div>
-
-<div id="aiBox" class="card" style="display:none;background:#312e81"></div>
-<div class="card"><h3>📜 LOG</h3><div id="log"></div></div>
+<div style="height:170px;"></div>
 
 <script>
-function show(id,btn){['home','learn','career'].forEach(x=>document.getElementById(x).style.display=x==id?'block':'none');document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
-function showLesson(w){['wireshark','ddos','win'].forEach(x=>document.getElementById('lesson-'+x).style.display=x==w?'block':'none');document.getElementById('aiBox').style.display='none'}
-function log(t){document.getElementById('log').innerHTML+=t+'<br>'}
-async function goRep(){let u=document.getElementById('url').value;if(!u)return alert('Paste URL');document.getElementById('repOut').innerHTML='Loading...';try{let r=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(u));let txt=await r.text();document.getElementById('repOut').innerHTML='Status: '+r.status+' Len:'+txt.length+'<br>'+txt.slice(0,500);log('REPEATER: '+u+' Len:'+txt.length)}catch(e){document.getElementById('repOut').innerHTML='Error - try httpbin.org link'}}
-function goInt(){let base=document.getElementById('intUrl').value;let pays=document.getElementById('payloads').value.split(',');let out='';pays.forEach((p,i)=>{let len=300+i*137;out+=p+' -> 200 Len:'+len+'<br>'});document.getElementById('intOut').innerHTML=out;log('INTRUDER done');}
-function doDec(){let v=document.getElementById('decIn').value;document.getElementById('decOut').innerHTML='Base64: '+btoa(v)+'<br>Try decode: '+v}
-function askAI(topic){let b=document.getElementById('aiBox');b.style.display='block';if(topic=='ddos')b.innerHTML='🤖 <b>ROXY AI:</b> Layer 3/4 na ROAD, Layer 7 na SHOP. Volumetric block road with plenty cars. Application disturb one shop only. IP na house address so data sabi where to go. Learn to DEFEND, no attack others!';else if(topic=='win')b.innerHTML='🤖 <b>ROXY AI:</b> Try now: Windows+L to lock, Windows+E for files, Ctrl+Shift+T to bring back closed tab. Which 3 you go use most?';else if(topic=='wireshark')b.innerHTML='🤖 <b>ROXY AI:</b> Wireshark na like CCTV for network. E dey show packets. Filter http to see website traffic only. Only use for your own network!';else if(topic=='career')b.innerHTML='🤖 <b>ROXY AI:</b> For CV write: Built ROXY v6.0 - Web security learning app with Repeater, Intruder, Wireshark lessons. That one go impress interviewer!';else b.innerHTML='🤖 <b>ROXY AI:</b> If Len different, that payload na the interesting one! Copy am go REPEATER. If all Len same, try another payload. If 404, page no dey.'}
-</script></body></html>
+function chatAI(){
+  let q = document.getElementById('aiInput').value.toLowerCase();
+  if(!q) return;
+  let box = document.getElementById('aiChat');
+  let ans = "";
+  if(q.includes('ip')) ans = "IP na your device house address. E.g 192.168.1.10. Without am, data no go sabi where to go!";
+  else if(q.includes('ddos') || q.includes('attack')) ans = "DDoS na when plenty fake traffic jam server make real users no fit enter. Layer 3/4 na to block road, Layer 7 na to disturb one shop. To defend: firewall + Cloudflare. Never attack site wey no be yours!";
+  else if(q.includes('wireshark')) ans = "Wireshark na CCTV for network. E dey show packets. Try filter: http or dns. Only use for your own network!";
+  else if(q.includes('windows') || q.includes('shortcut') || q.includes('lock') || q.includes('screenshot')) ans = "Best shortcuts: Windows+L = Lock, Windows+E = Files, Windows+Shift+S = Snip screenshot, Ctrl+Shift+T = Bring back closed tab, Alt+Tab = Switch apps!";
+  else if(q.includes('intruder') || q.includes('payload')) ans = "Intruder na to try many payloads at once. If one Len different from others, that one na the interesting one! Copy am go Repeater!";
+  else if(q.includes('repeater')) ans = "Repeater na to send one request again and again, change small thing, see wetin change. Paste URL, tap GO!";
+  else if(q.includes('decoder') || q.includes('base64')) ans = "Decoder na to change text to code and back. E.g hello -> aGVsbG8=. Use am to hide or read hidden data!";
+  else if(q.includes('cv') || q.includes('career') || q.includes('job') || q.includes('interview')) ans = "For CV write: Built ROXY v6.0 - Web security learning app. For interview, practice: What is IP? What is DDoS? What is Wireshark? You don sabi all!";
+  else if(q.includes('hi') || q.includes('hello') || q.includes('hey')) ans = "Hey Roland! 👋 I dey here. Ask me about IP, DDoS, Wireshark, Windows shortcuts, Intruder, Repeater - anything!";
+  else ans = "Good question! For ROXY: If na about network, think IP + Layers. If na about tool, try Repeater for 1 request, Intruder for many. Try ask: 'What is IP?' or 'What is DDoS?'";
+  box.innerHTML += "<br><br>🧑 <b>You:</b> " + document.getElementById('aiInput').value + "<br>🤖 <b>ROXY AI:</b> " + ans;
+  box.scrollTop = box.scrollHeight;
+  document.getElementById('aiInput').value = "";
+}
+</script>
